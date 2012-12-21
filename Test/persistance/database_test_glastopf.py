@@ -18,7 +18,7 @@
 import unittest
 import tempfile
 import os
-from Persister.database import database
+from persistance import database
 from datetime import datetime
 from copy import deepcopy
 
