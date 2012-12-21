@@ -39,7 +39,7 @@ class MnemoDB(basedatabase.BaseDatabase):
         self.check_existance = ['url']
 
     def insert_normalized(self, ndata, hpfeed_id):
-        logging.debug('Inserting normalized item origination from hpfeeds with id: %i' % (hpfeed_id, ))
+        logging.debug('Inserting normalized item originating from hpfeeds with id: %i' % (hpfeed_id, ))
         conn = self.engine.connect()
         trans = conn.begin()
         try:
