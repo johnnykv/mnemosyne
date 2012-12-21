@@ -30,7 +30,7 @@ class GlastopfTests(unittest.TestCase):
 
     def test_glastopf_event(self):
         """
-        Test if a valid glastopf json message on hpfeeds get parsed as expected
+        Test if a valid glastopf json message get parsed as expected
         """
         input_string = """{"pattern": "rfi", "request": {"body": "", "parameters": ["a=b"], "url": "/someURL", "header": {"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}, "version": "HTTP/1.1", "method": "GET"}, "filename": null, "source": ["1.2.3.4", 49111], "time": "2012-12-14 12:22:51", "response": "HTTP/1.1 200 OK\\r\\nConnection: close\\r\\nContent-Type: text/html; charset=UTF-8\\r\\n\\r\\n"}"""
         expected_output = {'session':
@@ -61,7 +61,7 @@ class GlastopfTests(unittest.TestCase):
         }
 
         sut = glastopf_events.GlastopfEvents()
-        actual = sut.normalize(input_string)
+        actual = sut.normalize(input_string, 'glastopf_events')
 
         #Test number of root items
         self.assertItemsEqual(expected_output, actual)

@@ -23,7 +23,7 @@ import json
 class GlastopfEvents(BaseNormalizer):
     channels = ('glastopf.events',)
 
-    def normalize(self, data):
+    def normalize(self, data, channel):
         o_data = json.loads(data)
         relations = {}
 
@@ -38,7 +38,7 @@ class GlastopfEvents(BaseNormalizer):
             data['time'], '%Y-%m-%d %H:%M:%S')
         session['source_ip'] = data['source'][0]
         session['source_port'] = data['source'][1]
-        #TODO: Extract from header if specified in url
+        #TODO: Extract from header if specified
         session['destination_port'] = 80
         session['session_type'] = 'http'
 
@@ -48,8 +48,10 @@ class GlastopfEvents(BaseNormalizer):
         session_http = {}
 
         session_http['header'] = json.dumps(data['request']['header'])
-        session_http['body'] = data['request']['body']
-        session_http['host'] = data['request']['header']['Host']
+        if 'body' in data['request']:
+            session_http['body'] = data['request']['body']
+        if 'Host' in data['request']['header']:
+            session_http['host'] = data['request']['header']['Host']
         session_http['verb'] = data['request']['method']
 
         return session_http
@@ -61,10 +63,13 @@ class GlastopfEvents(BaseNormalizer):
         for item in data['request']['parameters']:
             params = params + '&' + item
 
-        if len(params) == 0:
-            url = 'http://' + data['request']['header'][
-                'Host'] + data['request']['url']
-        else:
-            url = 'http://' + data['request']['header'][
-                'Host'] + data['request']['url'] + '?' + params
+        if 'Host' in data['request']['header']:
+            if len(params) == 0:
+                url = 'http://' + data['request']['header'][
+                    'Host'] + data['request']['url']
+            else:
+                url = 'http://' + data['request']['header'][
+                    'Host'] + data['request']['url'] + '?' + params
+        #best of luck!
+        url = data['request']['url']
         return super(GlastopfEvents, self).make_url(url)

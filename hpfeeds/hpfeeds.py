@@ -1,3 +1,5 @@
+# All credits goes to Mark Schloesser / rep
+# https://github.com/rep/hpfeeds/blob/master/cli/hpfeeds.py
 
 import sys
 import struct
@@ -8,50 +10,64 @@ import time
 
 logger = logging.getLogger('pyhpfeeds')
 
-OP_ERROR    = 0
-OP_INFO     = 1
-OP_AUTH     = 2
-OP_PUBLISH  = 3
-OP_SUBSCRIBE    = 4
+OP_ERROR = 0
+OP_INFO = 1
+OP_AUTH = 2
+OP_PUBLISH = 3
+OP_SUBSCRIBE = 4
 BUFSIZ = 16384
 
 __all__ = ["new", "FeedException"]
 
+
 def msghdr(op, data):
-    return struct.pack('!iB', 5+len(data), op) + data
+    return struct.pack('!iB', 5 + len(data), op) + data
+
+
 def msgpublish(ident, chan, data):
 #   if isinstance(data, str):
 #       data = data.encode('latin1')
     return msghdr(OP_PUBLISH, struct.pack('!B', len(ident)) + ident + struct.pack('!B', len(chan)) + chan + data)
+
+
 def msgsubscribe(ident, chan):
     return msghdr(OP_SUBSCRIBE, struct.pack('!B', len(ident)) + ident + chan)
+
+
 def msgauth(rand, ident, secret):
-    hash = hashlib.sha1(rand+secret).digest()
+    hash = hashlib.sha1(rand + secret).digest()
     return msghdr(OP_AUTH, struct.pack('!B', len(ident)) + ident + hash)
+
 
 class FeedUnpack(object):
     def __init__(self):
         self.buf = bytearray()
+
     def __iter__(self):
         return self
+
     def next(self):
         return self.unpack()
+
     def feed(self, data):
         self.buf.extend(data)
+
     def unpack(self):
         if len(self.buf) < 5:
             raise StopIteration('No message.')
 
-        ml, opcode = struct.unpack('!iB', buffer(self.buf,0,5))
+        ml, opcode = struct.unpack('!iB', buffer(self.buf, 0, 5))
         if len(self.buf) < ml:
             raise StopIteration('No message.')
 
-        data = bytearray(buffer(self.buf, 5, ml-5))
+        data = bytearray(buffer(self.buf, 5, ml - 5))
         del self.buf[:ml]
         return opcode, data
 
+
 class FeedException(Exception):
     pass
+
 
 class HPC(object):
     def __init__(self, host, port, ident, secret, timeout=3, reconnect=True, sleepwait=20):
@@ -80,18 +96,22 @@ class HPC(object):
         logger.info('connecting to {0}:{1}'.format(self.host, self.port))
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(self.timeout)
-        try: self.s.connect((self.host, self.port))
-        except: raise FeedException('Could not connect to broker.')
+        try:
+            self.s.connect((self.host, self.port))
+        except:
+            raise FeedException('Could not connect to broker.')
         self.connected = True
 
-        try: d = self.s.recv(BUFSIZ)
-        except socket.timeout: raise FeedException('Connection receive timeout.')
+        try:
+            d = self.s.recv(BUFSIZ)
+        except socket.timeout:
+            raise FeedException('Connection receive timeout.')
 
         self.unpacker.feed(d)
         for opcode, data in self.unpacker:
             if opcode == OP_INFO:
                 rest = buffer(data, 0)
-                name, rest = rest[1:1+ord(rest[0])], buffer(rest, 1+ord(rest[0]))
+                name, rest = rest[1:1 + ord(rest[0])], buffer(rest, 1 + ord(rest[0]))
                 rand = str(rest)
 
                 logger.debug('info message name: {0}, rand: {1}'.format(name, repr(rand)))
@@ -120,26 +140,29 @@ class HPC(object):
                 for opcode, data in self.unpacker:
                     if opcode == OP_PUBLISH:
                         rest = buffer(data, 0)
-                        ident, rest = rest[1:1+ord(rest[0])], buffer(rest, 1+ord(rest[0]))
-                        chan, content = rest[1:1+ord(rest[0])], buffer(rest, 1+ord(rest[0]))
+                        ident, rest = rest[1:1 + ord(rest[0])], buffer(rest, 1 + ord(rest[0]))
+                        chan, content = rest[1:1 + ord(rest[0])], buffer(rest, 1 + ord(rest[0]))
 
                         message_callback(str(ident), str(chan), content)
                     elif opcode == OP_ERROR:
                         error_callback(data)
 
-                if self.stopped: break
+                if self.stopped:
+                    break
 
-            if self.stopped: break
+            if self.stopped:
+                break
             self.tryconnect()
 
     def subscribe(self, chaninfo):
         if type(chaninfo) == str:
-            chaninfo = [chaninfo,]
+            chaninfo = [chaninfo, ]
         for c in chaninfo:
             self.s.send(msgsubscribe(self.ident, c))
+
     def publish(self, chaninfo, data):
         if type(chaninfo) == str:
-            chaninfo = [chaninfo,]
+            chaninfo = [chaninfo, ]
         for c in chaninfo:
             self.s.send(msgpublish(self.ident, c, data))
 
@@ -147,8 +170,10 @@ class HPC(object):
         self.stopped = True
 
     def close(self):
-        try: self.s.close()
-        except: logger.warn('Socket exception when closing.')
+        try:
+            self.s.close()
+        except:
+            logger.warn('Socket exception when closing.')
 
 
 def new(host=None, port=10000, ident=None, secret=None, timeout=3, reconnect=True, sleepwait=20):
