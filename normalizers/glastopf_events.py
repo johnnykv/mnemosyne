@@ -57,11 +57,14 @@ class GlastopfEvents(BaseNormalizer):
         return session_http
 
     def make_url(self, data):
-        #glastopf splits the url in an unorthodox way :)
-        #gets confusing now. In glastopf param string is query string...
+        #note: glastopf splits the url in an unorthodox way :)
         params = ''
-        for item in data['request']['parameters']:
-            params = params + '&' + item
+
+        if len(data['request']['parameters']) > 1:
+            for item in data['request']['parameters']:
+                params = params + '&' + item
+        elif len(data['request']['parameters']) == 1:
+            params = data['request']['parameters'][0]
 
         if 'Host' in data['request']['header']:
             if len(params) == 0:
@@ -70,6 +73,8 @@ class GlastopfEvents(BaseNormalizer):
             else:
                 url = 'http://' + data['request']['header'][
                     'Host'] + data['request']['url'] + '?' + params
-        #best of luck!
-        url = data['request']['url']
+        else:
+            #best of luck!
+            url = data['request']['url']
+
         return super(GlastopfEvents, self).make_url(url)
