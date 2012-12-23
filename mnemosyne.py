@@ -62,7 +62,7 @@ class Mnemosyne(object):
         if channel in self.normalizers:
             return self.normalizers[channel].normalize(data, channel)
         else:
-            raise Exception('No normalizer could be found for %s.' % (channel,))
+            logger.warning('No normalizer could be found for %s.' % (channel,))
 
 
 if __name__ == '__main__':
