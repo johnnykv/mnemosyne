@@ -19,8 +19,6 @@ import unittest
 import tempfile
 import os
 from persistance import database
-from datetime import datetime
-from copy import deepcopy
 
 
 class Database_HP_Tests(unittest.TestCase):
