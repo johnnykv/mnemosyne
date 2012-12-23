@@ -19,12 +19,12 @@ from sqlalchemy import select
 
 from datetime import datetime
 
-import basedatabase
+from basedatabase import BaseDatabase
 
 import logging
 
 
-class MnemoDB(basedatabase.BaseDatabase):
+class MnemoDB(BaseDatabase):
     def __init__(self, connection_string):
         super(MnemoDB, self).__init__(connection_string)
 
@@ -39,41 +39,41 @@ class MnemoDB(basedatabase.BaseDatabase):
         self.check_existance = ['url']
 
     def insert_normalized(self, ndata, hpfeed_id):
-        logging.debug('Inserting normalized item originating from hpfeeds with id: %i' % (hpfeed_id, ))
+        logging.debug('Trying to insert normalized data (Originating from hpfeeds with id: %i).' % (hpfeed_id, ))
         conn = self.engine.connect()
         trans = conn.begin()
         try:
-            for key, value in ndata.items():
-                stack = [[key, value], ]
-                fk = {'hpfeed_id': hpfeed_id, }
-                while stack:
-                    insert = True
-                    column, content = stack.pop()
-                    if set(self.fk_mapping[column]).issubset(fk.keys()) and 'INSERTED' not in content:
-                        if column in self.need_id_generation:
-                            content = self.generate_id(column, content)
-                        if column in self.check_existance:
-                            result = self.already_exists(column, content, conn)
-                            if result != None:
+            for root in ndata:
+                for key, value in root.items():
+                    stack = [[key, value], ]
+                    fk = {'hpfeed_id': hpfeed_id, }
+                    while stack:
+                        do_insert = True
+                        column, content = stack.pop()
+                        if set(self.fk_mapping[column]).issubset(fk.keys()) and 'INSERTED' not in content:
+                            if column in self.need_id_generation:
+                                content = self.generate_id(column, content)
+                            if column in self.check_existance:
+                                result = self.already_exists(column, content, conn)
+                                if result != None:
+                                    content['INSERTED'] = True
+                                    fk[column + '_id'] = result
+                                    do_insert = False
+                            if do_insert:
+                                result = conn.execute(self.tables[column].insert(
+                                    dict(content.items() + fk.items())))
+                                fk[column + '_id'] = result.inserted_primary_key[0]
                                 content['INSERTED'] = True
-                                fk[column + '_id'] = result
-                                insert = False
-                        if insert:
-                            result = conn.execute(self.tables[column].insert(
-                                dict(content.items() + fk.items())))
-                            fk[column + '_id'] = result.inserted_primary_key[0]
-                            content['INSERTED'] = True
-                    else:
-                        if 'INSERTED' not in content:
-                            stack.append([column, content])
-                    for k, v in content.items():
-                        if isinstance(v, dict):
-                            if not 'INSERTED' in v:
-                                stack.append([k, v])
-            #TODO: Set hpfeed normalized = True
-            conn.execute(self.tables['hpfeed'].update().
-                where(self.tables['hpfeed'].c.hpfeed_id == hpfeed_id).
-                values(normalized=True))
+                        else:
+                            if 'INSERTED' not in content:
+                                stack.append([column, content])
+                        for k, v in content.items():
+                            if isinstance(v, dict):
+                                if not 'INSERTED' in v:
+                                    stack.append([k, v])
+                conn.execute(self.tables['hpfeed'].update().
+                    where(self.tables['hpfeed'].c.hpfeed_id == hpfeed_id).
+                    values(normalized=True))
             trans.commit()
         except:
             trans.rollback()

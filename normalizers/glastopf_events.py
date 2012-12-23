@@ -30,7 +30,7 @@ class GlastopfEvents(BaseNormalizer):
         relations['session'] = self.make_session(o_data)
         relations['session']['session_http'] = self.make_session_http(o_data)
         relations['session']['session_http']['url'] = self.make_url(o_data)
-        return relations
+        return [relations]
 
     def make_session(self, data):
         session = {}

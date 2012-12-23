@@ -34,47 +34,48 @@ class GlastopfTests(unittest.TestCase, NormalizerBaseTest):
         Test if a valid glastopf json message get parsed as expected
         """
         input_string = """{"pattern": "rfi", "request": {"body": "", "parameters": ["a=b"], "url": "/someURL", "header": {"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}, "version": "HTTP/1.1", "method": "GET"}, "filename": null, "source": ["1.2.3.4", 49111], "time": "2012-12-14 12:22:51", "response": "HTTP/1.1 200 OK\\r\\nConnection: close\\r\\nContent-Type: text/html; charset=UTF-8\\r\\n\\r\\n"}"""
-        expected_output = {'session':
-                          {
+        expected_output = [{'session':
+                            {
                            'timestamp': datetime(2012, 12, 14, 12, 22, 51),
                            'source_ip': '1.2.3.4',
                            'source_port': 49111,
                            'destination_port': 80,
                            'session_type': 'http',
                            'session_http':
-                          {
-                              'host': 'www.something.com',
-                              'header': '{"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}',
-                              'body': '',
-                              'verb': 'GET',
-                              'url':
-                              {
-                                      'url': 'http://www.something.com/someURL?a=b',
-                                      'scheme': 'http',
-                                                'netloc': 'www.something.com',
-                                                'path': '/someURL',
-                                                'query': 'a=b',
-                                                'params': '',
-                                                'fragment': ''
-                              }
-                          },
-                          },
-        }
+                           {
+                           'host': 'www.something.com',
+                           'header': '{"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}',
+                           'body': '',
+                           'verb': 'GET',
+                           'url':
+                           {
+            'url': 'http://www.something.com/someURL?a=b',
+            'scheme': 'http',
+            'netloc': 'www.something.com',
+            'path': '/someURL',
+            'query': 'a=b',
+            'params': '',
+            'fragment': ''
+                           }
+                           },
+                           },
+        },]
 
         sut = glastopf_events.GlastopfEvents()
         actual = sut.normalize(input_string, 'glastopf_events')
 
         #Test number of root items
-        self.assertItemsEqual(expected_output, actual)
+        self.assertEqual(len(expected_output), len(actual))
+
         #Test session
-        self.assertItemsEqual(expected_output['session'], actual['session'])
+        self.assertItemsEqual(expected_output[0]['session'], actual[0]['session'])
         #Test subtype, session_http
-        self.assertItemsEqual(expected_output['session']['session_http'], actual['session']['session_http'])
+        self.assertItemsEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
         #Test url
-        self.assertItemsEqual(expected_output['session']['session_http']['url'],
-                              actual['session']['session_http']['url'])
-        #check if dict contains keys which end in _id
-        self.assertFalse(self.does_dict_contain_illegal_keys(actual))
+        self.assertItemsEqual(expected_output[0]['session']['session_http']['url'],
+                              actual[0]['session']['session_http']['url'])
+        #check if dict contains keys which ends in _id
+        self.assertFalse(self.does_dict_contain_illegal_keys(actual[0]))
 
     def test_make_url_actual(self):
         """
