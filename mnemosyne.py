@@ -25,6 +25,8 @@ import logging
 from normalizers import basenormalizer
 from normalizers import glastopf_events
 from persistance import mnemodb
+from WebAPI import mnemowebapi
+
 from hpfeeds import feedbroker
 from ConfigParser import ConfigParser
 
@@ -87,19 +89,24 @@ if __name__ == '__main__':
     feeds = config_parser.get('hpfeeds', 'channels').split(',')
     ident = config_parser.get('hpfeeds', 'ident')
     secret = config_parser.get('hpfeeds', 'secret')
-    port = config_parser.getint('hpfeeds', 'port')
-    host = config_parser.get('hpfeeds', 'host')
+    hp_port = config_parser.getint('hpfeeds', 'port')
+    hp_host = config_parser.get('hpfeeds', 'host')
 
-    #self, database, ident, secret, port, host, feeds
+    webapi_port = config_parser.getint('webapi', 'port')
+    webapi_host = config_parser.get('webapi', 'host')
 
     #start broker and inject persistence module
     #(pull logs from hpfeeds and persist them "raw" in database)
     db = mnemodb.MnemoDB(conn_string)
-    broker = feedbroker.FeedBroker(db, ident, secret, port, host, feeds)
+    broker = feedbroker.FeedBroker(db, ident, secret, hp_port, hp_host, feeds)
     feed_greenlet = gevent.spawn(broker.start_listening)
 
     #start menmo and inject persistence module
     mnemo = Mnemosyne(db)
     mnemo_greenlet = gevent.spawn(mnemo.start_processing)
+
+    #start web api and inject persistence module
+    webapi = mnemowebapi.MnemoWebAPI(db)
+    webapi_greenlet = gevent.spawn(webapi.start_listening, webapi_host, webapi_port)
 
     Greenlet.join(feed_greenlet)
