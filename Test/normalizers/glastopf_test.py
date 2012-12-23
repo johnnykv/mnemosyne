@@ -18,9 +18,10 @@
 import unittest
 from normalizers import glastopf_events
 from datetime import datetime
+from normalizerbase_test import NormalizerBaseTest
 
 
-class GlastopfTests(unittest.TestCase):
+class GlastopfTests(unittest.TestCase, NormalizerBaseTest):
 
     def test_channels(self):
         """
@@ -72,6 +73,8 @@ class GlastopfTests(unittest.TestCase):
         #Test url
         self.assertItemsEqual(expected_output['session']['session_http']['url'],
                               actual['session']['session_http']['url'])
+        #check if dict contains keys which end in _id
+        self.assertFalse(self.does_dict_contain_illegal_keys(actual))
 
     def test_make_url_actual(self):
         """
@@ -93,6 +96,8 @@ class GlastopfTests(unittest.TestCase):
 
         actual = sut.make_url(input_dict)
         self.assertEqual(expected_url, actual['url'])
+        #check if dict contains keys which end in _id
+        self.assertFalse(self.does_dict_contain_illegal_keys(actual))
 
     def test_make_url_no_host(self):
         """
@@ -100,7 +105,6 @@ class GlastopfTests(unittest.TestCase):
 
         """
 
-        #Actual (and wierd) request intercepted by glastopf. (Host sanitized!)
         input_dict = {'request':
                      {'body': '', 'parameters': [], 'url': '/jimboo',
                       'header':
@@ -115,13 +119,14 @@ class GlastopfTests(unittest.TestCase):
 
         actual = sut.make_url(input_dict)
         self.assertEqual(expected_url, actual['url'])
+        #check if dict contains keys which end in _id
+        self.assertFalse(self.does_dict_contain_illegal_keys(actual))
 
     def test_make_url_basic_parsing(self):
         """
         Test if url can be parsed into the expected subelements
         """
 
-        #Actual (and wierd) request intercepted by glastopf. (Host sanitized!)
         input_dict = {'request':
                      {'body': '', 'parameters': [], 'url': '/shop.pl/page;thisisaparam?a=b&c=d',
                       'header':
@@ -142,8 +147,8 @@ class GlastopfTests(unittest.TestCase):
         self.assertEqual('/shop.pl/page', actual['path'])
         self.assertEqual('http', actual['scheme'])
 
-    def test_files(self):
-        pass
+        #check if dict contains keys which end in _id
+        self.assertFalse(self.does_dict_contain_illegal_keys(actual))
 
 if __name__ == '__main__':
     unittest.main()
