@@ -48,13 +48,21 @@ class MnemoWebAPI(Bottle):
 
     @route('/hpfeeds/channels')
     def channels():
+        """
+        Returns a list of channel names and number of events in the database for the specific channel.
+        Example:
+        {"channels": [{"count": 1206, "name": "glastopf.events"},
+                       "count": 511, "name": "thug.events"]}
+        """
         conn = MnemoWebAPI.db.engine.connect()
         table = MnemoWebAPI.db.tables['hpfeed']
-        result = conn.execute(select([table.c.channel]).distinct())
+        result = conn.execute(select([table.c.channel, func.count(table.c.channel)]).
+            group_by(table.c.channel))
 
         channels = []
         for i in result:
-            channels.append(i['channel'])
+            print i
+            channels.append({'name': i['channel'], 'count': i[1]})
 
         return json.dumps({'channels': channels}, default=MnemoWebAPI.json_default)
 
