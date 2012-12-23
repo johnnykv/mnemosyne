@@ -58,21 +58,9 @@ class GlastopfEvents(BaseNormalizer):
 
     def make_url(self, data):
         #note: glastopf splits the url in an unorthodox way :)
-        params = ''
-
-        if len(data['request']['parameters']) > 1:
-            for item in data['request']['parameters']:
-                params = params + '&' + item
-        elif len(data['request']['parameters']) == 1:
-            params = data['request']['parameters'][0]
 
         if 'Host' in data['request']['header']:
-            if len(params) == 0:
-                url = 'http://' + data['request']['header'][
-                    'Host'] + data['request']['url']
-            else:
-                url = 'http://' + data['request']['header'][
-                    'Host'] + data['request']['url'] + '?' + params
+            url = 'http://' + data['request']['header']['Host'] + data['request']['url']
         else:
             #best of luck!
             url = data['request']['url']
