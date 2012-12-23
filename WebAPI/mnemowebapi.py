@@ -15,9 +15,9 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 
-from bottle import route, run, abort, Bottle
+from bottle import route, run, abort, Bottle, request
 
 import datetime
 import json
@@ -37,7 +37,24 @@ class MnemoWebAPI(Bottle):
     @route('/hpfeeds')
     @route('/hpfeeds/')
     def hpfeeds_get_all():
-        abort(403, 'Listing of all content forbidden.')
+        """
+        /hpfeeds - returns 403
+        /hpfeeds - returns 403
+        /hpfeeds/?channel=channelname - returns 100 latest entries pulled from 'channelname'
+        """
+        query_keys = request.query.keys()
+        conn = MnemoWebAPI.db.engine.connect()
+        table = MnemoWebAPI.db.tables['hpfeed']
+        print request.query.channel
+        if 'channel' in query_keys:
+            result = conn.execute(select([table], table.c.channel == request.query.channel).
+                                  order_by(table.c.hpfeed_id.desc()).limit(100))
+            items = []
+            for item in result:
+                items.append(dict(item))
+            return json.dumps({'hpfeeds': items}, default=MnemoWebAPI.json_default)
+        else:
+            abort(403, 'Listing of all content forbidden.')
 
     @route('/hpfeeds/<hpfeed_id>')
     def hpfeeds_by_id(hpfeed_id):
