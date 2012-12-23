@@ -30,7 +30,9 @@ class MnemoWebAPI(Bottle):
     def __init__(self, db):
         super(MnemoWebAPI, self).__init__()
         MnemoWebAPI.db = db
-        run(host='localhost', port=8181, debug=True)
+
+    def start_listening(self, host, port):
+        run(host=host, port=port, debug=True)
 
     @route('/hpfeeds')
     @route('/hpfeeds/')
