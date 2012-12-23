@@ -24,6 +24,7 @@ import logging
 
 from normalizers import basenormalizer
 from normalizers import glastopf_events
+from normalizers import thug_events
 from persistance import mnemodb
 from WebAPI import mnemowebapi
 
@@ -50,22 +51,27 @@ class Mnemosyne(object):
 
     def start_processing(self):
         while True:
+            chan_no_normalizer = {}
             to_be_processed = self.database.get_hpfeed_data(50)
             for key, value in to_be_processed.items():
                 try:
-                    norm = self.normalize(value['payload'], value['channel'])
-                    self.database.insert_normalized(norm, key)
+                    channel = value['channel']
+                    if channel in self.normalizers:
+                        norm = self.normalizers[channel].normalize(value['payload'], channel)
+                        self.database.insert_normalized(norm, key)
+                    else:
+                        #logger.warning('No normalizer could be found for %s.' % (channel,))
+                        if channel in chan_no_normalizer:
+                            chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
+                        else:
+                            chan_no_normalizer[channel] = 1
                 except Exception as ex:
                     print ex
                     logger.warning('Failed to normalize and import item with hpfeed_id = %i, channel = %s. (%s)' % (key, value['channel'], ex))
+            if chan_no_normalizer:
+                for key, value in chan_no_normalizer.items():
+                    logger.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
             sleep(5)
-
-    def normalize(self, data, channel):
-        if channel in self.normalizers:
-            return self.normalizers[channel].normalize(data, channel)
-        else:
-            logger.warning('No normalizer could be found for %s.' % (channel,))
-
 
 if __name__ == '__main__':
     logger = logging.getLogger()
