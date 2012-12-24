@@ -91,7 +91,7 @@ class GlastopfTests(unittest.TestCase, NormalizerBaseTest):
                       'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
                       'Connection': 'close'},
                       'version': 'HTTP/1.1', 'method': 'GET'}}
-        expected_url = 'http://XXXX09.YYYYYYY.PPPP.org/shop.pl/page?/shop.pl/page'
+        expected_url = 'http://XXXX09.YYYYYYY.PPPP.org/shop.pl/page'
 
         sut = glastopf_events.GlastopfEvents()
 
