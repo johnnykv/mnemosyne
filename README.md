@@ -1,8 +1,9 @@
 Mnemosyne
 =========
-
-### Preliminary ER diagram
-![Current ER diagram](https://www.lucidchart.com/publicSegments/view/50d47010-c100-400d-85c9-6e9e0a7f672e/image.png)
+Mnemosyne has two main objectives:
+1. Provide immutable persistence for [hpfeeds](hpfeeds https://redmine.honeynet.org/projects/hpfeeds/wiki).
+2. Normalization of data to enable sensor agnostic analysis.
+3. Expose the normalized data through a RESTful API.
 
 ### Sample console output
 ```
