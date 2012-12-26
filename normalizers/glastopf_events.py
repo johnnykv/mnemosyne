@@ -29,7 +29,6 @@ class GlastopfEvents(BaseNormalizer):
 
         relations['session'] = self.make_session(o_data)
         relations['session']['session_http'] = self.make_session_http(o_data)
-        relations['session']['session_http']['url'] = self.make_url(o_data)
         return [relations]
 
     def make_session(self, data):
@@ -40,20 +39,29 @@ class GlastopfEvents(BaseNormalizer):
         session['source_port'] = data['source'][1]
         #TODO: Extract from header if specified
         session['destination_port'] = 80
-        session['session_type'] = 'http'
+        session['protocol'] = 'http'
+        session['honeypot'] = 'Glastopf'
 
         return session
 
     def make_session_http(self, data):
         session_http = {}
 
-        session_http['header'] = json.dumps(data['request']['header'])
+        request = {}
+        request['header'] = json.dumps(data['request']['header'])
         if 'body' in data['request']:
-            session_http['body'] = data['request']['body']
+            request['body'] = data['request']['body']
         if 'Host' in data['request']['header']:
-            session_http['host'] = data['request']['header']['Host']
-        session_http['verb'] = data['request']['method']
+            request['host'] = data['request']['header']['Host']
+        request['verb'] = data['request']['method']
 
+        #TODO: Parse response from glastopf...
+        response = {}
+
+        if len(request) != 0:
+            session_http['request'] = request
+        if len(response) != 0:
+            session_http['response'] = response
         return session_http
 
     def make_url(self, data):
@@ -64,5 +72,5 @@ class GlastopfEvents(BaseNormalizer):
         else:
             #best of luck!
             url = data['request']['url']
+        return url
 
-        return super(GlastopfEvents, self).make_url(url)

@@ -1,0 +1,56 @@
+some notes on db
+
+SESSION COLLECTION:
+{
+    "timestamp": "datetime...",
+    "source_ip": "string",
+    "source_port": "int",
+    "destination_ip": "string",
+    "destination_port": "int",
+    "honeypot": "string, glastopf, dionaea, etc...",
+    "protocol": "string, lowercase, http/ssh/telnet/etc",
+    "source": "string, _id from hpfeeds",
+    "auth_attempts": [
+        {
+            "type": "plaintext",
+            "login": "somelogin",
+            "password": "somepassword"
+        }
+    ],
+    "attachments": [
+        {
+            "format": "someformat",
+            "description": "string",
+            "reference": "_id from attachment collection"
+        }
+    ]
+}
+
+if the session collection contains an attribute with prefix 'session_'
+it is meant to contain protocol specific information, example:
+
+{
+    "session_http": {
+        "request": {
+            "url": "theURL",
+            "header": "the header...",
+            "body": "the body...",
+            "host": "host from header",
+            "verb": "string, GET, POST, PUT, etc"
+        },
+        "response": {
+            "response_code": "202, 404, etc",
+            "header": "the header...",
+            "body": "the body..."
+        }
+    }
+}
+
+ATTACHMENT:
+{
+    "md5":  "md5...",
+    "sha1": "sha1",
+    "format": "someformat",
+    "description": "string",
+    "data": "thedata"
+}

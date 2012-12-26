@@ -53,24 +53,23 @@ class Mnemosyne(object):
         while True:
             chan_no_normalizer = {}
             to_be_processed = self.database.get_hpfeed_data(50)
-            for key, value in to_be_processed.items():
+            for hpfeed_item in to_be_processed:
                 try:
-                    channel = value['channel']
+                    channel = hpfeed_item['channel']
                     if channel in self.normalizers:
-                        norm = self.normalizers[channel].normalize(value['payload'], channel)
-                        self.database.insert_normalized(norm, key)
+                        norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel)
+                        self.database.insert_normalized(norm, hpfeed_item)
                     else:
-                        #logger.warning('No normalizer could be found for %s.' % (channel,))
                         if channel in chan_no_normalizer:
                             chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
                         else:
                             chan_no_normalizer[channel] = 1
                 except Exception as ex:
-                    print ex
-                    logger.warning('Failed to normalize and import item with hpfeed_id = %i, channel = %s. (%s)' % (key, value['channel'], ex))
+                    logger.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], ex))
             if chan_no_normalizer:
                 for key, value in chan_no_normalizer.items():
                     logger.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
+
             sleep(5)
 
 if __name__ == '__main__':
@@ -90,7 +89,7 @@ if __name__ == '__main__':
 
     config_parser = ConfigParser()
     config_parser.read('mnemosyne.cfg')
-    conn_string = config_parser.get('sqlalchemy', 'connection_string')
+    mongo_database = config_parser.get('mongodb', 'database')
 
     feeds = config_parser.get('hpfeeds', 'channels').split(',')
     ident = config_parser.get('hpfeeds', 'ident')
@@ -102,8 +101,8 @@ if __name__ == '__main__':
     webapi_host = config_parser.get('webapi', 'host')
 
     #start broker and inject persistence module
-    #(pull logs from hpfeeds and persist them "raw" in database)
-    db = mnemodb.MnemoDB(conn_string)
+    #(pull logs from hpfeeds and persist them pseudo-raw in database)
+    db = mnemodb.MnemoDB(mongo_database)
     broker = feedbroker.FeedBroker(db, ident, secret, hp_port, hp_host, feeds)
     feed_greenlet = gevent.spawn(broker.start_listening)
 
@@ -111,8 +110,8 @@ if __name__ == '__main__':
     mnemo = Mnemosyne(db)
     mnemo_greenlet = gevent.spawn(mnemo.start_processing)
 
-    #start web api and inject persistence module
-    webapi = mnemowebapi.MnemoWebAPI(db)
+    #start web api and inject mongo info
+    webapi = mnemowebapi.MnemoWebAPI(mongo_database)
     webapi_greenlet = gevent.spawn(webapi.start_listening, webapi_host, webapi_port)
 
     Greenlet.join(feed_greenlet)

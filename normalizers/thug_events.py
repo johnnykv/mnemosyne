@@ -22,25 +22,29 @@ import xml.etree.ElementTree as ET
 
 class ThugEvents(BaseNormalizer):
 
-    channels = ('thug.events',)
+    channels = ('thug.events_REMOVE_ME',)
 
     def normalize(self, data, channel):
 
-        root = ET.fromstring(data)
+        #split up original payload, so that there are only one root element
+        data = '<THUG_DATA>' + data + '</THUG_DATA>'
 
-        #TODO: Register namespace with ElementTree?
-        analysis = root.findall('./{http://maec.mitre.org/XMLSchema/maec-core-1}Analyses' +
-                                '/{http://maec.mitre.org/XMLSchema/maec-core-1}Analysis')
+        fake_root = ET.fromstring(data)
+        #root = ET.fromstring(data)
 
         url_list = []
-        for a in analysis:
-            for uri in a.iter('{http://maec.mitre.org/XMLSchema/maec-core-1}URI'):
-                url_list.append(uri.text)
+        #TODO: Register namespace with ElementTree?
+        for root in fake_root.findall('{http://maec.mitre.org/XMLSchema/maec-core-1}MAEC_Bundle'):
+            analysis = root.findall('./{http://maec.mitre.org/XMLSchema/maec-core-1}Analyses' +
+                                    '/{http://maec.mitre.org/XMLSchema/maec-core-1}Analysis')
+            for a in analysis:
+                for uri in a.iter('{http://maec.mitre.org/XMLSchema/maec-core-1}URI'):
+                    url_list.append(uri.text)
 
         #TODO: The interesting stuff from behaviors. (and correlate with .files)
         return_list = []
         for url in url_list:
-            url_dict = super(ThugEvents, self).make_url('...')
+            url_dict = super(ThugEvents, self).make_url(url)
             return_list.append({'url': url_dict})
 
         return return_list
