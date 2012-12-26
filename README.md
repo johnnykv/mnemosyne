@@ -1,6 +1,7 @@
 Mnemosyne
 =========
 Mnemosyne has two main objectives:
+
 1. Provide immutable persistence for [hpfeeds](hpfeeds https://redmine.honeynet.org/projects/hpfeeds/wiki).
 2. Normalization of data to enable sensor agnostic analysis.
 3. Expose the normalized data through a RESTful API.
