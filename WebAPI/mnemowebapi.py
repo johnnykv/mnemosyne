@@ -15,9 +15,12 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from sqlalchemy import select, func
-
 from bottle import route, run, abort, Bottle, request
+
+from pymongo import MongoClient
+from bson import ObjectId
+from bson.errors import InvalidId
+from bson.code import Code
 
 import datetime
 import json
@@ -27,9 +30,10 @@ import uuid
 class MnemoWebAPI(Bottle):
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
-    def __init__(self, db):
+    def __init__(self, datebase_name):
         super(MnemoWebAPI, self).__init__()
-        MnemoWebAPI.db = db
+        conn = MongoClient()
+        MnemoWebAPI.db = conn[datebase_name]
 
     def start_listening(self, host, port):
         run(host=host, port=port, debug=True)
@@ -43,45 +47,68 @@ class MnemoWebAPI(Bottle):
         /hpfeeds/?channel=channelname - returns 100 latest entries pulled from 'channelname'
         """
         query_keys = request.query.keys()
-        conn = MnemoWebAPI.db.engine.connect()
-        table = MnemoWebAPI.db.tables['hpfeed']
-        print request.query.channel
         if 'channel' in query_keys:
-            result = conn.execute(select([table], table.c.channel == request.query.channel).
-                                  order_by(table.c.hpfeed_id.desc()).limit(100))
-            items = []
+            result = list(MnemoWebAPI.db.hpfeed.find({'channel': request.query.channel}).sort('timestamp', -1).limit(100))
             for item in result:
-                items.append(dict(item))
-            return json.dumps({'hpfeeds': items}, default=MnemoWebAPI.json_default)
+                print item['timestamp']
+            return json.dumps({'hpfeeds': result}, default=MnemoWebAPI.json_default)
         else:
             abort(403, 'Listing of all content forbidden.')
 
     @route('/hpfeeds/<hpfeed_id>')
     def hpfeeds_by_id(hpfeed_id):
-        conn = MnemoWebAPI.db.engine.connect()
-        table = MnemoWebAPI.db.tables['hpfeed']
-        result = conn.execute(select([table], table.c.hpfeed_id == hpfeed_id)).fetchone()
+        """
+        Returns a specific hpfeed entry.
+        Format of the return value will will be the
+        """
+        try:
+            result = MnemoWebAPI.db.hpfeed.find_one({'_id': ObjectId(hpfeed_id)})
+        except InvalidId:
+            abort(400, '{0} is not a valid ObjectId.'.format(hpfeed_id))
+
         return json.dumps(dict(result), default=MnemoWebAPI.json_default)
 
     @route('/hpfeeds/channels')
     def channels():
         """
-        Returns a list of channel names and number of events in the database for the specific channel.
+        Returns a list of channel names and number of events in the immutable hpfeeds store.
         Example:
         {"channels": [{"count": 1206, "name": "glastopf.events"},
                        "count": 511, "name": "thug.events"]}
         """
-        conn = MnemoWebAPI.db.engine.connect()
-        table = MnemoWebAPI.db.tables['hpfeed']
-        result = conn.execute(select([table.c.channel, func.count(table.c.channel)]).
-            group_by(table.c.channel))
+        return MnemoWebAPI.simpel_group('hpfeed', 'channel')
 
-        channels = []
-        for i in result:
-            print i
-            channels.append({'name': i['channel'], 'count': i[1]})
+    @route('/sessions/protocols')
+    def session_protocols():
+        """
+        Returns a grouped list of all protocols intercepted.
+        Example:
+        {"protocols": [{"count": 680, "protocol": "http"},
+                       {"count": 125, "protocol": "ssh},
+                       {"count": 74,  "protocol": "imap}]}
+        """
+        return MnemoWebAPI.simpel_group('session', 'protocol')
 
-        return json.dumps({'channels': channels}, default=MnemoWebAPI.json_default)
+    @route('/sessions/honeypots')
+    def session_honeypots():
+        """
+        Returns a grouped list of types of honeypots which has submitted data.
+        Example:
+        {"honeypots": [{"count": 720, "honeypot": "Glastopf"}]}
+        """
+        return MnemoWebAPI.simpel_group('session', 'honeypot')
+
+    @staticmethod
+    def simpel_group(collection, attribute):
+        """
+        Helper method to ease group_by operations.
+        """
+        reducer = Code("""
+            function (current, result) { result.count += 1; }
+            """)
+        result = MnemoWebAPI.db[collection].group(key={attribute: 1}, condition={}, initial={"count": 0}, reduce=reducer)
+        output_rootname = attribute + 's'
+        return json.dumps({output_rootname: result}, default=MnemoWebAPI.json_default)
 
     @staticmethod
     def json_default(obj):
