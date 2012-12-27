@@ -133,6 +133,66 @@ class MnemoWebAPI(Bottle):
         result = MnemoWebAPI.simpel_group('session', 'protocol')
         return MnemoWebAPI.jsonify(result, response)
 
+    @route('/sessions/protocol/<protocol>')
+    def sessions_get_by_protocol(protocol):
+        """
+        Returns sessions filtered by protocol.
+        Example:
+        (GET /sessions/protocol/ssh)
+        {
+        sessions": [
+            {
+                "protocol": "ssh",
+                "hpfeed_id": "50dc4244dfe0f7bf93d06076",
+                "timestamp": "2012-12-27T12:42:44.296000",
+                "source_ip": "11.5.23.53",
+                "session_ssh": {
+                    "version": "SSH-2.0-libssh-0.1"
+                },
+                "source_port": 36868,
+                "destination_port": 2222,
+                "_id": "50dcc2ebdfe0f7c4d1ce350d",
+                "honeypot": "Kippo",
+                "auth_attempts": [
+                    {
+                        "login": "root",
+                        "password": "321muie321"
+                    }
+                ]
+            },
+            {
+                "protocol": "ssh",
+                "hpfeed_id": "50dc4249dfe0f7bf93d06077",
+                "timestamp": "2012-12-27T12:42:49.131000",
+                "source_ip": "11.5.23.53",
+                "session_ssh": {
+                    "version": "SSH-2.0-libssh-0.1"
+                },
+                "source_port": 39672,
+                "destination_port": 2222,
+                "_id": "50dcc2ebdfe0f7c4d1ce350e",
+                "honeypot": "Kippo",
+                "auth_attempts": [
+                    {
+                        "login": "root",
+                        "password": "123muie123"
+                    }
+                ]
+            },
+        ]
+        }
+        """
+        result = list(MnemoWebAPI.db.session.find({'protocol': protocol}))
+        return MnemoWebAPI.jsonify({'sessions': result}, response)
+
+    @route('/sessions/source_ip/<source_ip>')
+    def sessions_get_by_source_ip(source_ip):
+        """
+        Returns sessions filtered by protocol.
+        """
+        result = list(MnemoWebAPI.db.session.find({'source_ip': source_ip}))
+        return MnemoWebAPI.jsonify({'sessions': result}, response)
+
     @route('/sessions/honeypots')
     def session_honeypots():
         """
@@ -147,7 +207,9 @@ class MnemoWebAPI(Bottle):
     @route('/urls/')
     def urls_all():
         """
-        Returns a list of url's reported by honeyclients (in general) with reference to the original hpfeeds data..
+        Returns a list of url's reported by honeyclients (in general) with reference to the original hpfeeds data.
+        If honeyclient software has extracted code snippets or potiential malware for the site, references to these will be
+        available also.
         Example:
         {
         "urls": [
@@ -196,7 +258,6 @@ class MnemoWebAPI(Bottle):
             r.content_type = 'application/json'
             return json_response
         else:
-            print i
             abort(500, 'Error while trying to serialize to json.')
 
     @staticmethod
@@ -211,3 +272,4 @@ class MnemoWebAPI(Bottle):
                 return str(obj)
             else:
                 return None
+
