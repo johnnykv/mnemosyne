@@ -25,6 +25,7 @@ import logging
 from normalizers import basenormalizer
 from normalizers import glastopf_events
 from normalizers import thug_events
+from normalizers import kippo_events
 from persistance import mnemodb
 from WebAPI import mnemowebapi
 
@@ -57,7 +58,7 @@ class Mnemosyne(object):
                 try:
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
-                        norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel)
+                        norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel, hpfeed_item['timestamp'])
                         self.database.insert_normalized(norm, hpfeed_item)
                     else:
                         if channel in chan_no_normalizer:

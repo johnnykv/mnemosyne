@@ -23,7 +23,7 @@ import json
 class GlastopfEvents(BaseNormalizer):
     channels = ('glastopf.events',)
 
-    def normalize(self, data, channel):
+    def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
         relations = {}
 

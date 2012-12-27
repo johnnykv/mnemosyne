@@ -19,7 +19,7 @@ from urlparse import urlparse
 
 
 class BaseNormalizer(object):
-    def normalize(self, data, channel_name):
+    def normalize(self, data, channel_name, submission_timestamp):
         pass
 
     def make_url(self, url):

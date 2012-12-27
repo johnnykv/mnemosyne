@@ -72,7 +72,7 @@ class ThugTests(unittest.TestCase):
         expected_output = [{'url': { 'url': 'http://xxx.yyy.zzz/wfgv.htm?php=receipt'}} ]
 
         sut = thug_events.ThugEvents()
-        actual = sut.normalize(input_xml, 'thug.events')
+        actual = sut.normalize(input_xml, 'thug.events', None)
 
         self.assertEqual(len(expected_output), len(actual))
 
@@ -92,7 +92,7 @@ class ThugTests(unittest.TestCase):
         ]
 
         sut = thug_events.ThugEvents()
-        actual = sut.normalize(input_xml, 'thug.events')
+        actual = sut.normalize(input_xml, 'thug.events', None)
         #print actual
         self.assertItemsEqual(expected_output, actual)
 

@@ -56,7 +56,7 @@ class GlastopfTests(unittest.TestCase):
         expected_output = [{'session': session}]
 
         sut = glastopf_events.GlastopfEvents()
-        actual = sut.normalize(input_string, 'glastopf_events')
+        actual = sut.normalize(input_string, 'glastopf_events', None)
 
         #Test number of root items
         self.assertEqual(len(expected_output), len(actual))
