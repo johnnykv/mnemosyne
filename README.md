@@ -69,7 +69,7 @@ Mnemosyne has three main objectives:
 ```json
 {"protocols": [{"count": 680, "protocol": "http"},
                {"count": 125, "protocol": "ssh"},
-               {"count": 74,  "protocol": "imap}]}
+               {"count": 74,  "protocol": "imap"}]}
 ```
 
 *GET /urls*
@@ -93,7 +93,7 @@ Mnemosyne has three main objectives:
     }
 }
 ```
-               
+
 
 
 ### Sample console output
