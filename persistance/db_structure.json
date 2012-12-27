@@ -9,7 +9,7 @@ SESSION COLLECTION:
     "destination_port": "int",
     "honeypot": "string, glastopf, dionaea, etc...",
     "protocol": "string, lowercase, http/ssh/telnet/etc",
-    "source": "string, _id from hpfeeds",
+    "hpfeed_id": "string, _id from hpfeeds",
     "auth_attempts": [
         {
             "type": "plaintext",
@@ -52,5 +52,13 @@ ATTACHMENT:
     "sha1": "sha1",
     "format": "someformat",
     "description": "string",
-    "data": "thedata"
+    "data": "thedata",
+    "hpfeed_ids": ["here goes a list of hpfeed _id's"]
+}
+
+(malicious URL's.....)
+URL:
+{
+    "url": "some url",
+     "hpfeed_ids": ["here goes a list of hpfeed _id's"]
 }

@@ -49,7 +49,7 @@ class Mnemosyne(object):
                 else:
                     self.normalizers[channel] = normalizer
 
-    def start_processing(self):
+    def start_processing(self, warn_no_normalizers):
         while True:
             chan_no_normalizer = {}
             to_be_processed = self.database.get_hpfeed_data(50)
@@ -66,9 +66,11 @@ class Mnemosyne(object):
                             chan_no_normalizer[channel] = 1
                 except Exception as ex:
                     logger.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], ex))
-            if chan_no_normalizer:
-                for key, value in chan_no_normalizer.items():
-                    logger.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
+
+            if warn_no_normalizers:
+                if chan_no_normalizer:
+                    for key, value in chan_no_normalizer.items():
+                        logger.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
 
             sleep(5)
 
@@ -108,7 +110,7 @@ if __name__ == '__main__':
 
     #start menmo and inject persistence module
     mnemo = Mnemosyne(db)
-    mnemo_greenlet = gevent.spawn(mnemo.start_processing)
+    mnemo_greenlet = gevent.spawn(mnemo.start_processing, False)
 
     #start web api and inject mongo info
     webapi = mnemowebapi.MnemoWebAPI(mongo_database)

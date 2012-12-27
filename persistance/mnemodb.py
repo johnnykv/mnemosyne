@@ -17,18 +17,27 @@
 
 from pymongo import MongoClient
 from datetime import datetime
+import logging
+from bson.errors import InvalidStringData
 
 
 class MnemoDB(object):
     def __init__(self, database_name):
         conn = MongoClient()
         self.db = conn[database_name]
+        #for entries which has a one-to-many relationship with hpfeeds
+        self.upsert_map = {'url': 'url'}
 
     def insert_normalized(self, ndata, original_hpfeed):
         for item in ndata:
             #every root item is requal to collection name
             for collection, document in item.items():
-                self.db[collection].insert(document)
+                if collection in self.upsert_map:
+                    identifier = self.upsert_map[collection]
+                    self.db[collection].update({identifier: document[identifier]}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
+                else:
+                    document['hpfeed_id'] = original_hpfeed['_id']
+                    self.db[collection].insert(document)
         self.db.hpfeed.update({'_id': original_hpfeed['_id']}, {"$set": {'normalized': True}})
 
     def insert_hpfeed(self, ident, channel, payload):
@@ -38,9 +47,11 @@ class MnemoDB(object):
                  'payload': str(payload),
                  'timestamp': datetime.utcnow(),
                  'normalized': False}
-        self.db.hpfeed.insert(entry)
+        try:
+            self.db.hpfeed.insert(entry)
+        except InvalidStringData as err:
+            logging.error('Failed to insert hpfeed data on {0} channel due to invalid string data. ({1})'.format(entry['channel'], err))
 
-        #extract unnormalized hpfeed data
     def get_hpfeed_data(self, max=None):
         data = self.db.hpfeed.find({'normalized': False})
         return data

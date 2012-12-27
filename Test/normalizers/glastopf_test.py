@@ -65,7 +65,9 @@ class GlastopfTests(unittest.TestCase):
         self.assertItemsEqual(expected_output[0]['session'], actual[0]['session'])
         #Test subtype, session_http
         self.assertItemsEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
-        #Test url
+        #Test request
+        self.assertItemsEqual(expected_output[0]['session']['session_http']['request'], actual[0]['session']['session_http']['request'])
+
 
     def test_make_url_actual(self):
         """

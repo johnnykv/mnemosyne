@@ -22,7 +22,7 @@ import xml.etree.ElementTree as ET
 
 class ThugEvents(BaseNormalizer):
 
-    channels = ('thug.events_REMOVE_ME',)
+    channels = ('thug.events',)
 
     def normalize(self, data, channel):
 
@@ -44,7 +44,8 @@ class ThugEvents(BaseNormalizer):
         #TODO: The interesting stuff from behaviors. (and correlate with .files)
         return_list = []
         for url in url_list:
-            url_dict = super(ThugEvents, self).make_url(url)
-            return_list.append({'url': url_dict})
+            return_list.append({'url': {'url': url}})
+            #url_dict = super(ThugEvents, self).make_url(url)
+            #return_list.append({'url': url_dict})
 
         return return_list

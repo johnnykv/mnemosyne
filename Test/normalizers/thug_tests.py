@@ -69,23 +69,14 @@ class ThugTests(unittest.TestCase):
     <Pools/>
 </MAEC_Bundle>
 '''
-        expected_output = [{'url':
-                            {
-                           'url': 'http://xxx.yyy.zzz/wfgv.htm?php=receipt',
-                           'scheme': 'http',
-                           'netloc': 'xxx.yyy.zzz',
-                           'path': '/wfgv.htm',
-                           'query': 'php=receipt',
-                           'params': '',
-                           'fragment': '',
-                           }
-        }]
+        expected_output = [{'url': { 'url': 'http://xxx.yyy.zzz/wfgv.htm?php=receipt'}} ]
 
         sut = thug_events.ThugEvents()
         actual = sut.normalize(input_xml, 'thug.events')
 
         self.assertEqual(len(expected_output), len(actual))
-        self.assertItemsEqual(expected_output[0], actual[0])
+
+        self.assertItemsEqual(expected_output, actual)
 
     def test_event_multiple_entried(self):
         """
@@ -95,39 +86,10 @@ class ThugTests(unittest.TestCase):
         input_xml = open(os.path.dirname(__file__) + '/data_samples/thug_events_sample1.xml', 'r').read()
 
         expected_output = [
-            {'url':
-             {
-             'url': 'http://xxx.yyy.zzz/CBYCSBJHYZ.php?php=receipt',
-             'scheme': 'http',
-             'netloc': 'xxx.yyy.zzz',
-             'path': '/CBYCSBJHYZ.php',
-             'query': 'php=receipt',
-                     'params': '',
-                     'fragment': '',
-                     }
-                     },
-            {'url':
-             {
-             'url': 'http://uuu.uu:8080/forum/links/column.php',
-             'scheme': 'http',
-             'netloc': 'uuu.uu:8080',
-             'path': '/forum/links/column.php',
-                     'query': '',
-                     'params': '',
-                     'fragment': '',
-                     }
-                     },
-            {'url':
-             {
-             'url': 'http://ppp.aaa.mmm/wfgv.htm?php=receipt',
-             'scheme': 'http',
-             'netloc': 'ppp.aaa.mmm',
-             'path': '/wfgv.htm',
-                     'query': 'php=receipt',
-                     'params': '',
-                     'fragment': '',
-                     }
-                     }]
+            {'url': {'url': 'http://xxx.yyy.zzz/CBYCSBJHYZ.php?php=receipt'}},
+            {'url': {'url': 'http://uuu.uu:8080/forum/links/column.php'}},
+            {'url': {'url': 'http://ppp.aaa.mmm/wfgv.htm?php=receipt'}},
+        ]
 
         sut = thug_events.ThugEvents()
         actual = sut.normalize(input_xml, 'thug.events')
@@ -141,9 +103,4 @@ class ThugTests(unittest.TestCase):
 
         input_xml = open(os.path.dirname(__file__) + '/data_samples/thug_events_sample2.xml', 'r').read()
 
-        expected_output = []
-
-        sut = thug_events.ThugEvents()
-        actual = sut.normalize(input_xml, 'thug.events')
-        #print actual
-        #self.assertItemsEqual(expected_output, actual)
+        pass

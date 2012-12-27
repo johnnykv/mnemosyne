@@ -55,6 +55,7 @@ class GlastopfEvents(BaseNormalizer):
             request['host'] = data['request']['header']['Host']
         request['verb'] = data['request']['method']
 
+        request['url'] = self.make_url(data)
         #TODO: Parse response from glastopf...
         response = {}
 
