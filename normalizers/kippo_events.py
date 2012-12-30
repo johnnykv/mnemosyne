@@ -35,6 +35,15 @@ class KippoEvents(BaseNormalizer):
             'session_ssh': {'version': o_data['version']}
         }
 
+        if 'ttylog' in o_data and o_data['ttylog'] != None:
+            attachments = [
+                {
+                    'description': 'Kippo session log (ttylog).',
+                    'data': o_data['ttylog']
+                }, ]
+
+            session['attachments'] = attachments
+
         if len(o_data['credentials']) > 0:
             auth_attempts = []
             for cred in o_data['credentials']:

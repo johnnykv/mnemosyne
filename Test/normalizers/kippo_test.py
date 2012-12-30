@@ -21,7 +21,7 @@ from datetime import datetime
 
 
 class KippoTests(unittest.TestCase):
-    def test_session_without_ttylog(self):
+    def test_session(self):
         """
         Test if a valid kippo json message get parsed as expected.
         """
@@ -29,11 +29,17 @@ class KippoTests(unittest.TestCase):
         #provided by mnemosyne
 
         input_submission_time = datetime(2012, 12, 14, 12, 22, 51)
-        input_string = """{\"peerIP\": \"223.5.23.53\", \"loggedin\": null, \"ttylog\": null, \"hostIP\": \"192.168.6.211\", \"peerPort\": 36868, \"version\": \"SSH-2.0-libssh-0.1\", \"hostPort\": 2222, \"credentials\": [[\"root\", \"123muie123\"]]}"""
+        input_string = """{\"peerIP\": \"223.5.23.53\", \"loggedin\": null, \"ttylog\": \"01babadeadbeef\", \"hostIP\": \"192.168.6.211\", \"peerPort\": 36868, \"version\": \"SSH-2.0-libssh-0.1\", \"hostPort\": 2222, \"credentials\": [[\"root\", \"123muie123\"]]}"""
         session_ssh = {'version': 'SSH-2.0-libssh-0.1'}
 
         auth_attempts = [{'login': 'root',
-                          'password': 'YOT#x$ROSa@+'}]
+                          'password': '123muie123'}]
+
+        attachments = [
+                {
+                    'description': "Kippo session log (ttylog).",
+                    'data': '01babadeadbeef'
+                }, ]
 
         session = {
             'timestamp': datetime(2012, 12, 14, 12, 22, 51),
@@ -43,7 +49,8 @@ class KippoTests(unittest.TestCase):
             'honeypot': 'Kippo',
             'protocol': 'ssh',
             'session_ssh': session_ssh,
-            'auth_attempts': auth_attempts
+            'auth_attempts': auth_attempts,
+            'attachments': attachments
         }
 
         expected_output = [{'session': session}, ]
@@ -57,3 +64,4 @@ class KippoTests(unittest.TestCase):
         self.assertItemsEqual(expected_output[0]['session'], result[0]['session'])
         self.assertItemsEqual(expected_output[0]['session']['session_ssh'], result[0]['session']['session_ssh'])
         self.assertItemsEqual(expected_output[0]['session']['auth_attempts'], result[0]['session']['auth_attempts'])
+        self.assertItemsEqual(expected_output[0]['session']['attachments'], result[0]['session']['attachments'])
