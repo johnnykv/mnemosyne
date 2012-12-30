@@ -30,7 +30,7 @@ class MnemoDB(object):
 
     def insert_normalized(self, ndata, original_hpfeed):
         for item in ndata:
-            #every root item is requal to collection name
+            #every root item is equal to collection name
             for collection, document in item.items():
                 if collection in self.upsert_map:
                     identifier = self.upsert_map[collection]
@@ -55,3 +55,23 @@ class MnemoDB(object):
     def get_hpfeed_data(self, max=None):
         data = self.db.hpfeed.find({'normalized': False})
         return data
+
+    def reset_normalized(self):
+        """
+        Deletes all normalized data from the mongo instance.
+        """
+        for collection in self.db.collection_names():
+            if collection not in ['system.indexes', 'hpfeed', 'hpfeeds']:
+                logging.warning('Dropping collection: {0}.'.format(collection))
+                self.db.drop_collection(collection)
+        self.db.hpfeed.update({}, {"$set": {'normalized': False}}, multi=True)
+        logging.info('Database reset.')
+
+    def collection_count(self):
+        result = {}
+        for collection in self.db.collection_names():
+            if collection not in ['system.indexes']:
+                count = self.db[collection].count()
+                result[collection] = count
+        print result
+        return result
