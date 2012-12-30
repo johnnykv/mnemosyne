@@ -19,6 +19,8 @@ from urlparse import urlparse
 
 
 class BaseNormalizer(object):
+    ports_map = {22: 'ssh', 80: 'http', 445: 'microsoft-ds', 443: 'https"'}
+
     def normalize(self, data, channel_name, submission_timestamp):
         pass
 
@@ -33,3 +35,9 @@ class BaseNormalizer(object):
         url_dict['query'] = result.query
         url_dict['fragment'] = result.fragment
         return url_dict
+
+    def port_to_service(self, port_number):
+        if port_number in BaseNormalizer.ports_map:
+            return BaseNormalizer.ports_map[port_number]
+        else:
+            return None

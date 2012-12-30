@@ -22,7 +22,6 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from bson.code import Code
 import bson
-from bson.objectid import ObjectId
 
 import datetime
 import json
@@ -272,4 +271,3 @@ class MnemoWebAPI(Bottle):
                 return str(obj)
             else:
                 return None
-

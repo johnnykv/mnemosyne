@@ -31,24 +31,32 @@ class FeedBroker:
         self.host = host
         self.feeds = feeds
 
+        self.stats = {}
+
     def start_listening(self):
 
         try:
-            hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
+            self.hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
         except hpfeeds.FeedException, e:
             logging.error('Error: {0}'.format(e))
 
         def on_message(ident, chan, payload):
             self.database.insert_hpfeed(ident, chan, payload)
-            self.logger.debug('Persisted message from {0} (payload size: {1})'
-                .format(chan, len(payload)))
+            if chan in self.stats:
+                self.stats[chan] += 1
+            else:
+                self.stats[chan] = 1
 
         def on_error(payload):
             logging.error('Error message from broker: {0}'.format(payload))
-            hpc.stop()
+            self.hpc.stop()
 
-        hpc.subscribe(self.feeds)
+        self.hpc.subscribe(self.feeds)
         try:
-            hpc.run(on_message, on_error)
+            self.hpc.run(on_message, on_error)
         except hpfeeds.FeedException, e:
             self.logger.error('Error: {0}'.format(e))
+
+    def stop(self):
+        self.hpc.stop()
+        self.logger.info("FeedBroker stopped.")

@@ -74,4 +74,3 @@ class GlastopfEvents(BaseNormalizer):
             #best of luck!
             url = data['request']['url']
         return url
-
