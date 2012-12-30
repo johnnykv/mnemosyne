@@ -73,5 +73,4 @@ class MnemoDB(object):
             if collection not in ['system.indexes']:
                 count = self.db[collection].count()
                 result[collection] = count
-        print result
         return result
