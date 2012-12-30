@@ -28,6 +28,7 @@ from normalizers import thug_events
 from normalizers import kippo_events
 from persistance import mnemodb
 from WebAPI import mnemowebapi
+from normalizers import dionaea_capture
 
 from hpfeeds import feedbroker
 from ConfigParser import ConfigParser
