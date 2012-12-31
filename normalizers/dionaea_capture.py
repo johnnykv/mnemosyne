@@ -20,7 +20,7 @@ import json
 
 
 class DionaesCaptures(BaseNormalizer):
-    channels = ('dionaea.capture',)
+    channels = ('dionaea.capture', 'dionaea.capture.anon')
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
@@ -34,9 +34,23 @@ class DionaesCaptures(BaseNormalizer):
             'honeypot': 'Dionaea'
         }
 
+        if 'daddr' in o_data:
+            session['destination_ip'] = o_data['daddr'],
+
         protocol = super(DionaesCaptures, self).port_to_service(int(o_data['dport']))
         if protocol != None:
             session['protocol'] = protocol
+
+        attachments = [
+            {
+                'description': 'Binary extraction',
+                'type': 'Binary',
+                'checksums':
+                {'md5': o_data['md5'],
+                 'sha512': o_data['sha512']}
+            }, ]
+
+        session['attachments'] = attachments
 
         relations = {'session': session}
         return [relations]
