@@ -27,6 +27,7 @@ import datetime
 import json
 import uuid
 
+
 class MnemoWebAPI(Bottle):
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
@@ -231,6 +232,16 @@ class MnemoWebAPI(Bottle):
         """
         result = list(MnemoWebAPI.db['url'].find())
         return MnemoWebAPI.jsonify({'urls': result}, response)
+
+    @route('/file/<the_hash>')
+    def file_search_by_hash(the_hash):
+        hash_length = len(the_hash)
+        result = ""
+        if hash_length is 128:
+            result = list(MnemoWebAPI.db.file.find({'_id': the_hash}))
+        elif hash_length is 32:
+            result = list(MnemoWebAPI.db.file.find({'hashes.md5': the_hash}))
+        return MnemoWebAPI.jsonify({'files': result}, response)
 
     @staticmethod
     def simpel_group(collection, attribute):

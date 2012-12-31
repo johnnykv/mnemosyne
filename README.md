@@ -93,6 +93,46 @@ Mnemosyne has three main objectives:
     }
 }
 ```
+*GET /file/755c4f9270db48f51f601638d2c4b4b0* (accepts md5, sha1 and sha512)
+```json
+{
+  "files": [
+    {
+      "hpfeed_id": "50e0882cdf590d436f91b389",
+      "encoding": "base64",
+      "hashes": {
+        "sha1": "9ed97ccdd683aa8842a5473315e8b45bda168556",
+        "sha512": "bb1d9c92a7cdc8dbd61365c5d757729a2c8d131fb5f49da3e4a6818635f5e8eb40a2bf06e9a25a069b618d934c53b367f3327a37b65c50e66d60580ee178a135",
+        "md5": "755c4f9270db48f51f601638d2c4b4b0"
+      },
+      "_id": "bb1d9c92a7cdc8dbd61365c5d757729a2c8d131fb5f49da3e4a6818635f5e8eb40a2bf06e9a25a069b618d934c53b367f3327a37b65c50e66d60580ee178a135",
+      "data": "<cut....>",
+      "hpfeed_ids": [
+        "50e08833df590d436f91dc4d",
+        "50e08848df590d436f91fe35",
+        "50e0884bdf590d436f91fe3d",
+        "50e08864df590d436f91feaf",
+        "50e08866df590d436f91febe",
+        "50e0886fdf590d436f91feea",
+        "50e08870df590d436f91fef0",
+        "50e08890df590d436f91ffa1",
+        "50e08892df590d436f91ffa7",
+        "50e0889adf590d436f91ffda",
+        "50e0889cdf590d436f91ffea",
+        "50e088b9df590d436f92006e",
+        "50e088badf590d436f920074",
+        "50e088cadf590d436f9200b5",
+        "50e088cddf590d436f9200cc",
+        "50e088cfdf590d436f9200e4",
+        "50e088d1df590d436f9200ec",
+        "50e088ecdf590d436f920177",
+        "50e088eedf590d436f92017b",
+        "50e08908df590d436f9201e4",
+        "50e0890adf590d436f9201f4"
+      ]
+    }
+  ]
+}
 
 
 
