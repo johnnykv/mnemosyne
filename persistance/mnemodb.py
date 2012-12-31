@@ -19,6 +19,7 @@ from pymongo import MongoClient
 from datetime import datetime
 import logging
 from bson.errors import InvalidStringData
+import string
 
 
 class MnemoDB(object):
@@ -26,7 +27,8 @@ class MnemoDB(object):
         conn = MongoClient()
         self.db = conn[database_name]
         #for entries which has a one-to-many relationship with hpfeeds
-        self.upsert_map = {'url': 'url'}
+        self.upsert_map = {'url': 'url',
+                           'file': '_id'}
 
     def insert_normalized(self, ndata, original_hpfeed):
         for item in ndata:
@@ -42,9 +44,17 @@ class MnemoDB(object):
 
     def insert_hpfeed(self, ident, channel, payload):
 
+        #thanks rep!
+        #mongo can't handle non-utf-8 strings, therefore we must encode
+        #raw binaries
+        if [i for i in payload[:20] if i not in string.printable]:
+            payload = str(payload).encode('hex')
+        else:
+            payload = str(payload)
+
         entry = {'channel': channel,
                  'ident': ident,
-                 'payload': str(payload),
+                 'payload': payload,
                  'timestamp': datetime.utcnow(),
                  'normalized': False}
         try:

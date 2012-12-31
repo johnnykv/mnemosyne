@@ -17,6 +17,7 @@
 
 from normalizers import basenormalizer
 from normalizers import glastopf_events
+from normalizers import glastopf_files
 from normalizers import thug_events
 from normalizers import kippo_events
 from normalizers import dionaea_capture

@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from urlparse import urlparse
+import hashlib
 
 
 class BaseNormalizer(object):
@@ -41,3 +42,12 @@ class BaseNormalizer(object):
             return BaseNormalizer.ports_map[port_number]
         else:
             return None
+
+    def generate_checksum_list(self, data):
+        result = {}
+        result['md5'] = hashlib.md5(data).hexdigest()
+        result['sha1'] = hashlib.sha1(data).hexdigest()
+        result['sha512'] = hashlib.sha512(data).hexdigest()
+        return result
+
+
