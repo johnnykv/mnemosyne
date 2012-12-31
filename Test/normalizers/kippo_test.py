@@ -38,6 +38,7 @@ class KippoTests(unittest.TestCase):
         attachments = [
                 {
                     'description': "Kippo session log (ttylog).",
+                    'type': 'session log',
                     'data': '01babadeadbeef'
                 }, ]
 

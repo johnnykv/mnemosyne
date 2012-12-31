@@ -1,4 +1,5 @@
-some notes on db
+some notes on db layout
+(aka. weird ramblings and headaches)
 
 SESSION COLLECTION:
 {
@@ -21,7 +22,7 @@ SESSION COLLECTION:
         {
             "format": "someformat",
             "description": "string",
-            "reference": "_id from attachment collection"
+            "data": 
         }
     ]
 }
@@ -46,14 +47,21 @@ it is meant to contain protocol specific information, example:
     }
 }
 
-ATTACHMENT:
+FILES:
 {
-    "md5":  "md5...",
-    "sha1": "sha1",
-    "format": "someformat",
-    "description": "string",
-    "data": "thedata",
-    "hpfeed_ids": ["here goes a list of hpfeed _id's"]
+  "_id" : "the sha512 of data field...",
+  "encoding": "base64",
+  "data": "the encoded data...",
+  "hpfeed_ids":
+    [
+      "here goes reference to hpfeed object id",
+      "and here another one"
+    ],
+  "hashes": {
+    "md5": "here goes md5 hash",
+    "sha1": "here goes sha1 hash",
+    "sha512": "here goes sha512 hash"
+  }
 }
 
 (malicious URL's.....)

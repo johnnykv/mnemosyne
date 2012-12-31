@@ -20,7 +20,7 @@ import hashlib
 
 
 class BaseNormalizer(object):
-    ports_map = {22: 'ssh', 80: 'http', 445: 'microsoft-ds', 443: 'https"'}
+    ports_map = {22: 'ssh', 80: 'http', 135: 'dcom-scm', 445: 'microsoft-ds', 443: 'https"'}
 
     def normalize(self, data, channel_name, submission_timestamp):
         pass

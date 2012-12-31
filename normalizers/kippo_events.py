@@ -39,6 +39,7 @@ class KippoEvents(BaseNormalizer):
             attachments = [
                 {
                     'description': 'Kippo session log (ttylog).',
+                    'type': 'session log',
                     'data': o_data['ttylog']
                 }, ]
 
