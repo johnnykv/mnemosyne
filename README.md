@@ -1,13 +1,13 @@
 Mnemosyne
 =========
-# About
+## About
 Mnemosyne has three main objectives:
 
 1. Provide immutable persistence for [hpfeeds](https://redmine.honeynet.org/projects/hpfeeds/wiki).
 2. Normalization of data to enable sensor agnostic analysis.
 3. Expose the normalized data through a RESTful API.
 
-#Channels
+## Channels
 Mnemosyne currently supports normalization of data from the following channels:
 
 * dionaea.capture
@@ -18,7 +18,7 @@ Mnemosyne currently supports normalization of data from the following channels:
 * thug.events (limited - still under development)
 
 ## Preliminary REST API
-# Unormalized data
+### Unormalized data
 *GET /hpfeeds*
 ```json
 {
@@ -53,7 +53,7 @@ Mnemosyne currently supports normalization of data from the following channels:
     "channel": "glastopf.events"
 }
 ```
-# Normalized data
+### Normalized data
 *GET /session/\<session_id\>*
 ```json
 {
