@@ -20,13 +20,13 @@ from normalizers import dionaea_capture
 from datetime import datetime
 
 
-class DionaeaTEsts(unittest.TestCase):
+class DionaeaTests(unittest.TestCase):
 
     def test_channels(self):
         """
         Test that the channel variable exists.
         """
-        self.assertTrue(dionaea_capture.DionaesCaptures.channels)
+        self.assertTrue(dionaea_capture.DionaeaCaptures.channels)
 
     def test_valid_message(self):
 
@@ -40,8 +40,7 @@ class DionaeaTEsts(unittest.TestCase):
         attachments = [
             {
                 'description': 'Binary extraction',
-                'type': 'Binary',
-                'checksums':
+                'hashes':
                 {'md5': '0724c68f973e4e35391849cfb5259f86',
                  'sha512': '8cbcec5fe75ee97fc3c18bafdd79cdb5d83bfb4190ba5093907d1ee194632813451b3aebfc8145452afae9ac5e413d2673746317c13b64856f3fcae12a109fd2'}
             }, ]
@@ -57,10 +56,18 @@ class DionaeaTEsts(unittest.TestCase):
             'attachments': attachments
         }
 
-        expected_relations = [{'session': expected_session}]
+        url = {'url': 'http://118.167.12.21:1852/psgmioap',
+               'extractions': [{
+               'timestamp': datetime(2012, 12, 14, 12, 22, 51),
+               'hashes': {'sha512': '8cbcec5fe75ee97fc3c18bafdd79cdb5d83bfb4190ba5093907d1ee194632813451b3aebfc8145452afae9ac5e413d2673746317c13b64856f3fcae12a109fd2',
+               'md5': '0724c68f973e4e35391849cfb5259f86'}}]}
 
-        sut = dionaea_capture.DionaesCaptures()
+        expected_relations = [{'session': expected_session, 'url': url}]
+
+        sut = dionaea_capture.DionaeaCaptures()
         actual = sut.normalize(input_string, 'dionaea.capture', input_time)
 
         self.assertItemsEqual(expected_relations[0]['session'],
                               actual[0]['session'])
+        self.assertItemsEqual(expected_relations[0]['url'],
+                              actual[0]['url'])

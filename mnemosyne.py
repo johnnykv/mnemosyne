@@ -21,10 +21,12 @@ from normalizers import glastopf_files
 from normalizers import thug_events
 from normalizers import kippo_events
 from normalizers import dionaea_capture
+from normalizers import dionaea_binary
 
 import gevent
 
 import logging
+
 
 class Mnemosyne(object):
     def __init__(self, database):
@@ -75,10 +77,8 @@ class Mnemosyne(object):
             gevent.sleep(3)
         logging.info("Mnemosyne stopped")
 
-
     def pause(self, seconds):
         self.pause = seconds
 
     def stop(self):
         self.enabled = False
-

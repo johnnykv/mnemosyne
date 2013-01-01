@@ -69,5 +69,6 @@ URL:
 {
     "url": "some url",
      "hpfeed_ids": ["here goes a list of hpfeed _id's"],
-     "extractions": ["id's of extractions?"]
+     "extractions": [
+     {"timestamp": "hash_of_file..."},]
 }
