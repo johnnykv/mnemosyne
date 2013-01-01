@@ -26,20 +26,20 @@ class MnemoDB(object):
     def __init__(self, database_name):
         conn = MongoClient()
         self.db = conn[database_name]
-        #for entries which has a one-to-many relationship with hpfeeds
-        self.upsert_map = {'url': 'url',
-                           'file': '_id'}
 
     def insert_normalized(self, ndata, original_hpfeed):
         for item in ndata:
             #every root item is equal to collection name
             for collection, document in item.items():
-                if collection in self.upsert_map:
-                    identifier = self.upsert_map[collection]
-                    self.db[collection].update({identifier: document[identifier]}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
-                else:
-                    document['hpfeed_id'] = original_hpfeed['_id']
-                    self.db[collection].insert(document)
+                    if collection is 'url':
+                        self.db[collection].update({'url': document['url']}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}, '$push': {'extractions': document['extractions']}}, upsert=True)
+                    elif collection is 'file':
+                        self.db[collection].update({'hashes.sha512': document['hashes']['sha512']}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
+                    elif collection is 'session':
+                        document['hpfeed_id'] = original_hpfeed['_id']
+                        self.db[collection].insert(document)
+                    else:
+                        raise Warning('{0} is not a know collection type.'.format(collection))
         self.db.hpfeed.update({'_id': original_hpfeed['_id']}, {"$set": {'normalized': True}})
 
     def insert_hpfeed(self, ident, channel, payload):
