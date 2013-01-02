@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from basenormalizer import BaseNormalizer
+import magic
 import base64
 
 
@@ -25,13 +26,13 @@ class GlastopfFiles(BaseNormalizer):
     def normalize(self, data, channel, submission_timestamp):
 
         md5, data = data.split(' ', 1)
-        decoded_data = base64.b64decode(data)
-        hashes = super(GlastopfFiles, self).generate_checksum_list(decoded_data)
+        decoded = base64.b64decode(data)
+        hashes = super(GlastopfFiles, self).generate_checksum_list(decoded)
 
         file_ = {
-            '_id': hashes['sha512'],
-            'encoding': 'base64',
-            'data': data,
+            'encoding': 'hex',
+            'content_guess': magic.from_buffer(decoded),
+            'data': decoded.encode('hex'),
             'hashes': hashes
         }
 

@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from basenormalizer import BaseNormalizer
+import magic
 
 
 class DionaeaBinary(BaseNormalizer):
@@ -23,10 +24,11 @@ class DionaeaBinary(BaseNormalizer):
 
     def normalize(self, data, channel, submission_timestamp):
 
-        hashes = super(DionaeaBinary, self).generate_checksum_list(data.decode('hex'))
-
+        decoded = data.decode('hex')
+        hashes = super(DionaeaBinary, self).generate_checksum_list(decoded)
         file_ = {
             'encoding': 'hex',
+            'content_guess': magic.from_buffer(decoded),
             'data': data,
             'hashes': hashes
         }
