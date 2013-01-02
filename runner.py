@@ -26,7 +26,7 @@ from mnemosyne import Mnemosyne
 from persistance import mnemodb
 from WebAPI import mnemowebapi
 from hpfeeds import feedbroker
-
+import sys
 import argparse
 
 logger = logging.getLogger()
@@ -78,6 +78,12 @@ if __name__ == '__main__':
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
     parser.add_argument('--reset', action='store_true', default=False)
     parser.add_argument('--stats', action='store_true', default=False)
+    parser.add_argument('--no_normalizer', action='store_true', default=False,
+        help='Do not start the normalizer')
+    parser.add_argument('--no_broker', action='store_true', default=False,
+        help='Do not start the broker which takes care of storing hpfeed data.')
+    parser.add_argument('--no_webapi', action='store_true', default=False,
+        help='Do not enable the webapi.')
 
     args = parser.parse_args()
     c = parse_config(args.config_file)
@@ -89,16 +95,19 @@ if __name__ == '__main__':
     if args.reset:
         db.reset_normalized()
 
-    broker = feedbroker.FeedBroker(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-    greenlets['broker'] = gevent.spawn(broker.start_listening)
+    if not args.no_broker:
+        broker = feedbroker.FeedBroker(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
+        greenlets['broker'] = gevent.spawn(broker.start_listening)
 
-    #start menmo and inject persistence module
-    mnemo = Mnemosyne(db)
-    greenlets['mnemo'] = gevent.spawn(mnemo.start_processing, False)
+    if not args.no_normalizer:
+        #start menmo and inject persistence module
+        mnemo = Mnemosyne(db)
+        greenlets['mnemo'] = gevent.spawn(mnemo.start_processing, False)
 
-    #start web api and inject mongo info
-    webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'])
-    greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
+    if not args.no_webapi:
+        #start web api and inject mongo info
+        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'])
+        greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if args.stats:
         while True:
