@@ -26,6 +26,7 @@ from normalizers import dionaea_binary
 import gevent
 
 import logging
+import traceback
 
 
 class Mnemosyne(object):
@@ -66,8 +67,8 @@ class Mnemosyne(object):
                             chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
                         else:
                             chan_no_normalizer[channel] = 1
-                except Exception as ex:
-                    logging.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], ex))
+                except TypeError as err:
+                    logging.exception('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
 
             if warn_no_normalizers:
                 if chan_no_normalizer:
