@@ -32,9 +32,12 @@ class MnemoDB(object):
             #every root item is equal to collection name
             for collection, document in item.items():
                     if collection is 'url':
-                        self.db[collection].update({'url': document['url']}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}, '$push': {'extractions': document['extractions']}}, upsert=True)
+                        push_dict = {'hpfeed_ids': original_hpfeed['_id']}
+                        if 'extractions' in document:
+                            push_dict['extractions'] = document['extractions']
+                        self.db[collection].update({'url': document['url']}, {'$push': push_dict}, upsert=True)
                     elif collection is 'file':
-                        self.db[collection].update({'hashes.sha512': document['hashes']['sha512']}, {'$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
+                        self.db[collection].update({'hashes.sha512': document['hashes']['sha512']}, {'$set': document, '$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
                     elif collection is 'session':
                         document['hpfeed_id'] = original_hpfeed['_id']
                         self.db[collection].insert(document)
