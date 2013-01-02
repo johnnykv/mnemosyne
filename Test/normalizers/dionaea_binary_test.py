@@ -31,7 +31,8 @@ class DionaeaBinaryTest(unittest.TestCase):
     def test_event(self):
         input_string = open(os.path.dirname(__file__) + '/data_samples/dionaea_mwbinary_sample1.txt', 'r').read()
 
-        expected_file = {'encoding': 'base64',
+        expected_file = {'encoding': 'hex',
+                         'content_guess': 'PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed',
                          'data': input_string,
                          'hashes': {
                              'md5': '1ba31509af22ad4fbad5b0fd2de50a41',
@@ -42,6 +43,5 @@ class DionaeaBinaryTest(unittest.TestCase):
 
         sut = dionaea_binary.DionaeaBinary()
         actual = sut.normalize(input_string, 'mwbinary.dionaea.sensorunique', None)
-
         self.assertTrue(len(expected_relation), len(actual))
-        self.assertItemsEqual(expected_relation[0]['file'], actual[0]['file'])
+        self.assertEqual(expected_relation[0]['file'], actual[0]['file'])

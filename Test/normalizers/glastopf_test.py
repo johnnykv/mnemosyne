@@ -32,11 +32,11 @@ class GlastopfTests(unittest.TestCase):
         """
         Test if a valid glastopf json message get parsed as expected
         """
-        input_string = """{"pattern": "rfi", "request": {"body": "", "parameters": ["a=b"], "url": "/someURL", "header": {"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}, "version": "HTTP/1.1", "method": "GET"}, "filename": null, "source": ["1.2.3.4", 49111], "time": "2012-12-14 12:22:51", "response": "HTTP/1.1 200 OK\\r\\nConnection: close\\r\\nContent-Type: text/html; charset=UTF-8\\r\\n\\r\\n"}"""
+        input_string = """{"pattern": "rfi", "request": {"body": "", "parameters": ["a=b"], "url": "/someURL?a=b", "header": {"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}, "version": "HTTP/1.1", "method": "GET"}, "filename": null, "source": ["1.2.3.4", 49111], "time": "2012-12-14 12:22:51", "response": "HTTP/1.1 200 OK\\r\\nConnection: close\\r\\nContent-Type: text/html; charset=UTF-8\\r\\n\\r\\n"}"""
 
         request = {
             'host': 'www.something.com',
-            'header': '{"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Connection": "close", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Host": "www.something.com"}',
+            'header': '{"Accept-Language": "en-US", "Accept-Encoding": "gzip", "Host": "www.something.com", "Accept": "*/*", "User-Agent": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)", "Connection": "close"}',
             'body': '',
             'verb': 'GET',
             'url': 'http://www.something.com/someURL?a=b', }
@@ -50,7 +50,7 @@ class GlastopfTests(unittest.TestCase):
             'destination_port': 80,
             'honeypot': 'Glastopf',
             'protocol': 'http',
-            'session_http':  session_http
+            'session_http': session_http
         }
 
         expected_output = [{'session': session}]
@@ -62,12 +62,12 @@ class GlastopfTests(unittest.TestCase):
         self.assertEqual(len(expected_output), len(actual))
 
         #Test session
-        self.assertItemsEqual(expected_output[0]['session'], actual[0]['session'])
-        #Test subtype, session_http
-        self.assertItemsEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
-        #Test request
-        self.assertItemsEqual(expected_output[0]['session']['session_http']['request'], actual[0]['session']['session_http']['request'])
+        self.assertEqual(expected_output[0]['session'], actual[0]['session'])
 
+        #Test subtype, session_http
+        self.assertEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
+        #Test request
+        self.assertEqual(expected_output[0]['session']['session_http']['request'], actual[0]['session']['session_http']['request'])
 
     def test_make_url_actual(self):
         """
@@ -93,7 +93,6 @@ class GlastopfTests(unittest.TestCase):
     def test_make_url_no_host(self):
         """
         Test if a http request without Host header gets parsed to a realative url.
-
         """
 
         input_dict = {'request':

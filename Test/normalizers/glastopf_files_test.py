@@ -18,6 +18,7 @@
 import unittest
 from normalizers import glastopf_files
 import os
+import base64
 
 
 class GlastopfFilesTest(unittest.TestCase):
@@ -32,9 +33,9 @@ class GlastopfFilesTest(unittest.TestCase):
         input_string = open(os.path.dirname(__file__) + '/data_samples/glastopf_files_sample1.txt', 'r').read()
         tmp, encoded = input_string.split(' ', 1)
 
-        expected_file = {'_id': 'bb1d9c92a7cdc8dbd61365c5d757729a2c8d131fb5f49da3e4a6818635f5e8eb40a2bf06e9a25a069b618d934c53b367f3327a37b65c50e66d60580ee178a135',
-                         'encoding': 'base64',
-                         'data': encoded,
+        expected_file = {'encoding': 'hex',
+                         'content_guess': 'GIF image data, version 89a, 16129 x 16129',
+                         'data': base64.b64decode(encoded).encode('hex'),
                          'hashes': {
                              'md5': '755c4f9270db48f51f601638d2c4b4b0',
                              'sha1': '9ed97ccdd683aa8842a5473315e8b45bda168556',
@@ -46,4 +47,4 @@ class GlastopfFilesTest(unittest.TestCase):
         actual = sut.normalize(input_string, 'glastopf.files', None)
 
         self.assertTrue(len(expected_relation), len(actual))
-        self.assertItemsEqual(expected_relation[0]['file'], actual[0]['file'])
+        self.assertEqual(expected_relation[0]['file'], actual[0]['file'])
