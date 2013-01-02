@@ -54,7 +54,7 @@ Mnemosyne currently supports normalization of data from the following channels:
 }
 ```
 ### Normalized data
-*GET /session/\<session_id\>*
+*GET /sessions/\<session_id\>*
 ```json
 {
     "_id": "50db96f9dfe0f7aacb57c7af",
@@ -76,7 +76,52 @@ Mnemosyne currently supports normalization of data from the following channels:
     }
 }
 ```
-
+*GET /sessions/protocol/ssh
+```json
+{
+  "sessions": [
+    {
+      "protocol": "ssh",
+      "hpfeed_id": "50dc4537dfe0f7bf93d06080",
+      "timestamp": "2012-12-27T12:55:19.317000",
+      "source_ip": "111.222.111.18",
+      "session_ssh": {
+        "version": "SSH-2.0-libssh-0.1"
+      },
+      "source_port": 48418,
+      "destination_port": 2222,
+      "_id": "50e3f666dfe0f7e295f37815",
+      "honeypot": "Kippo",
+      "auth_attempts": [
+        {
+          "login": "root",
+          "password": "massymo002"
+        }
+      ]
+    },
+    {
+      "protocol": "ssh",
+      "hpfeed_id": "50dc453bdfe0f7bf93d06081",
+      "timestamp": "2012-12-27T12:55:23.073000",
+      "source_ip": "111.222.111.18",
+      "session_ssh": {
+        "version": "SSH-2.0-libssh-0.1"
+      },
+      "source_port": 49478,
+      "destination_port": 2222,
+      "_id": "50e3f666dfe0f7e295f37816",
+      "honeypot": "Kippo",
+      "auth_attempts": [
+        {
+          "login": "cgi",
+          "password": "florici123"
+        }
+      ]
+    }
+  ]
+}
+<
+```
 *GET /sessions/protocols*
 ```json
 {"protocols": [{"count": 680, "protocol": "http"},
