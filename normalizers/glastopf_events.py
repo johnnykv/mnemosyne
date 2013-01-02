@@ -66,9 +66,12 @@ class GlastopfEvents(BaseNormalizer):
         return session_http
 
     def make_url(self, data):
-        #note: glastopf splits the url in an unorthodox way :)
+        """
+        Tries to make a valid URL from the attackers request.
+        note: Glastopf reports ['url'] as path + query string (omitting schema and netloc),
+        """
 
-        if 'Host' in data['request']['header']:
+        if 'Host' in data['request']['header'] and not data['request']['url'].startswith('http'):
             url = 'http://' + data['request']['header']['Host'] + data['request']['url']
         else:
             #best of luck!
