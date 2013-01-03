@@ -30,3 +30,6 @@ pip-log.txt
 test.db
 log.txt
 .log
+
+#sphinx stuff
+doc/_build
