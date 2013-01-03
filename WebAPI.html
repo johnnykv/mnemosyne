@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>WebAPI &mdash; Mnemosyne 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Mnemosyne 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Normalization" href="Normalization.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
+          <a href="Normalization.html" title="Normalization"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Mnemosyne 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">WebAPI</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#hpfeeds">HPFeeds</a></li>
+<li><a class="reference internal" href="#sessions">Sessions</a></li>
+<li><a class="reference internal" href="#urls">URLS</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Normalization.html"
+                        title="previous chapter">Normalization</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/WebAPI.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="webapi">
+<h1>WebAPI<a class="headerlink" href="#webapi" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Some thought here...</p>
+</div>
+<div class="section" id="hpfeeds">
+<h2>HPFeeds<a class="headerlink" href="#hpfeeds" title="Permalink to this headline">¶</a></h2>
+<dl class="get">
+<dt id="get--hpfeeds-channels">
+<tt class="descname">GET </tt><tt class="descname">/hpfeeds/channels</tt><a class="headerlink" href="#get--hpfeeds-channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distinct channel names and count of items.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/hpfeeds/channels</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3165</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.files&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.events&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.files&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;kippo.sessions&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">70035</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;dionaea.capture&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;mwbinary.dionaea.sensorunique&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--hpfeeds">
+<tt class="descname">GET </tt><tt class="descname">/hpfeeds</tt><a class="headerlink" href="#get--hpfeeds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the latest received items from a specific HPFeeds channel.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/hpfeeds?channel=glastopf.events</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;hpfeeds&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;ident&quot;</span><span class="p">:</span> <span class="s2">&quot;2l3if@hp8&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-26T20:01:46.908000&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;normalized&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5deadbeef0e0f7b874e8088d&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;payload&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;ident&quot;</span><span class="p">:</span> <span class="s2">&quot;2l3if@hp8&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-26T20:05:32.773000&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;normalized&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50db57aadfe0f7b8deadbeef&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;payload&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><strong>channelname</strong> &#8211; channel name (required).</li>
+<li><strong>limit</strong> &#8211; limit number of returned items (optional, default is 50).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>403</strong> &#8211; Listing of all content forbidden.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--hpfeeds-(hpfeed_id)">
+<tt class="descname">GET </tt><tt class="descname">/hpfeeds/</tt><big>(</big><em>hpfeed_id</em><big>)</big><a class="headerlink" href="#get--hpfeeds-(hpfeed_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>The hpfeed entry with id (string:hpfeed_id).</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/hpfeeds/50dbdeadbeeff7b874e806ba</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+    <span class="nt">&quot;ident&quot;</span><span class="p">:</span> <span class="s2">&quot;2l3if@hp8&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-26T19:49:22.212000&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;normalized&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50dbdeadbeeff7b874e806ba&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;payload&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hpfeed_id</strong> (<em>string</em>) &#8211; hpfeed&#8217;s unique id.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>400</strong> &#8211; Bad request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="sessions">
+<h2>Sessions<a class="headerlink" href="#sessions" title="Permalink to this headline">¶</a></h2>
+<dl class="get">
+<dt id="get--sessions-protocols">
+<tt class="descname">GET </tt><tt class="descname">/sessions/protocols</tt><a class="headerlink" href="#get--sessions-protocols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distinct protocols and session count from normalized honeypot sessions.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/sessions/protocols</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;protocols&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3212</span><span class="p">,</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;http&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;ssh&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">75392</span><span class="p">,</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;microsoft-ds&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;dcom-scm&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--sessions-(string-session_id)">
+<tt class="descname">GET </tt><tt class="descname">/sessions/</tt><big>(</big><em class="property">string: </em><em>session_id</em><big>)</big><a class="headerlink" href="#get--sessions-(string-session_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sesion entry with id (string:session_id).</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/sessions/11dbdeadbeeff7b874e806ff</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;sessions&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;40e551dedfe0f61a450f9c39&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;honeypot&quot;</span><span class="p">:</span> <span class="s2">&quot;Glastopf&quot;</span>
+    <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;hpfeed_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50da20b2dfe0f7b0b5fc37d6&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-25T15:52:45&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;destination_port&quot;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+    <span class="nt">&quot;source_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;11.224.111.2&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;source_port&quot;</span><span class="p">:</span> <span class="mi">57462</span><span class="p">,</span>
+    <span class="nt">&quot;session_http&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;header&quot;</span><span class="p">:</span> <span class="s2">&quot;{\&quot;Accept-Language\&quot;: \&quot;en-gb,en;q=0.5\&quot;, \&quot;Proxy-Connection\&quot;: \&quot;Keep-Alive\&quot;, \&quot;Accept\&quot;: \&quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\&quot;, \&quot;User-Agent\&quot;: \&quot;Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.28) Gecko/20120306 Firefox/3.6.28 (.NET CLR 3.5.30729)\&quot;, \&quot;Accept-Charset\&quot;: \&quot;ISO-8859-1,utf-8;q=0.7,*;q=0.7\&quot;, \&quot;Host\&quot;: \&quot;xxmexxame.net\&quot;, \&quot;Pragma\&quot;: \&quot;no-cache\&quot;, \&quot;Cache-Control\&quot;: \&quot;no-cache\&quot;, \&quot;Accept-Encoding\&quot;: \&quot;deflate, gzip\&quot;}&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;xxmexxame.net&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;verb&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://xxmexxame.net/headers&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>400</strong> &#8211; Bad request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--sessions">
+<tt class="descname">GET </tt><tt class="descname">/sessions</tt><a class="headerlink" href="#get--sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sessions filtered by query parameters.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/sessions?honeypot=kippo&amp;source_port=36888</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;sessions&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;hpfeed_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50dc4244dfe0f7bf93d06076&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-27T12:42:44.296000&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;source_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;181.5.23.53&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;session_ssh&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;SSH-2.0-libssh-0.1&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;source_port&quot;</span><span class="p">:</span> <span class="mi">36868</span><span class="p">,</span>
+      <span class="nt">&quot;destination_port&quot;</span><span class="p">:</span> <span class="mi">2222</span><span class="p">,</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50dcc2ebdfe0f7c4d1ce350d&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;honeypot&quot;</span><span class="p">:</span> <span class="s2">&quot;Kippo&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;auth_attempts&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;321muie321&quot;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;hpfeed_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50dc4249dfe0f7bf93d06077&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-27T12:42:49.131000&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;source_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;182.5.23.53&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;session_ssh&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;SSH-2.0-libssh-0.1&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;source_port&quot;</span><span class="p">:</span> <span class="mi">36868</span><span class="p">,</span>
+      <span class="nt">&quot;destination_port&quot;</span><span class="p">:</span> <span class="mi">2222</span><span class="p">,</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50dcc2ebdfe0f7c4d1ce350e&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;honeypot&quot;</span><span class="p">:</span> <span class="s2">&quot;Kippo&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;auth_attempts&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;login&quot;</span><span class="p">:</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;123muie123&quot;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><strong>protocol</strong> &#8211; protocol name -  ssh, imap, etc (optional).</li>
+<li><strong>honeypot</strong> &#8211; honeypot type - kippo, dionaea, glastopf, etc (optional).</li>
+<li><strong>source_ip</strong> &#8211; ip address of attacker (optional).</li>
+<li><strong>source_port</strong> &#8211; tcp port of attacker (optional).</li>
+<li><strong>destination_ip</strong> &#8211; ip address of honeypot (optional).</li>
+<li><strong>destination_port</strong> &#8211; tcp port of honeypot (optional).</li>
+<li><strong>limit</strong> &#8211; limit number of returned items (optional, default is 50).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>400</strong> &#8211; Bad request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="urls">
+<h2>URLS<a class="headerlink" href="#urls" title="Permalink to this headline">¶</a></h2>
+<dl class="get">
+<dt id="get--urls">
+<tt class="descname">GET </tt><tt class="descname">/urls</tt><a class="headerlink" href="#get--urls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns urls serving potiential malicious content. If any files has been extracted, an reference to the checksum will be provided.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/urls?url_regex=\.ru(\/|\:|$)</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;urls&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50e5e440cfd26d1f23bfe7b8&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://xxxyyyzzz.ru/count26.php&quot;</span>
+      <span class="s2">&quot;extractions&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-12-26T13:51:13.507000&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;hashes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;md5&quot;</span><span class="p">:</span> <span class="s2">&quot;549exxb6939274deadbeef01e4771c4&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha1&quot;</span><span class="p">:</span> <span class="s2">&quot;deafbeef20b1e214d35b044483bf04ae1f0a7b4d&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha512&quot;</span><span class="p">:</span> <span class="s2">&quot;53ece41162e635bd93ea3240c12b4a844974deadbeed30da1f18f8e2892c10a9930a2380673afd4521083b9f952a10b3c54de3be477ab1f11c61a8902c0d435&quot;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;hpfeed_ids&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;50da8260dfe0f7b2c68c2fde&quot;</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;50e5e5a4cfd26d1f23bffce7&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://putskixxxyy.ru&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;extractions&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-01-03T13:06:23.917000&quot;</span>
+            <span class="s2">&quot;hashes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;md5&quot;</span><span class="p">:</span> <span class="s2">&quot;1871bd38d860deafbeefdaae831a9441&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha1&quot;</span><span class="p">:</span> <span class="s2">&quot;1a57e92deafbeed691000c1c2a77de124bb6402e&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha512&quot;</span><span class="p">:</span> <span class="s2">&quot;a22306bdf51bd8fe6efb52685287e7edeadbeef5a7880bcba5146ea24e6091c54e7f9579f9ce6a979d40f284b72ee8c316d902925c2fba58b206fb621778bd48&quot;</span>
+            <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-01-03T13:06:23.917000&quot;</span>
+            <span class="s2">&quot;hashes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;md5&quot;</span><span class="p">:</span> <span class="s2">&quot;f8aa58a9deafbeef6c710d2ca078fbd0&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha1&quot;</span><span class="p">:</span> <span class="s2">&quot;a1455c9ad5ea26a1deafbeef168d2cf810ef421c&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha512&quot;</span><span class="p">:</span> <span class="s2">&quot;ad887e8d6c31e995deafbeeffb703cce829b648f25dfa8b45725bf33cb924e92849bcb19c89d9b7c09187ac1b4f2872a9a3f8d1bb930fae941eee72a5eb9e13e&quot;</span>
+            <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2013-01-03T13:06:23.917000&quot;</span>
+            <span class="s2">&quot;hashes&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;md5&quot;</span><span class="p">:</span> <span class="s2">&quot;72395deafbeef6fab1e89fd6290300b3&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha1&quot;</span><span class="p">:</span> <span class="s2">&quot;9d1c5671deadbeeff5ae9335e5764bb9aaae464a&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;sha512&quot;</span><span class="p">:</span> <span class="s2">&quot;11a9fa3c3928edeafbeef3be97ef6d2df7876daa8ef859e8060c062eda6465b843192206186e832b2b414dc7b714d1f6a17eaa5f10abeeeec7540f9c9c46bb4a&quot;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;hpfeed_ids&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;50e5745cdfe0f70a59cf8d99&quot;</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first simple">
+<li><strong>url_regex</strong> &#8211; PCRE regex which will be tried against the stored url (optional).</li>
+<li><strong>limit</strong> &#8211; limit number of returned items (optional, default is 50).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>400</strong> &#8211; Bad request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="files">
+<h2>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="http-routingtable.html" title="HTTP Routing Table"
+             >routing table</a> |</li>
+        <li class="right" >
+          <a href="Normalization.html" title="Normalization"
+             >previous</a> |</li>
+        <li><a href="index.html">Mnemosyne 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Johnny Vestergaard.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
