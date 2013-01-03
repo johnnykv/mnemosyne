@@ -144,7 +144,7 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
 
 Sessions
 ========
-The Sessions resource located at /sessions contains normalized data from traditionel serverside honeypots.
+The Sessions resource located at /sessions contains normalized data from traditional serverside honeypots.
 
 .. http:get:: /sessions/protocols
 
@@ -393,11 +393,11 @@ The URLS resource located at /urls, contains urls which potientially are serving
 
 Files
 ========
-The Files resource located at /files containes various forms of binaries and code samples collected from various HPFeeds channels.
+The Files resource located at /files contains various forms of binaries and code samples collected from HPFeeds channels.
 
 .. http:get:: /files/types
 
-   Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed mnemosyne will fallback to identification with libmagic.
+   Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed Mnemosyne will fallback to identification with libmagic.
 
    **Example request**:
 
