@@ -66,7 +66,7 @@ class MnemoDB(object):
             logging.error('Failed to insert hpfeed data on {0} channel due to invalid string data. ({1})'.format(entry['channel'], err))
 
     def get_hpfeed_data(self, max=None):
-        data = self.db.hpfeed.find({'normalized': False})
+        data = self.db.hpfeed.find({'normalized': False}, limit=max)
         return data
 
     def reset_normalized(self):

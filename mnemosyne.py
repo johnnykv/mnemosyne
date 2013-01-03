@@ -47,6 +47,7 @@ class Mnemosyne(object):
                     self.normalizers[channel] = normalizer
 
     def start_processing(self, warn_no_normalizers):
+        error_list = []
         while self.enabled:
 
             #Usefull to pause inserts while doing db resets.
@@ -54,9 +55,13 @@ class Mnemosyne(object):
                 gevent.sleep(self.pause)
                 self.pause = 0
 
+            insertions = 0
+
             chan_no_normalizer = {}
-            to_be_processed = self.database.get_hpfeed_data(50)
+            to_be_processed = self.database.get_hpfeed_data(500)
             for hpfeed_item in to_be_processed:
+                if hpfeed_item['_id'] in error_list:
+                    continue
                 try:
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
@@ -67,7 +72,9 @@ class Mnemosyne(object):
                             chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
                         else:
                             chan_no_normalizer[channel] = 1
-                except TypeError as err:
+                    insertions += 1
+                except (TypeError, ValueError) as err:
+                    error_list.append(hpfeed_item['_id'])
                     logging.exception('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
 
             if warn_no_normalizers:
@@ -75,7 +82,8 @@ class Mnemosyne(object):
                     for key, value in chan_no_normalizer.items():
                         logging.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
 
-            gevent.sleep(3)
+            if insertions is 0:
+                gevent.sleep(3)
         logging.info("Mnemosyne stopped")
 
     def pause(self, seconds):
