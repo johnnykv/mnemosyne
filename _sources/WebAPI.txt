@@ -9,6 +9,8 @@ Some thought here...
 
 HPFeeds
 =======
+The HPFeeds resource located at /hpfeeds contains unparsed data from various channels.
+
 .. http:get:: /hpfeeds/channels
 
    Distinct channel names and count of items.
@@ -63,7 +65,7 @@ HPFeeds
 
 .. http:get:: /hpfeeds
 
-   Retrieve the latest received items from a specific HPFeeds channel.
+   Returns items from a specific HPFeeds channel.
 
    **Example request**:
 
@@ -109,7 +111,7 @@ HPFeeds
 
 .. http:get:: /hpfeeds/(hpfeed_id)
 
-   The hpfeed entry with id (string:hpfeed_id).
+   Returns a specific HPFeed entry.
 
    **Example request**:
 
@@ -142,6 +144,8 @@ HPFeeds
 
 Sessions
 ========
+The Sessions resource located at /sessions contains normalized data from traditionel serverside honeypots.
+
 .. http:get:: /sessions/protocols
 
    Distinct protocols and session count from normalized honeypot sessions.
@@ -302,6 +306,7 @@ Sessions
 
 URLS
 ========
+The URLS resource located at /urls, contains urls which potientially are serving malicious content.
 
 .. http:get:: /urls
 
@@ -388,3 +393,106 @@ URLS
 
 Files
 ========
+The Files resource located at /files containes various forms of binaries and code samples collected from various HPFeeds channels.
+
+.. http:get:: /files/types
+
+   Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed mnemosyne will fallback to identification with libmagic.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+       GET /files/types HTTP/1.1
+       Host: example.com
+       Accept: application/json
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+         HTTP/1.1 200 OK
+         Content-Type: application/json
+
+         {
+           "content_guesss": [
+             {
+               "content_guess": "Javascript",
+               "count": 268
+             },
+             {
+               "content_guess": "Assembly",
+               "count": 5
+             },
+             {
+               "content_guess": "GIF image data, version 89a, 16129 x 16129",
+               "count": 12
+             },
+             {
+               "content_guess": "data",
+               "count": 28
+             },
+             {
+               "content_guess": "C++ source, ASCII text, with very long lines, with CRLF line terminators",
+               "count": 1
+             },
+             {
+               "content_guess": "PHP script, ASCII text, with CRLF line terminators",
+               "count": 2
+             },
+             {
+               "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed",
+               "count": 64
+             },
+             {
+               "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows",
+               "count": 43
+             },
+             {
+               "content_guess": "PE32 executable (GUI) Intel 80386, for MS Windows, UPX compressed",
+               "count": 1
+             },
+             {
+               "content_guess": "PE32 executable (GUI) Intel 80386, for MS Windows",
+               "count": 2
+             }
+           ]
+         }
+
+.. http:get:: /files/(hash)
+
+   Returns matches for the given hash. Following hashes are supported: MD5, SHA1, SHA512
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+       GET /files/549eccb6939274ac9664f0201e4771c4 HTTP/1.1
+       Host: example.com
+       Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+       HTTP/1.1 200 OK
+       Content-Type: application/json
+
+         {
+           "files": [
+             {
+               "_id": "50e5e440cfd26d1f23bfe7b7",
+               "content_guess": "Javascript",
+               "data": "0a0909090909706172656e742e6c6f636174696f6e2e68726566203d2022687474703a2f2f736f6e617464616e69736d616e6c696b2e636f6d2f6d61696e6c792e68746d6c223b0a09090909",
+               "encoding": "hex",
+               "hashes": {
+                 "md5": "549eccb6939274ac9664f0201e4771c4",
+                 "sha1": "d337b47020b1e214d35b044483bf04ae1f0a7b4d",
+                 "sha512": "53ece48162e635bd93ea3240c12b4a844974de0a75f3b30da1f18f8e2892c10a9930a2380673afd4521083b9f952a10b3c54de3be477ab1f11c61a8902c0d435"
+               },
+               "hpfeed_ids": [
+                 "50da8260dfe0f7b2c68c2fde"
+               ]
+             }
+           ]
+         }
