@@ -182,6 +182,11 @@ class MnemoWebAPI(Bottle):
         result = list(MnemoWebAPI.db['url'].find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'urls': result}, response)
 
+    @route('/files/types')
+    def files_types():
+        result = MnemoWebAPI.simpel_group('file', 'content_guess')
+        return MnemoWebAPI.jsonify(result, response)
+
     @route('/files/<the_hash>')
     def file_search_by_hash(the_hash):
         hash_length = len(the_hash)
