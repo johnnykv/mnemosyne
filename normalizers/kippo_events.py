@@ -30,7 +30,7 @@ class KippoEvents(BaseNormalizer):
             'source_ip': o_data['peerIP'],
             'source_port': o_data['peerPort'],
             'destination_port': o_data['hostPort'],
-            'honeypot': 'Kippo',
+            'honeypot': 'kippo',
             'protocol': 'ssh',
             'session_ssh': {'version': o_data['version']}
         }

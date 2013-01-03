@@ -40,7 +40,7 @@ class GlastopfEvents(BaseNormalizer):
         #TODO: Extract from header if specified
         session['destination_port'] = 80
         session['protocol'] = 'http'
-        session['honeypot'] = 'Glastopf'
+        session['honeypot'] = 'glastopf'
 
         return session
 

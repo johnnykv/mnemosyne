@@ -31,7 +31,7 @@ class DionaeaCaptures(BaseNormalizer):
             'source_port': int(o_data['sport']),
             'destination_ip': o_data['daddr'],
             'destination_port': int(o_data['dport']),
-            'honeypot': 'Dionaea'
+            'honeypot': 'dionaea'
         }
 
         if 'daddr' in o_data:

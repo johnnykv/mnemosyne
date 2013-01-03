@@ -51,7 +51,7 @@ class DionaeaTests(unittest.TestCase):
             'source_port': 3006,
             'destination_ip': '134.61.128.61',
             'destination_port': 445,
-            'honeypot': 'Dionaea',
+            'honeypot': 'dionaea',
             'protocol': 'microsoft-ds',
             'attachments': attachments
         }

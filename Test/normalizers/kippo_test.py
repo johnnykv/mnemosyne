@@ -46,7 +46,7 @@ class KippoTests(unittest.TestCase):
             'source_ip': '1.2.3.4',
             'source_port': 36228,
             'destination_port': 2222,
-            'honeypot': 'Kippo',
+            'honeypot': 'kippo',
             'protocol': 'ssh',
             'session_ssh': session_ssh,
             'auth_attempts': auth_attempts,

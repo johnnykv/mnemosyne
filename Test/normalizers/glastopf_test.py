@@ -48,7 +48,7 @@ class GlastopfTests(unittest.TestCase):
             'source_ip': '1.2.3.4',
             'source_port': 49111,
             'destination_port': 80,
-            'honeypot': 'Glastopf',
+            'honeypot': 'glastopf',
             'protocol': 'http',
             'session_http': session_http
         }
