@@ -17,6 +17,7 @@
 
 import unittest
 from normalizers import thug_events
+import datetime
 import os
 
 
@@ -69,14 +70,14 @@ class ThugTests(unittest.TestCase):
     <Pools/>
 </MAEC_Bundle>
 '''
-        expected_output = [{'url': { 'url': 'http://xxx.yyy.zzz/wfgv.htm?php=receipt'}} ]
+        expected_output = [{'url': {'url': 'http://xxx.yyy.zzz/wfgv.htm?php=receipt'}}]
 
         sut = thug_events.ThugEvents()
         actual = sut.normalize(input_xml, 'thug.events', None)
 
         self.assertEqual(len(expected_output), len(actual))
 
-        self.assertItemsEqual(expected_output, actual)
+        self.assertEqual(expected_output, actual)
 
     def test_event_multiple_entried(self):
         """
@@ -94,7 +95,7 @@ class ThugTests(unittest.TestCase):
         sut = thug_events.ThugEvents()
         actual = sut.normalize(input_xml, 'thug.events', None)
         #print actual
-        self.assertItemsEqual(expected_output, actual)
+        self.assertEqual(expected_output, actual)
 
     def test_event_complex_sample(self):
         """
@@ -103,4 +104,67 @@ class ThugTests(unittest.TestCase):
 
         input_xml = open(os.path.dirname(__file__) + '/data_samples/thug_events_sample2.xml', 'r').read()
 
-        pass
+        file_1 = {
+            'encoding': 'hex',
+            'content_guess': 'Javascript',
+            'data': 'placeholder',
+            'hashes': {'sha1': 'c80d2b26eec6a49068fdfda874e68b7aeb7669fa', 'sha512': '5a4ff355ba48b9c11ced27e06d32afa29a11c8ba230fd587288623d53f9927cbf84743884322182649c3c8fd706118541d54dfd7da68a82c606dd9e17c836887', 'md5': '864fff7df4a027049ed855dafc71e94d'}
+        }
+
+        file_2 = {
+            'encoding': 'hex',
+            'content_guess': 'Javascript',
+            'data': 'placeholder',
+            'hashes': {'sha1': '65854a75eac74a727c7714b78f5cd4a9602063ab', 'sha512': '1c0c85f1c33c3da94c8015acbe8f7a54849081af590ad1493037e340e59ad34fd06a38a27ee48e84d9a0710d4a0e5c85fd0510bb9bb09319dec65be53d173af8', 'md5': '58a2ac97c6e16870a758ebc8501ebf7f'}
+        }
+
+        file_3 = {
+            'encoding': 'hex',
+            'content_guess': 'Javascript',
+            'data': 'placeholder',
+            'hashes': {'sha1': '78a4a03e86463a0c624ac5077caeda00321da721', 'sha512': 'f9234c4afe440c3597d9d6c56e34e74fa746579fe15556f2e741625aaaf31ee6f1e63f17dbaffd5dd668b0b0f66e5d4cda0f756ad4ea505afdadc92566a17171', 'md5': '6d5a985d0e9bd02cdd6970c10770da0c'}
+        }
+
+        url = {'url':
+               'http://1212122sss222.tankplay.com/news/guarantee-detain.html',
+               'extractions':
+               [{
+                'timestamp': datetime.datetime(2012, 12, 23, 22, 8, 19, 467103),
+                'hashes': {
+                    'sha1': 'c80d2b26eec6a49068fdfda874e68b7aeb7669fa',
+                    'sha512': '5a4ff355ba48b9c11ced27e06d32afa29a11c8ba230fd587288623d53f9927cbf84743884322182649c3c8fd706118541d54dfd7da68a82c606dd9e17c836887',
+                    'md5': '864fff7df4a027049ed855dafc71e94d'}
+                }, {
+                'timestamp': datetime.datetime(2012, 12, 23, 22, 8, 19, 467103),
+                'hashes': {
+                    'sha1': '65854a75eac74a727c7714b78f5cd4a9602063ab',
+                    'sha512': '1c0c85f1c33c3da94c8015acbe8f7a54849081af590ad1493037e340e59ad34fd06a38a27ee48e84d9a0710d4a0e5c85fd0510bb9bb09319dec65be53d173af8',
+                    'md5': '58a2ac97c6e16870a758ebc8501ebf7f'}
+                }, {
+                'timestamp': datetime.datetime(2012, 12, 23, 22, 8, 19, 467103),
+                'hashes': {
+                    'sha1': '78a4a03e86463a0c624ac5077caeda00321da721',
+                    'sha512': 'f9234c4afe440c3597d9d6c56e34e74fa746579fe15556f2e741625aaaf31ee6f1e63f17dbaffd5dd668b0b0f66e5d4cda0f756ad4ea505afdadc92566a17171',
+                    'md5': '6d5a985d0e9bd02cdd6970c10770da0c'}
+                }]
+               }
+
+        expected = [
+            {'url': url},
+            {'file': file_1},
+            {'file': file_2},
+            {'file': file_3},
+        ]
+
+        sut = thug_events.ThugEvents()
+        actual = sut.normalize(input_xml, 'thug.events', None)
+
+        #do not compare the actual data, hashes are good enough...
+        for d in actual:
+            for key, value in d.items():
+                if key is 'file':
+                    value['data'] = 'placeholder'
+
+        self.assertEqual(len(expected), len(actual))
+
+        self.assertEqual(sorted(expected), sorted(actual))

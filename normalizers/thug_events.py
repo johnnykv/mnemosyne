@@ -18,6 +18,7 @@
 from basenormalizer import BaseNormalizer
 
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 
 class ThugEvents(BaseNormalizer):
@@ -30,22 +31,42 @@ class ThugEvents(BaseNormalizer):
         data = '<THUG_DATA>' + data + '</THUG_DATA>'
 
         fake_root = ET.fromstring(data)
-        #root = ET.fromstring(data)
 
-        url_list = []
+        return_list = []
+
         #TODO: Register namespace with ElementTree?
         for root in fake_root.findall('{http://maec.mitre.org/XMLSchema/maec-core-1}MAEC_Bundle'):
             analysis = root.findall('./{http://maec.mitre.org/XMLSchema/maec-core-1}Analyses' +
                                     '/{http://maec.mitre.org/XMLSchema/maec-core-1}Analysis')
             for a in analysis:
-                for uri in a.iter('{http://maec.mitre.org/XMLSchema/maec-core-1}URI'):
-                    url_list.append(uri.text)
+                timestamp = datetime.strptime(
+                    a.attrib['start_datetime'], '%Y-%m-%d %H:%M:%S.%f')
+                a.attrib['start_datetime']
 
-        #TODO: The interesting stuff from behaviors. (and correlate with .files)
-        return_list = []
-        for url in url_list:
-            return_list.append({'url': {'url': url}})
-            #url_dict = super(ThugEvents, self).make_url(url)
-            #return_list.append({'url': url_dict})
+                data = {}
+                object_element = a.find('{http://maec.mitre.org/XMLSchema/maec-core-1}Subject/{http://maec.mitre.org/XMLSchema/maec-core-1}Object')
 
+                data['url'] = object_element.find('./{http://maec.mitre.org/XMLSchema/maec-core-1}Internet_Object_Attributes/{http://maec.mitre.org/XMLSchema/maec-core-1}URI').text
+
+                code_snippets = object_element.findall('./{http://maec.mitre.org/XMLSchema/maec-core-1}Associated_Code/{http://maec.mitre.org/XMLSchema/maec-core-1}Associated_Code_Snippet/{http://maec.mitre.org/XMLSchema/maec-core-1}Code_Snippet')
+                for snippet in code_snippets:
+                    language = snippet.attrib['language']
+                    source = snippet.find('./{http://maec.mitre.org/XMLSchema/maec-core-1}Code_Segment').text
+
+                    hashes = super(ThugEvents, self).generate_checksum_list(source)
+
+                    file_ = {
+                        'encoding': 'hex',
+                        'content_guess': language,
+                        'data': source.encode('hex'),
+                        'hashes': hashes
+                    }
+
+                    if 'extractions' not in data:
+                        data['extractions'] = []
+                    data['extractions'].append({'timestamp': timestamp,
+                                                'hashes': hashes})
+
+                    return_list.append({'file': file_})
+                return_list.append({'url': data})
         return return_list
