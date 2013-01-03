@@ -39,13 +39,11 @@ class MnemoWebAPI(Bottle):
     def start_listening(self, host, port):
         run(host=host, port=port, debug=True)
 
-    @route('/hpfeeds')
     @route('/hpfeeds/')
+    @route('/hpfeeds')
     def hpfeeds_get_all():
         """
-        /hpfeeds - returns 403
-        /hpfeeds - returns 403
-        /hpfeeds/?channel=channelname - returns 100 latest entries pulled from 'channelname'
+        /hpfeeds/channel/glastopf.events - returns 100 latest entries pulled from 'channelname'
         Example:
         {
         "hpfeeds": [
@@ -68,8 +66,14 @@ class MnemoWebAPI(Bottle):
         }
         """
         query_keys = request.query.keys()
+
+        if 'limit' in query_keys:
+            limit = int(request.query.limit)
+        else:
+            limit = 50
+
         if 'channel' in query_keys:
-            result = list(MnemoWebAPI.db.hpfeed.find({'channel': request.query.channel}).sort('timestamp', -1).limit(100))
+            result = list(MnemoWebAPI.db.hpfeed.find({'channel': request.query.channel}).sort('timestamp', -1).limit(limit))
             return json.dumps({'hpfeeds': result}, default=MnemoWebAPI.json_default)
         else:
             abort(403, 'Listing of all content forbidden.')
@@ -119,7 +123,7 @@ class MnemoWebAPI(Bottle):
             result = MnemoWebAPI.db.session.find_one({'_id': ObjectId(session_id)})
         except InvalidId:
             abort(400, '{0} is not a valid ObjectId.'.format(session_id))
-        return MnemoWebAPI.jsonify(result, response)
+        return MnemoWebAPI.jsonify({'sessions': result}, response)
 
     @route('/sessions/protocols')
     def session_protocols():
@@ -133,104 +137,49 @@ class MnemoWebAPI(Bottle):
         result = MnemoWebAPI.simpel_group('session', 'protocol')
         return MnemoWebAPI.jsonify(result, response)
 
-    @route('/sessions/protocol/<protocol>')
-    def sessions_get_by_protocol(protocol):
-        """
-        Returns sessions filtered by protocol.
-        Example:
-        (GET /sessions/protocol/ssh)
-        {
-        sessions": [
-            {
-                "protocol": "ssh",
-                "hpfeed_id": "50dc4244dfe0f7bf93d06076",
-                "timestamp": "2012-12-27T12:42:44.296000",
-                "source_ip": "11.5.23.53",
-                "session_ssh": {
-                    "version": "SSH-2.0-libssh-0.1"
-                },
-                "source_port": 36868,
-                "destination_port": 2222,
-                "_id": "50dcc2ebdfe0f7c4d1ce350d",
-                "honeypot": "Kippo",
-                "auth_attempts": [
-                    {
-                        "login": "root",
-                        "password": "321muie321"
-                    }
-                ]
-            },
-            {
-                "protocol": "ssh",
-                "hpfeed_id": "50dc4249dfe0f7bf93d06077",
-                "timestamp": "2012-12-27T12:42:49.131000",
-                "source_ip": "11.5.23.53",
-                "session_ssh": {
-                    "version": "SSH-2.0-libssh-0.1"
-                },
-                "source_port": 39672,
-                "destination_port": 2222,
-                "_id": "50dcc2ebdfe0f7c4d1ce350e",
-                "honeypot": "Kippo",
-                "auth_attempts": [
-                    {
-                        "login": "root",
-                        "password": "123muie123"
-                    }
-                ]
-            },
-        ]
-        }
-        """
-        result = list(MnemoWebAPI.db.session.find({'protocol': protocol}))
-        return MnemoWebAPI.jsonify({'sessions': result}, response)
+    @route('/sessions')
+    def sessions_get_by_query():
 
-    @route('/sessions/source_ip/<source_ip>')
-    def sessions_get_by_source_ip(source_ip):
-        """
-        Returns sessions filtered by protocol.
-        """
-        result = list(MnemoWebAPI.db.session.find({'source_ip': source_ip}))
-        return MnemoWebAPI.jsonify({'sessions': result}, response)
+        query_keys = request.query.keys()
+        query_dict = {}
 
-    @route('/sessions/honeypots')
-    def session_honeypots():
-        """
-        Returns a grouped list of types of honeypots which has submitted data.
-        Example:
-        {"honeypots": [{"count": 720, "honeypot": "Glastopf"}]}
-        """
-        result = MnemoWebAPI.simpel_group('session', 'honeypot')
-        return MnemoWebAPI.jsonify(result, response)
+        mongo_keys = set(('protocol', 'source_ip', 'source_port', 'destination_ip',
+                          'destination_port', 'honeypot'))
+
+        #intersection
+        common_keys = (set(query_keys) & mongo_keys)
+
+        for item in common_keys:
+            if item.endswith('_port'):
+                query_dict[item] = int(request.query[item])
+            else:
+                query_dict[item] = request.query[item]
+
+        if 'limit' in query_keys:
+            limit = int(request.query.limit)
+        else:
+            limit = 50
+
+        print query_dict
+        result = list(MnemoWebAPI.db.session.find(query_dict).limit(limit))
+        return MnemoWebAPI.jsonify({'sessions': result}, response)
 
     @route('/urls')
     @route('/urls/')
-    def urls_all():
-        """
-        Returns a list of url's reported by honeyclients (in general) with reference to the original hpfeeds data.
-        If honeyclient software has extracted code snippets or potiential malware for the site, references to these will be
-        available also.
-        Example:
-        {
-        "urls": [
-            {
-                "url": "http://inutterod.ru/count22.php",
-                "_id": "50db96fa2c533872c1ba0d26",
-                "hpfeed_ids": [
-                    "50da8260dfe0f7b2c68c2fde"
-                ]
-            },
-            {
-                "url": "http://www.jotto-to.xx/images/M_images/t?%0D?",
-                "_id": "50db96fa2c533872c1ba0d27",
-                "hpfeed_ids": [
-                    "50dad02bdfe0f7b4f48cd434",
-                    "50dad0a6dfe0f7b4f48cd435"
-                ]
-            }
-        }
-        """
-        result = list(MnemoWebAPI.db['url'].find())
+    def urls():
+
+        query_keys = request.query.keys()
+        query_dict = {}
+
+        if 'limit' in query_keys:
+            limit = int(request.query.limit)
+        else:
+            limit = 50
+
+        if 'url_regex' in query_keys:
+            query_dict['url'] = {'$regex': request.query.url_regex}
+
+        result = list(MnemoWebAPI.db['url'].find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'urls': result}, response)
 
     @route('/files/<the_hash>')
@@ -265,7 +214,7 @@ class MnemoWebAPI(Bottle):
     def jsonify(i, r):
         if isinstance(i, dict):
             #Attempt to serialize, raises exception on failure
-            json_response = json.dumps(i, default=MnemoWebAPI.json_default)
+            json_response = json.dumps(i, default=MnemoWebAPI.json_default, sort_keys=True)
             #Set content type only if serialization succesful
             r.content_type = 'application/json'
             return json_response
