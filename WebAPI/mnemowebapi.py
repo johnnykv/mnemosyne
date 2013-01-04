@@ -41,62 +41,33 @@ class MnemoWebAPI(Bottle):
 
     @route('/hpfeeds/')
     @route('/hpfeeds')
-    def hpfeeds_get_all():
-        """
-        /hpfeeds/channel/glastopf.events - returns 100 latest entries pulled from 'channelname'
-        Example:
-        {
-        "hpfeeds": [
-            {
-                "ident": "2l3if@hp8",
-                "timestamp": "2012-12-26T20:01:46.908000",
-                "normalized": true,
-                "_id": "5deadbeef0e0f7b874e8088d",
-                "payload": "<payload>",
-                "channel": "glastopf.events"
-            },
-            {
-                "ident": "2l3if@hp8",
-                "timestamp": "2012-12-26T20:05:32.773000",
-                "normalized": false,
-                "_id": "50db57aadfe0f7b8deadbeef",
-                "payload": "<payload>",
-                "channel": "glastopf.events"
-            }]
-        }
-        """
+    def hpfeeds():
         query_keys = request.query.keys()
+        query_dict = {}
+
+        mongo_keys = set(('_id', 'id', 'channel'))
+
+        #intersection
+        common_keys = (set(query_keys) & mongo_keys)
+
+        try:
+            for item in common_keys:
+                if item.endswith('_id'):
+                    query_dict[item] = ObjectId(request.query[item])
+                elif item == 'id':
+                    query_dict['_' + item] = ObjectId(request.query[item])
+                else:
+                    query_dict[item] = request.query[item]
+        except InvalidId:
+            abort(400, 'Not a valid ObjectId.')
 
         if 'limit' in query_keys:
             limit = int(request.query.limit)
         else:
             limit = 50
 
-        if 'channel' in query_keys:
-            result = list(MnemoWebAPI.db.hpfeed.find({'channel': request.query.channel}).sort('timestamp', -1).limit(limit))
-            return json.dumps({'hpfeeds': result}, default=MnemoWebAPI.json_default)
-        else:
-            abort(403, 'Listing of all content forbidden.')
-
-    @route('/hpfeeds/<hpfeed_id>')
-    def hpfeeds_by_id(hpfeed_id):
-        """
-        Returns a specific hpfeed entry.
-        Example:
-        {
-            "ident": "2l3if@hp8",
-            "timestamp": "2012-12-26T19:49:22.212000",
-            "normalized": true,
-            "_id": "50dbdeadbeeff7b874e806ba",
-            "payload": "<payload>",
-            "channel": "glastopf.events"
-        }
-        """
-        try:
-            result = MnemoWebAPI.db.hpfeed.find_one({'_id': ObjectId(hpfeed_id)})
-        except InvalidId:
-            abort(400, '{0} is not a valid ObjectId.'.format(hpfeed_id))
-        return MnemoWebAPI.jsonify(result, response)
+        result = list(MnemoWebAPI.db.hpfeed.find(query_dict).sort('timestamp', -1).limit(limit))
+        return MnemoWebAPI.jsonify({'hpfeeds': result}, response)
 
     @route('/hpfeeds/channels')
     def channels():
@@ -110,19 +81,34 @@ class MnemoWebAPI(Bottle):
         result = MnemoWebAPI.simpel_group('hpfeed', 'channel')
         return MnemoWebAPI.jsonify(result, response)
 
-    @route('/sessions/<session_id>')
-    def sessions_by_id(session_id):
-        """
-        Returns a specific sessions entry.
-        Example:
-        {
-            ...
-        }
-        """
-        try:
-            result = MnemoWebAPI.db.session.find_one({'_id': ObjectId(session_id)})
-        except InvalidId:
-            abort(400, '{0} is not a valid ObjectId.'.format(session_id))
+    @route('/sessions')
+    def sessions_get_by_query():
+
+        query_keys = request.query.keys()
+        query_dict = {}
+
+        mongo_keys = set(('id', '_id', 'protocol', 'source_ip', 'source_port', 'destination_ip',
+                          'destination_port', 'honeypot'))
+
+        #intersection
+        common_keys = (set(query_keys) & mongo_keys)
+
+        for item in common_keys:
+            if item.endswith('_id'):
+                query_dict[item] = ObjectId(request.query[item])
+            elif item is 'id':
+                query_dict['_' + item] = ObjectId(request.query[item])
+            elif item.endswith('_port'):
+                query_dict[item] = int(request.query[item])
+            else:
+                query_dict[item] = request.query[item]
+
+        if 'limit' in query_keys:
+            limit = int(request.query.limit)
+        else:
+            limit = 50
+
+        result = list(MnemoWebAPI.db.session.find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'sessions': result}, response)
 
     @route('/sessions/protocols')
@@ -136,33 +122,6 @@ class MnemoWebAPI(Bottle):
         """
         result = MnemoWebAPI.simpel_group('session', 'protocol')
         return MnemoWebAPI.jsonify(result, response)
-
-    @route('/sessions')
-    def sessions_get_by_query():
-
-        query_keys = request.query.keys()
-        query_dict = {}
-
-        mongo_keys = set(('protocol', 'source_ip', 'source_port', 'destination_ip',
-                          'destination_port', 'honeypot'))
-
-        #intersection
-        common_keys = (set(query_keys) & mongo_keys)
-
-        for item in common_keys:
-            if item.endswith('_port'):
-                query_dict[item] = int(request.query[item])
-            else:
-                query_dict[item] = request.query[item]
-
-        if 'limit' in query_keys:
-            limit = int(request.query.limit)
-        else:
-            limit = 50
-
-        print query_dict
-        result = list(MnemoWebAPI.db.session.find(query_dict).limit(limit))
-        return MnemoWebAPI.jsonify({'sessions': result}, response)
 
     @route('/urls')
     @route('/urls/')
@@ -179,25 +138,52 @@ class MnemoWebAPI(Bottle):
         if 'url_regex' in query_keys:
             query_dict['url'] = {'$regex': request.query.url_regex}
 
+        if 'hash' in query_keys:
+            hash_length = len(query_dict['hash'])
+            if hash_length is 128:
+                query_dict['hash.sha512'] = query_dict['hash']
+            elif hash_length is 40:
+                query_dict['hash.sha1'] = query_dict['hash']
+            elif hash_length is 32:
+                query_dict['hash.md5'] = query_dict['hash']
+            else:
+                abort((400), '{0} could be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
+
         result = list(MnemoWebAPI.db['url'].find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'urls': result}, response)
+
+    @route('/files')
+    @route('/files/')
+    def get_files():
+        query_keys = request.query.keys()
+        query_dict = {}
+
+        if 'limit' in query_keys:
+            limit = int(request.query.limit)
+        else:
+            limit = 50
+
+        if 'hash' in query_keys:
+            hash_length = len(request.query['hash'])
+            if hash_length is 128:
+                query_dict['hashes.sha512'] = request.query['hash']
+            elif hash_length is 40:
+                query_dict['hashes.sha1'] = request.query['hash']
+            elif hash_length is 32:
+                print "md5"
+                query_dict['hashes.md5'] = request.query['hash']
+            else:
+                abort((400), '{0} could be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
+        else:
+            abort((400), 'Only supported query parameter is "hash"')
+        print query_dict
+        result = list(MnemoWebAPI.db.file.find(query_dict).limit(50))
+        return MnemoWebAPI.jsonify({'files': result}, response)
 
     @route('/files/types')
     def files_types():
         result = MnemoWebAPI.simpel_group('file', 'content_guess')
         return MnemoWebAPI.jsonify(result, response)
-
-    @route('/files/<the_hash>')
-    def file_search_by_hash(the_hash):
-        hash_length = len(the_hash)
-        result = ""
-        if hash_length is 128:
-            result = list(MnemoWebAPI.db.file.find({'hash.sha512': the_hash}))
-        elif hash_length is 40:
-            result = list(MnemoWebAPI.db.file.find({'hashes.sha1': the_hash}))
-        elif hash_length is 32:
-            result = list(MnemoWebAPI.db.file.find({'hashes.md5': the_hash}))
-        return MnemoWebAPI.jsonify({'files': result}, response)
 
     @staticmethod
     def simpel_group(collection, attribute):
