@@ -30,6 +30,7 @@ import sys
 import argparse
 
 logger = logging.getLogger()
+request_logger = logging.getLogger('wsgi')
 
 
 def parse_config(config_file):
@@ -72,6 +73,12 @@ def do_logging(file_log=None):
     console_log.setLevel(logging.DEBUG)
     console_log.setFormatter(formatter)
     logger.addHandler(console_log)
+
+    #TODO: Move to config file
+    request_logger = logging.getLogger('wsgi')
+    request_logger.addHandler(console_log)
+    request_logger.addHandler(file_log)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Mnemosyne')
@@ -116,7 +123,7 @@ if __name__ == '__main__':
             for key, value in counts.items():
                 log_string += ' {0}: {1}, '.format(key, value)
             logging.info(log_string)
-            gevent.sleep(5)
+            gevent.sleep(1800)
 
     try:
         gevent.joinall(greenlets.values())

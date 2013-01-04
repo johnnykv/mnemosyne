@@ -26,6 +26,9 @@ class MnemoDB(object):
     def __init__(self, database_name):
         conn = MongoClient()
         self.db = conn[database_name]
+        self.db.hpfeed.ensure_index('normalized', unique=True)
+        self.db.url.ensure_index('url', unique=True)
+        self.db.file.ensure_index('hashes', unique=True)
 
     def insert_normalized(self, ndata, original_hpfeed):
         for item in ndata:
@@ -35,7 +38,7 @@ class MnemoDB(object):
                         push_dict = {'hpfeed_ids': original_hpfeed['_id']}
                         if 'extractions' in document:
                             push_dict['extractions'] = document['extractions']
-                        self.db[collection].update({'url': document['url']}, {'$push': push_dict}, upsert=True)
+                            self.db[collection].update({'url': document['url']}, {'$push': push_dict}, upsert=True)
                     elif collection is 'file':
                         self.db[collection].update({'hashes.sha512': document['hashes']['sha512']}, {'$set': document, '$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
                     elif collection is 'session':

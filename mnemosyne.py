@@ -28,6 +28,7 @@ import gevent
 import logging
 import traceback
 
+from xml.etree.ElementTree import ParseError
 
 class Mnemosyne(object):
     def __init__(self, database):
@@ -67,13 +68,13 @@ class Mnemosyne(object):
                     if channel in self.normalizers:
                         norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel, hpfeed_item['timestamp'])
                         self.database.insert_normalized(norm, hpfeed_item)
+                        insertions += 1
                     else:
                         if channel in chan_no_normalizer:
                             chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
                         else:
                             chan_no_normalizer[channel] = 1
-                    insertions += 1
-                except (TypeError, ValueError) as err:
+                except (TypeError, ValueError, ParseError) as err:
                     error_list.append(hpfeed_item['_id'])
                     logging.exception('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
 
