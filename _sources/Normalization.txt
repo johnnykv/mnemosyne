@@ -5,7 +5,7 @@ Normalization
 Overview
 ============
 
-Text on relationsships between. (eg. attachments and extractions)
+Some text on extractions, attachments and entities here - the big picture.
 
 .. digraph:: foo
 

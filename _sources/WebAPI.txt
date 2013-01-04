@@ -306,11 +306,11 @@ The Sessions resource located at /sessions contains normalized data from traditi
 
 URLS
 ========
-The URLS resource located at /urls, contains urls which potientially are serving malicious content.
+The URLS resource located at /urls, contains urls which potentially are serving malicious content.
 
 .. http:get:: /urls
 
-   Returns urls serving potiential malicious content. If any files has been extracted, an reference to the checksum will be provided.
+   Returns urls serving potential malicious content. If any files has been extracted, an reference to the checksum will be provided.
 
    **Example request**:
 
