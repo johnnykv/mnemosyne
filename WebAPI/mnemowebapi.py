@@ -37,7 +37,7 @@ class MnemoWebAPI(Bottle):
         MnemoWebAPI.db = conn[datebase_name]
 
     def start_listening(self, host, port):
-        run(host=host, port=port, debug=True)
+        run(host=host, port=port, debug=False, server='paste', quiet=True)
 
     @route('/hpfeeds/')
     @route('/hpfeeds')
