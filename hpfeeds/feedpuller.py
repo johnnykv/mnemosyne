@@ -19,7 +19,7 @@ import hpfeeds
 import logging
 
 
-class FeedBroker:
+class FeedPuller:
     def __init__(self, database, ident, secret, port, host, feeds):
         self.logger = logging.getLogger()
 
@@ -59,4 +59,4 @@ class FeedBroker:
 
     def stop(self):
         self.hpc.stop()
-        self.logger.info("FeedBroker stopped.")
+        self.logger.info("FeedPuller stopped.")

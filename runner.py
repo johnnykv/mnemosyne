@@ -24,9 +24,9 @@ import logging
 from ConfigParser import ConfigParser
 from mnemosyne import Mnemosyne
 from persistance import mnemodb
-from WebAPI import mnemowebapi
-from hpfeeds import feedbroker
-import sys
+from webapi import mnemowebapi
+from hpfeeds import feedpuller
+
 import argparse
 
 logger = logging.getLogger()
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     parser.add_argument('--stats', action='store_true', default=False)
     parser.add_argument('--no_normalizer', action='store_true', default=False,
         help='Do not start the normalizer')
-    parser.add_argument('--no_broker', action='store_true', default=False,
+    parser.add_argument('--no_feedpuller', action='store_true', default=False,
         help='Do not start the broker which takes care of storing hpfeed data.')
     parser.add_argument('--no_webapi', action='store_true', default=False,
         help='Do not enable the webapi.')
@@ -102,9 +102,9 @@ if __name__ == '__main__':
     if args.reset:
         db.reset_normalized()
 
-    if not args.no_broker:
-        broker = feedbroker.FeedBroker(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-        greenlets['broker'] = gevent.spawn(broker.start_listening)
+    if not args.no_feedpuller:
+        puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
+        greenlets['puller'] = gevent.spawn(puller.start_listening)
 
     if not args.no_normalizer:
         #start menmo and inject persistence module
