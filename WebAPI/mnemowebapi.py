@@ -15,15 +15,17 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import route, run, abort, Bottle, request, response
+from bottle import route, run, abort, Bottle, request, response, static_file, get
 
 from pymongo import MongoClient
 from bson import ObjectId
 from bson.errors import InvalidId
 from bson.code import Code
-import bson
+from datetime import datetime, date
 
-import datetime
+import bson
+import os
+
 import json
 import uuid
 
@@ -39,8 +41,8 @@ class MnemoWebAPI(Bottle):
     def start_listening(self, host, port):
         run(host=host, port=port, debug=False, server='paste', quiet=True)
 
-    @route('/hpfeeds/')
-    @route('/hpfeeds')
+    @route('/api/hpfeeds/')
+    @route('/api/hpfeeds')
     def hpfeeds():
         query_keys = request.query.keys()
         query_dict = {}
@@ -69,7 +71,7 @@ class MnemoWebAPI(Bottle):
         result = list(MnemoWebAPI.db.hpfeed.find(query_dict).sort('timestamp', -1).limit(limit))
         return MnemoWebAPI.jsonify({'hpfeeds': result}, response)
 
-    @route('/hpfeeds/channels')
+    @route('/api/hpfeeds/channels')
     def channels():
         """
         Returns a list of channel names and number of events in the immutable hpfeeds store.
@@ -81,7 +83,7 @@ class MnemoWebAPI(Bottle):
         result = MnemoWebAPI.simpel_group('hpfeed', 'channel')
         return MnemoWebAPI.jsonify(result, response)
 
-    @route('/sessions')
+    @route('/api/sessions')
     def sessions_get_by_query():
 
         query_keys = request.query.keys()
@@ -111,7 +113,7 @@ class MnemoWebAPI(Bottle):
         result = list(MnemoWebAPI.db.session.find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'sessions': result}, response)
 
-    @route('/sessions/protocols')
+    @route('/api/sessions/protocols')
     def session_protocols():
         """
         Returns a grouped list of all protocols intercepted.
@@ -123,8 +125,8 @@ class MnemoWebAPI(Bottle):
         result = MnemoWebAPI.simpel_group('session', 'protocol')
         return MnemoWebAPI.jsonify(result, response)
 
-    @route('/urls')
-    @route('/urls/')
+    @route('/api/urls')
+    @route('/api/urls/')
     def urls():
 
         query_keys = request.query.keys()
@@ -152,8 +154,8 @@ class MnemoWebAPI(Bottle):
         result = list(MnemoWebAPI.db['url'].find(query_dict).limit(limit))
         return MnemoWebAPI.jsonify({'urls': result}, response)
 
-    @route('/files')
-    @route('/files/')
+    @route('/api/files')
+    @route('/api/files/')
     def get_files():
         query_keys = request.query.keys()
         query_dict = {}
@@ -180,10 +182,30 @@ class MnemoWebAPI(Bottle):
         result = list(MnemoWebAPI.db.file.find(query_dict).limit(50))
         return MnemoWebAPI.jsonify({'files': result}, response)
 
-    @route('/files/types')
+    @route('/api/files/types')
     def files_types():
         result = MnemoWebAPI.simpel_group('file', 'content_guess')
         return MnemoWebAPI.jsonify(result, response)
+
+    @route('/api/helpers/get_hpfeeds_stats')
+    def get_hpfeed_stats():
+        result = MnemoWebAPI.db.hpfeed.aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
+        del result['ok']
+        for item in result['result']:
+            d = datetime.strptime(str(item['_id']), '%j')
+            #carefull around newyear! ;-)
+            d = d.replace(date.today().year)
+            item['_id'] = d
+
+        return MnemoWebAPI.jsonify(result, response)
+
+    @get('/')
+    def get_index():
+        return static_file('index.html', root='webapi/static')
+
+    @get('/<filename:path>')
+    def static(filename):
+        return static_file(filename, root='webapi/static')
 
     @staticmethod
     def simpel_group(collection, attribute):
@@ -214,13 +236,13 @@ class MnemoWebAPI(Bottle):
 
     @staticmethod
     def json_default(obj):
-            if isinstance(obj, datetime.datetime):
-                return obj.isoformat()
-            elif isinstance(obj, uuid.UUID):
-                return str(obj)
-            elif isinstance(obj, buffer):
-                return str(obj)
-            elif isinstance(obj, bson.objectid.ObjectId):
-                return str(obj)
-            else:
-                return None
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        elif isinstance(obj, uuid.UUID):
+            return str(obj)
+        elif isinstance(obj, buffer):
+            return str(obj)
+        elif isinstance(obj, bson.objectid.ObjectId):
+            return str(obj)
+        else:
+            return None
