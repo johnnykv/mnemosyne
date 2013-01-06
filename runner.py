@@ -85,6 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
     parser.add_argument('--reset', action='store_true', default=False)
     parser.add_argument('--stats', action='store_true', default=False)
+    parser.add_argument('--webpath', default='webapi/static')
     parser.add_argument('--no_normalizer', action='store_true', default=False,
         help='Do not start the normalizer')
     parser.add_argument('--no_feedpuller', action='store_true', default=False,
@@ -113,7 +114,7 @@ if __name__ == '__main__':
 
     if not args.no_webapi:
         #start web api and inject mongo info
-        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'])
+        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath)
         greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if args.stats:

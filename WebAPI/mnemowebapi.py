@@ -33,10 +33,11 @@ import uuid
 class MnemoWebAPI(Bottle):
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
-    def __init__(self, datebase_name):
+    def __init__(self, datebase_name, static_file_path='webapi/static'):
         super(MnemoWebAPI, self).__init__(autojson=False)
         conn = MongoClient()
         MnemoWebAPI.db = conn[datebase_name]
+        MnemoWebAPI.static_file_path = static_file_path
 
     def start_listening(self, host, port):
         run(host=host, port=port, debug=False, server='paste', quiet=True)
@@ -201,11 +202,12 @@ class MnemoWebAPI(Bottle):
 
     @get('/')
     def get_index():
-        return static_file('index.html', root='webapi/static')
+        print MnemoWebAPI.static_file_path
+        return static_file('index.html', root=MnemoWebAPI.static_file_path)
 
     @get('/<filename:path>')
     def static(filename):
-        return static_file(filename, root='webapi/static')
+        return static_file(filename, root=MnemoWebAPI.static_file_path)
 
     @staticmethod
     def simpel_group(collection, attribute):
