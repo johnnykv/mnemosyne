@@ -24,7 +24,6 @@ from bson.code import Code
 from datetime import datetime, date
 
 import bson
-import os
 
 import json
 import uuid
@@ -179,7 +178,7 @@ class MnemoWebAPI(Bottle):
                 abort((400), '{0} could be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
         else:
             abort((400), 'Only supported query parameter is "hash"')
-        print query_dict
+
         result = list(MnemoWebAPI.db.file.find(query_dict).limit(50))
         return MnemoWebAPI.jsonify({'files': result}, response)
 
