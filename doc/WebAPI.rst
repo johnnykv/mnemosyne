@@ -29,7 +29,7 @@ HPFeeds
 *******
 The HPFeeds resource located at /hpfeeds contains unparsed data from various channels.
 
-.. http:get:: /hpfeeds
+.. http:get:: /api/hpfeeds
 
    Returns filtered HPFeeds data.
 
@@ -37,7 +37,7 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
 
    .. sourcecode:: http
 
-      GET /hpfeeds?channel=glastopf.events HTTP/1.1
+      GET /api/hpfeeds?channel=glastopf.events HTTP/1.1
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -75,7 +75,7 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /hpfeeds/channels
+.. http:get:: /api/hpfeeds/channels
 
    Distinct channel names and count of items.
 
@@ -83,7 +83,7 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
 
    .. sourcecode:: http
 
-       GET /hpfeeds/channels HTTP/1.1
+       GET /api/hpfeeds/channels HTTP/1.1
        Accept: application/json, text/javascript
 
    **Example response**:
@@ -130,7 +130,7 @@ Sessions
 ********
 The Sessions resource located at /sessions contains normalized data from traditional serverside honeypots.
 
-.. http:get:: /sessions
+.. http:get:: /api/sessions
 
    Returns sessions filtered by query parameters.
 
@@ -138,7 +138,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
 
    .. sourcecode:: http
 
-       GET /sessions?honeypot=kippo&source_port=36888 HTTP/1.1
+       GET /api/sessions?honeypot=kippo&source_port=36888 HTTP/1.1
        Host: example.com
        Accept: application/json, text/javascript
 
@@ -203,7 +203,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /sessions/protocols
+.. http:get:: /api/sessions/protocols
 
    Distinct protocols and session count from normalized honeypot sessions.
 
@@ -211,7 +211,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
 
    .. sourcecode:: http
 
-          GET /sessions/protocols HTTP/1.1
+          GET /api/sessions/protocols HTTP/1.1
           Host: example.com
           Accept: application/json, text/javascript
 
@@ -247,7 +247,7 @@ URLS
 ****
 The URLS resource located at /urls, contains urls which potentially are serving malicious content.
 
-.. http:get:: /urls
+.. http:get:: /api/urls
 
    Returns urls serving potential malicious content. If any files has been extracted, an reference to the checksum will be provided.
 
@@ -255,7 +255,7 @@ The URLS resource located at /urls, contains urls which potentially are serving 
 
    .. sourcecode:: http
 
-       GET /urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
+       GET /api/urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
        Host: example.com
        Accept: application/json
 
@@ -334,7 +334,7 @@ Files
 *****
 The Files resource located at /files contains various forms of binaries and code samples collected from HPFeeds channels.
 
-.. http:get:: /files
+.. http:get:: /api/files
 
    Returns matches for the given hash. The following hashes are supported: MD5, SHA1, SHA512
 
@@ -342,7 +342,7 @@ The Files resource located at /files contains various forms of binaries and code
 
    .. sourcecode:: http
 
-       GET /files?hash=549eccb6939274ac9664f0201e4771c4 HTTP/1.1
+       GET /api/files?hash=549eccb6939274ac9664f0201e4771c4 HTTP/1.1
        Host: example.com
        Accept: application/json, text/javascript
 
@@ -376,7 +376,7 @@ The Files resource located at /files contains various forms of binaries and code
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /files/types
+.. http:get:: /api/files/types
 
    Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed Mnemosyne will fallback to identification with libmagic.
 
@@ -384,7 +384,7 @@ The Files resource located at /files contains various forms of binaries and code
 
    .. sourcecode:: http
 
-       GET /files/types HTTP/1.1
+       GET /api/files/types HTTP/1.1
        Host: example.com
        Accept: application/json
 
