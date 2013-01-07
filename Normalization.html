@@ -53,11 +53,16 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Normalization</a><ul>
+<li><a class="reference internal" href="#dataflow">Dataflow</a></li>
 <li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#mongo-collections">Mongo collections</a><ul>
 <li><a class="reference internal" href="#hpfeed">HPFeed</a></li>
 <li><a class="reference internal" href="#session">Session</a></li>
 <li><a class="reference internal" href="#url">URL</a></li>
-<li><a class="reference internal" href="#id1">URL</a></li>
+<li><a class="reference internal" href="#file">File</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mongo-queries">Mongo queries</a></li>
 </ul>
 </li>
 </ul>
@@ -96,36 +101,89 @@
             
   <div class="section" id="normalization">
 <h1>Normalization<a class="headerlink" href="#normalization" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dataflow">
+<h2>Dataflow<a class="headerlink" href="#dataflow" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/graphviz-84fcac8ec0aad6c2447ebdf1d709245da4d588c5.png" alt="digraph G {
+   compound=true;
+
+   subgraph cluster_1 {
+      style=filled;
+      fillcolor=&quot;cornsilk2&quot;
+      node [style=filled];
+      feedpuller [label=&quot;Feedpuller&quot;];
+      normalizer [label=&quot;Normalizer&quot;];
+      webapi [label=&quot;WebAPI&quot;];
+      label = &quot;Mnemosyne&quot;;
+   }
+
+   subgraph cluster_2 {
+      node [shape=box]
+      style=filled;
+      fillcolor=&quot;.7 .3 1.0;
+      node [style=filled];
+      hpfeed [label=&quot;HPFeeds&quot;];
+      file [label=&quot;Files&quot;]
+      url [label=&quot;URLs&quot;]
+      session [label=&quot;Sessions&quot;]
+      label = &quot;Mongo collections&quot;;
+      labelloc = b;
+   }
+
+
+   hpf [label=&quot;hpfeeds.honeycloud.net&quot;];
+   hpf -&gt; feedpuller [color=red];
+   feedpuller -&gt; hpfeed [color=red];
+   hpfeed -&gt; normalizer [color=red];
+   normalizer -&gt; file [color=green];
+   normalizer -&gt; url [color=green];
+   normalizer -&gt; session [color=green];
+
+
+   session -&gt; webapi [ ltail=cluster_2, lhead=cluster_1];
+}" />
+</p>
+</div>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Some text on extractions, attachments and entities here - the big picture.</p>
 <p class="graphviz">
-<img src="_images/graphviz-9129a4e2c5e478839cf8d18d0a29d15b9570df95.png" alt="digraph foo {
-size = &quot;7,7&quot;;
+<img src="_images/graphviz-6bdcccac0bf82aa9116481d4cfdac564fcd0816e.png" alt="digraph foo {
 node [fontsize = &quot;10&quot;, shape = &quot;box&quot;, style=&quot;filled&quot;, fillcolor=&quot;aquamarine&quot;];
 
 rankdir=LR;
 &quot;HPFeed&quot; -&gt; &quot;Session&quot;
 &quot;HPFeed&quot; -&gt; &quot;URL&quot;
 &quot;HPFeed&quot; -&gt; &quot;File&quot;
+
+node [fontsize = &quot;7&quot;, shape = &quot;circle&quot;, style=&quot;filled&quot;, fillcolor=&quot;aquamarine&quot;];
+&quot;Session&quot; -&gt; &quot;protocol&quot;
 }" />
 </p>
 </div>
+<div class="section" id="mongo-collections">
+<h2>Mongo collections<a class="headerlink" href="#mongo-collections" title="Permalink to this headline">¶</a></h2>
+<p>General information on collections here, also a bit about the schemaless database.</p>
 <div class="section" id="hpfeed">
-<h2>HPFeed<a class="headerlink" href="#hpfeed" title="Permalink to this headline">¶</a></h2>
+<h3>HPFeed<a class="headerlink" href="#hpfeed" title="Permalink to this headline">¶</a></h3>
 <p>Detailed description of the HPFeeds entity.</p>
 </div>
 <div class="section" id="session">
-<h2>Session<a class="headerlink" href="#session" title="Permalink to this headline">¶</a></h2>
+<h3>Session<a class="headerlink" href="#session" title="Permalink to this headline">¶</a></h3>
 <p>Detailed description of the Session entity.</p>
 </div>
 <div class="section" id="url">
-<h2>URL<a class="headerlink" href="#url" title="Permalink to this headline">¶</a></h2>
+<h3>URL<a class="headerlink" href="#url" title="Permalink to this headline">¶</a></h3>
 <p>Detailed description of the URL entity.</p>
 </div>
-<div class="section" id="id1">
-<h2>URL<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="file">
+<h3>File<a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h3>
 <p>Detailed description of the File entity.</p>
+</div>
+</div>
+<div class="section" id="mongo-queries">
+<h2>Mongo queries<a class="headerlink" href="#mongo-queries" title="Permalink to this headline">¶</a></h2>
+<p>Some interesting examples on mongo queries in relation to HP.</p>
 </div>
 </div>
 
