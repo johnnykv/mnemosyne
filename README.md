@@ -18,4 +18,4 @@ Mnemosyne currently supports normalization of data from the following channels:
 * thug.events (limited - still under development)
 
 ## Preliminary REST API
-Can be found at [http://johnnykv.github.com/Mnemosyne/WebAPI.html](http://johnnykv.github.com/Mnemosyne/WebAPI.html)
+Can be found at [http://johnnykv.github.com/mnemosyne/WebAPI.html](http://johnnykv.github.com/Mnemosyne/WebAPI.html)
