@@ -255,9 +255,9 @@ The URLS resource located at /urls, contains urls which potentially are serving 
 
    .. sourcecode:: http
 
-       GET /api/urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
-       Host: example.com
-       Accept: application/json
+         GET /api/urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
+         Host: example.com
+         Accept: application/json
 
    **Example response**:
 
@@ -267,62 +267,40 @@ The URLS resource located at /urls, contains urls which potentially are serving 
          Content-Type: application/json
 
          {
-           "urls": [
-             {
-               "_id": "50e5e440cfd26d1f23bfe7b8",
-               "url": "http://xxxyyyzzz.ru/count26.php"
-               "extractions": [
-                 [
-                   {
-                     "timestamp": "2012-12-26T13:51:13.507000",
-                     "hashes": {
-                       "md5": "549exxb6939274deadbeef01e4771c4",
-                       "sha1": "deafbeef20b1e214d35b044483bf04ae1f0a7b4d",
-                       "sha512": "53ece41162e635bd93ea3240c12b4a844974deadbeed30da1f18f8e2892c10a9930a2380673afd4521083b9f952a10b3c54de3be477ab1f11c61a8902c0d435"
-                     }
-                   }
-                 ]
-               ],
-               "hpfeed_ids": [
-                 "50da8260dfe0f7b2c68c2fde"
-               ]
-             },
-             {
-               "_id": "50e5e5a4cfd26d1f23bffce7",
-               "url": "http://putskixxxyy.ru",
-               "extractions": [
-                 [
-                   {
-                     "timestamp": "2013-01-03T13:06:23.917000"
-                     "hashes": {
-                       "md5": "1871bd38d860deafbeefdaae831a9441",
-                       "sha1": "1a57e92deafbeed691000c1c2a77de124bb6402e",
-                       "sha512": "a22306bdf51bd8fe6efb52685287e7edeadbeef5a7880bcba5146ea24e6091c54e7f9579f9ce6a979d40f284b72ee8c316d902925c2fba58b206fb621778bd48"
-                     }
-                   },
-                   {
-                     "timestamp": "2013-01-03T13:06:23.917000"
-                     "hashes": {
-                       "md5": "f8aa58a9deafbeef6c710d2ca078fbd0",
-                       "sha1": "a1455c9ad5ea26a1deafbeef168d2cf810ef421c",
-                       "sha512": "ad887e8d6c31e995deafbeeffb703cce829b648f25dfa8b45725bf33cb924e92849bcb19c89d9b7c09187ac1b4f2872a9a3f8d1bb930fae941eee72a5eb9e13e"
-                     }
-                   },
-                   {
-                     "timestamp": "2013-01-03T13:06:23.917000"
-                     "hashes": {
-                       "md5": "72395deafbeef6fab1e89fd6290300b3",
-                       "sha1": "9d1c5671deadbeeff5ae9335e5764bb9aaae464a",
-                       "sha512": "11a9fa3c3928edeafbeef3be97ef6d2df7876daa8ef859e8060c062eda6465b843192206186e832b2b414dc7b714d1f6a17eaa5f10abeeeec7540f9c9c46bb4a"
-                     }
-                   }
-                 ]
-               ],
-               "hpfeed_ids": [
-                 "50e5745cdfe0f70a59cf8d99"
-               ]
-             }
-           ]
+          "urls": [
+            {
+              "url": "http://ikbyznod.ru/count26.php",
+              "_id": "50ec7f6fc1512da84f113386",
+              "extractions": [
+                {
+                  "timestamp": "2012-12-26T13:51:13.507000",
+                  "hashes": {
+                    "md5": "549eccb6939274ac9664f0201e4771c4",
+                    "sha1": "d337b47020b1e214d35b044483bf04ae1f0a7b4d",
+                    "sha512": "53ece48162e635bd93ea3240c12b4a844974de0a75f3b30da1f18f8e2892c10a9930a2380673afd4521083b9f952a10b3c54de3be477ab1f11c61a8902c0d435"
+                  }
+                }
+              ],
+              "hpfeeds_ids": [
+                "50da8260dfe0f7b2c68c2fde"
+              ]
+            },
+            {
+              "url": "http://www.ajy-aa.xx/images/M_images/t?%0D?",
+              "_id": "50ec7f70c1512da84f113387",
+              "hpfeeds_ids": [
+                "50dad02bdfe0f7b4f48cd434",
+                "50dad0a6dfe0f7b4f48cd435"
+              ]
+            },
+            {
+              "url": "http://www.xxyycatab.com.qq",
+              "_id": "50ec7f70c1512da84f113388",
+              "hpfeeds_ids": [
+                "50dada38dfe0f7b53ceb8383"
+              ]
+            }
+          ]
          }
 
    :query url_regex: PCRE regex which will be tried against the stored url (optional).

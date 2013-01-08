@@ -31,18 +31,25 @@ class MnemoDB(object):
         self.db.file.ensure_index('hashes', unique=True)
 
     def insert_normalized(self, ndata, original_hpfeed):
+        hpfeed_id = original_hpfeed['_id']
         for item in ndata:
             #every root item is equal to collection name
             for collection, document in item.items():
                     if collection is 'url':
-                        push_dict = {'hpfeed_ids': original_hpfeed['_id']}
                         if 'extractions' in document:
-                            push_dict['extractions'] = document['extractions']
-                            self.db[collection].update({'url': document['url']}, {'$push': push_dict}, upsert=True)
+                            self.db[collection].update({'url': document['url']},
+                                                       {'$pushAll': {'extractions': document['extractions']},
+                                                        '$push': {'hpfeeds_ids': hpfeed_id}},
+                                                        upsert=True)
+                        else:
+                            self.db[collection].update({'url': document['url']}, {'$push': {'hpfeeds_ids': hpfeed_id}},
+                                                    upsert=True)
                     elif collection is 'file':
-                        self.db[collection].update({'hashes.sha512': document['hashes']['sha512']}, {'$set': document, '$push': {'hpfeed_ids': original_hpfeed['_id']}}, upsert=True)
+                        self.db[collection].update({'hashes.sha512': document['hashes']['sha512']},
+                                                   {'$set': document, '$push': {'hpfeed_ids': hpfeed_id}},
+                                                    upsert=True)
                     elif collection is 'session':
-                        document['hpfeed_id'] = original_hpfeed['_id']
+                        document['hpfeed_id'] = hpfeed_id
                         self.db[collection].insert(document)
                     else:
                         raise Warning('{0} is not a know collection type.'.format(collection))
