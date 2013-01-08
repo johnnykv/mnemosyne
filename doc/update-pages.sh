@@ -16,6 +16,7 @@ git symbolic-ref HEAD refs/heads/gh-pages
 rm .git/index
 git clean -fdx
 cp -R $TMP_HTML/* $TMP_REPO
+touch $TMP_HTML/.nojekyll
 git add .
 git commit -a -m "Updated docs"
 git push origin gh-pages
