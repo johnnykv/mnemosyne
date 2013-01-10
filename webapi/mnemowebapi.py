@@ -86,7 +86,7 @@ class MnemoWebAPI(Bottle):
         if c_result != None:
             result = c_result
         else:
-            result = MnemoWebAPI.simple('hpfeed', 'channel')
+            result = MnemoWebAPI.simple_group('hpfeed', 'channel')
             MnemoWebAPI.cache_it(result, request.path, 30)
         return MnemoWebAPI.jsonify(result, response)
 
