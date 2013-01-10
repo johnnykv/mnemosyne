@@ -21,12 +21,12 @@ from pymongo import MongoClient
 from bson import ObjectId
 from bson.errors import InvalidId
 from bson.code import Code
-from datetime import datetime, date
-
-import bson
+from datetime import datetime, date, timedelta
 
 import json
 import uuid
+
+import logging
 
 
 class MnemoWebAPI(Bottle):
@@ -40,6 +40,8 @@ class MnemoWebAPI(Bottle):
 
     def start_listening(self, host, port):
         run(host=host, port=port, debug=False, server='paste', quiet=True)
+
+    cache = {}
 
     @route('/api/hpfeeds/')
     @route('/api/hpfeeds')
@@ -80,7 +82,12 @@ class MnemoWebAPI(Bottle):
                       {"count": 4, "name": "glastopf.files"},
                        "count": 511, "name": "thug.events"}]
         """
-        result = MnemoWebAPI.simpel_group('hpfeed', 'channel')
+        c_result = MnemoWebAPI.server_cache(request.path)
+        if c_result != None:
+            result = c_result
+        else:
+            result = MnemoWebAPI.simple('hpfeed', 'channel')
+            MnemoWebAPI.cache_it(result, request.path, 30)
         return MnemoWebAPI.jsonify(result, response)
 
     @route('/api/sessions')
@@ -122,7 +129,7 @@ class MnemoWebAPI(Bottle):
                        {"count": 125, "protocol": "ssh},
                        {"count": 74,  "protocol": "imap}]}
         """
-        result = MnemoWebAPI.simpel_group('session', 'protocol')
+        result = MnemoWebAPI.simple_group('session', 'protocol')
         return MnemoWebAPI.jsonify(result, response)
 
     @route('/api/urls')
@@ -184,19 +191,23 @@ class MnemoWebAPI(Bottle):
 
     @route('/api/files/types')
     def files_types():
-        result = MnemoWebAPI.simpel_group('file', 'content_guess')
+        result = MnemoWebAPI.simple_group('file', 'content_guess')
         return MnemoWebAPI.jsonify(result, response)
 
     @route('/api/helpers/get_hpfeeds_stats')
     def get_hpfeed_stats():
-        result = MnemoWebAPI.db.hpfeed.aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
-        del result['ok']
-        for item in result['result']:
-            d = datetime.strptime(str(item['_id']), '%j')
-            #carefull around newyear! ;-)
-            d = d.replace(date.today().year)
-            item['_id'] = d
-
+        c_result = MnemoWebAPI.server_cache(request.path)
+        if c_result != None:
+            result = c_result
+        else:
+            result = MnemoWebAPI.db.hpfeed.aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
+            del result['ok']
+            for item in result['result']:
+                d = datetime.strptime(str(item['_id']), '%j')
+                #carefull around newyear! ;-)
+                d = d.replace(date.today().year)
+                item['_id'] = d
+                MnemoWebAPI.cache_it(result, request.path, 180)
         return MnemoWebAPI.jsonify(result, response)
 
     @get('/')
@@ -208,8 +219,23 @@ class MnemoWebAPI(Bottle):
     def static(filename):
         return static_file(filename, root=MnemoWebAPI.static_file_path)
 
+    #think before caching routes!
     @staticmethod
-    def simpel_group(collection, attribute):
+    def cache_it(data, route, expire_s):
+        MnemoWebAPI.cache[route] = {'data': data, 'expires': datetime.now() + timedelta(seconds=expire_s)}
+
+    @staticmethod
+    def server_cache(route):
+        if route in MnemoWebAPI.cache:
+            logging.debug('Route in cache')
+            item = MnemoWebAPI.cache[route]
+            if datetime.now() < item['expires']:
+                logging.debug('Returning cache for {0}'.format(route))
+                return item['data']
+        return None
+
+    @staticmethod
+    def simple_group(collection, attribute):
         """
         Helper method to ease group_by operations.
         """
