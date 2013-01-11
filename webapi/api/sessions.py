@@ -1,0 +1,64 @@
+# Copyright (C) 2013 Johnny Vestergaard <jkv@unixcluster.dk>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+from bottle import response, request, get
+from bson import ObjectId
+from helpers import simple_group, jsonify
+
+
+@get('/api/sessions')
+def sessions_get_by_query(mongodb):
+
+    query_keys = request.query.keys()
+    query_dict = {}
+
+    mongo_keys = set(('id', '_id', 'protocol', 'source_ip', 'source_port', 'destination_ip',
+                      'destination_port', 'honeypot'))
+
+    #intersection
+    common_keys = (set(query_keys) & mongo_keys)
+
+    for item in common_keys:
+        if item.endswith('_id'):
+            query_dict[item] = ObjectId(request.query[item])
+        elif item is 'id':
+            query_dict['_' + item] = ObjectId(request.query[item])
+        elif item.endswith('_port'):
+            query_dict[item] = int(request.query[item])
+        else:
+            query_dict[item] = request.query[item]
+
+    if 'limit' in query_keys:
+        limit = int(request.query.limit)
+    else:
+        limit = 50
+
+    result = list(mongodb['session'].find(query_dict).limit(limit))
+    return jsonify({'sessions': result}, response)
+
+
+@get('/api/sessions/protocols')
+def session_protocols(mongodb):
+    """
+    Returns a grouped list of all protocols intercepted.
+    Example:
+    {"protocols": [{"count": 680, "protocol": "http"},
+                   {"count": 125, "protocol": "ssh},
+                   {"count": 74,  "protocol": "imap}]}
+    """
+    result = simple_group('session', 'protocol', mongodb)
+    return jsonify(result, response)

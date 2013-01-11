@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Johnny Vestergaard <jkv@unixcluster.dk>
+# Copyright (C) 2013 Johnny Vestergaard <jkv@unixcluster.dk>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,24 +15,7 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import bottle
-from bottle import run, static_file, get, install
-from bottle.ext import mongo
-
-from api import aux, files, hpfeeds, sessions, urls
-
-
-class MnemoWebAPI():
-    """Exposes raw and normalized data from hpfeeds through a RESTful api"""
-
-    def __init__(self, datebase_name, static_file_path=None):
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
-        install(plugin)
-        #if static_file_path != None:
-
-    def start_listening(self, host, port):
-
-        run(host=host, port=port, debug=False, server='paste', quiet=True)
+from bottle import get, static_file
 
 
 @get('/')
