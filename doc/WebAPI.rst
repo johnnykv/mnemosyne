@@ -75,56 +75,6 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /api/hpfeeds/channels
-
-   Distinct channel names and count of items.
-
-   **Example request**:
-
-   .. sourcecode:: http
-
-       GET /api/hpfeeds/channels HTTP/1.1
-       Accept: application/json, text/javascript
-
-   **Example response**:
-
-   .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "channels": [
-          {
-            "count": 3165,
-            "channel": "glastopf.events"
-          },
-          {
-            "count": 6,
-            "channel": "thug.files"
-          },
-          {
-            "count": 24,
-            "channel": "thug.events"
-          },
-          {
-            "count": 68,
-            "channel": "glastopf.files"
-          },
-          {
-            "count": 728,
-            "channel": "kippo.sessions"
-          },
-          {
-            "count": 70035,
-            "channel": "dionaea.capture"
-          },
-          {
-            "count": 61,
-            "channel": "mwbinary.dionaea.sensorunique"
-          }
-        ]
-      }
 
 Sessions
 ********
@@ -419,3 +369,61 @@ The Files resource located at /files contains various forms of binaries and code
          }
 
    :statuscode 200: no error.
+
+Aux
+*****
+The Aux (Auxiliary) resource located at /api/aux...
+
+
+.. http:get:: /api/aux/get_hpfeeds_channels
+
+   Distinct channel names and count of items.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+       GET /api/aux/get_hpfeeds_channels HTTP/1.1
+       Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "channels": [
+          {
+            "count": 3165,
+            "channel": "glastopf.events"
+          },
+          {
+            "count": 6,
+            "channel": "thug.files"
+          },
+          {
+            "count": 24,
+            "channel": "thug.events"
+          },
+          {
+            "count": 68,
+            "channel": "glastopf.files"
+          },
+          {
+            "count": 728,
+            "channel": "kippo.sessions"
+          },
+          {
+            "count": 70035,
+            "channel": "dionaea.capture"
+          },
+          {
+            "count": 61,
+            "channel": "mwbinary.dionaea.sensorunique"
+          }
+        ]
+      }
+
+
