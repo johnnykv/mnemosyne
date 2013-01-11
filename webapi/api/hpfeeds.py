@@ -52,15 +52,3 @@ def hpfeeds(mongodb):
     return jsonify({'hpfeeds': result}, response)
 
 
-@get('/api/hpfeeds/channels')
-def channels(mongodb):
-    """
-    Returns a list of channel names and number of events in the immutable hpfeeds store.
-    Example:
-    {"channels": [{"count": 1206, "name": "glastopf.events"},
-                  {"count": 4, "name": "glastopf.files"},
-                   "count": 511, "name": "thug.events"}]
-    """
-    print mongodb
-    result = simple_group('hpfeed', 'channel', mongodb)
-    return jsonify(result, response)

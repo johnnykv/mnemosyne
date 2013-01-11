@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from bottle import response, get
-from helpers import jsonify
+from helpers import jsonify, simple_group
 from datetime import date, datetime
 
 
@@ -28,5 +28,21 @@ def get_hpfeed_stats(mongodb):
         d = datetime.strptime(str(item['_id']), '%j')
         #carefull around newyear! ;-)
         d = d.replace(date.today().year)
-        item['_id'] = d
+        item['date'] = d
+        del item['_id']
+        #item['_id'] = d
+    return jsonify(result, response)
+
+
+@get('/api/aux/get_hpfeeds_channels')
+def get_hpfeed_channels(mongodb):
+    """
+    Returns a list of channel names and number of events in the immutable hpfeeds store.
+    Example:
+    {"channels": [{"count": 1206, "channel": "glastopf.events"},
+                  {"count": 4, "channel": "glastopf.files"},
+                   "count": 511, "channel": "thug.events"}]
+    """
+    print mongodb
+    result = simple_group('hpfeed', 'channel', mongodb)
     return jsonify(result, response)
