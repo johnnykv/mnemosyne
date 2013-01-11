@@ -23,7 +23,7 @@ import bottle
 import unittest
 import uuid
 from pymongo import MongoClient
-from bottle import install
+from bottle import install, uninstall
 from bottle.ext import mongo
 from webapi.api import app
 from datetime import datetime
@@ -57,9 +57,14 @@ class HPFeedsTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=HPFeedsTest._dbname, json_mongo=True)
-        install(plugin)
         cls.sut = TestApp(app.app)
+
+        for plug in bottle.app().plugins:
+            if isinstance(plug, bottle.ext.mongo.MongoPlugin):
+                uninstall(plug)
+
+        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=cls._dbname, json_mongo=True)
+        install(plugin)
 
     @classmethod
     def tearDownClass(cls):
