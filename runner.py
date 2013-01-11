@@ -19,6 +19,10 @@ import gevent
 import gevent.monkey
 gevent.monkey.patch_all()
 
+#make sure we can find bottle.py
+import sys
+sys.path.append('webapi/')
+
 import logging
 
 from ConfigParser import ConfigParser

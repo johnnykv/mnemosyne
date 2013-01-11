@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from bottle import route, run, abort, Bottle, request, response, static_file, get
+from bottle.ext import mongo
 
 from pymongo import MongoClient
 from bson import ObjectId
@@ -37,6 +38,8 @@ class MnemoWebAPI(Bottle):
         conn = MongoClient()
         MnemoWebAPI.db = conn[datebase_name]
         MnemoWebAPI.static_file_path = static_file_path
+        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
+        install(plugin)
 
     def start_listening(self, host, port):
         run(host=host, port=port, debug=False, server='paste', quiet=True)
