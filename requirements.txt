@@ -1,4 +1,4 @@
-python-magic
+#python-magic
 gevent
 pymongo
 paste
