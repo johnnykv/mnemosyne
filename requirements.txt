@@ -1,0 +1,5 @@
+python-magic
+gevent
+pymongo
+paste
+bottle-mongodb
