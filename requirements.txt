@@ -1,3 +1,4 @@
+webtest
 python-magic
 gevent
 pymongo
