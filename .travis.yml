@@ -4,6 +4,7 @@ python:
 before_install:
  - "sudo apt-get update"
  - "sudo apt-get install python-dev libevent-dev"
+ - "sudo apt-get install python-nose"
 # command to install dependencies
 install:
   - "sudo pip install -r requirements.txt --use-mirrors"
