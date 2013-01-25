@@ -69,6 +69,11 @@ class GlastopfTests(unittest.TestCase):
         #Test request
         self.assertEqual(expected_output[0]['session']['session_http']['request'], actual[0]['session']['session_http']['request'])
 
+        #test dork response
+        self.assertEqual(1, actual[0]['dork']['count'])
+        self.assertEqual('/someURL', actual[0]['dork']['dork'])
+        self.assertTrue('timestamp' in actual[0]['dork'])
+
     def test_make_url_actual(self):
         """
         Test if a valid, but wierd, http request can be parsed to a valid URL.
@@ -130,6 +135,32 @@ class GlastopfTests(unittest.TestCase):
 
         expected_url = 'http://a.b.c.d/shop.pl/page;thisisaparam?a=b&c=d'
         self.assertEqual(expected_url, actual)
+
+    def test_make_dork(self):
+
+        input_dict =    {'request':
+                        {'body': '', 'parameters': [], 'url': '/shop.pl/page;thisisaparam?a=b&c=d',
+                         'header':
+                        {'Accept-Language': 'en-US', 'Accept-Encoding': 'gzip',
+                         'Host': 'a.b.c.d', 'Accept': '*/*', 'User-Agent':
+                         'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+                         'Connection': 'close'},
+                         'version': 'HTTP/1.1', 'method': 'GET'}}
+
+        #input and expected output
+        in_url_out_dork = ( ('http://somesite.pp/nillermanden.php', '/nillermanden.php'),
+                            ('http://somesite.com/jinxed', '/jinxed'),
+                            ('http://somesite.com/jinxed?a=b&c=d', '/jinxed'),
+                            ('/goodbeer', '/goodbeer'))
+
+        sut = glastopf_events.GlastopfEvents()
+
+        for (input_, expected_output) in in_url_out_dork:
+            input_dict['request']['url'] = input_
+            result = sut.make_dork(input_dict)
+            self.assertEqual(result['dork'], expected_output)
+            self.assertEqual(result['count'], 1)
+            self.assertTrue ('timestamp' in result)
 
 if __name__ == '__main__':
     unittest.main()

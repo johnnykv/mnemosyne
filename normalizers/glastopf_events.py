@@ -17,6 +17,7 @@
 
 from basenormalizer import BaseNormalizer
 from datetime import datetime
+from urlparse import urlparse
 import json
 
 
@@ -29,7 +30,19 @@ class GlastopfEvents(BaseNormalizer):
 
         relations['session'] = self.make_session(o_data)
         relations['session']['session_http'] = self.make_session_http(o_data)
+        dork = self.make_dork(o_data)
+        if dork:
+            print dork
+            relations['dork'] = dork
+
         return [relations]
+
+    def make_dork(self, data):
+        dork = urlparse(self.make_url(data)).path
+        if dork:
+            return {'dork' : dork,
+                     'timestamp': datetime.utcnow(),
+                     'count': 1}
 
     def make_session(self, data):
         session = {}
