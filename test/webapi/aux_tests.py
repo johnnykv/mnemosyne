@@ -56,7 +56,7 @@ class AuxTest(unittest.TestCase):
             entry = {'channel': '{0}'.format(channel),
                      'ident': 'dummy_ident',
                      'payload': 'dummy_payload',
-                     'timestamp': datetime.strptime(str(day), '%j'),
+                     'timestamp': datetime.strptime(str(day), '%j').replace(year=2013),
                      'normalized': False}
             insert_data.append(entry)
 
