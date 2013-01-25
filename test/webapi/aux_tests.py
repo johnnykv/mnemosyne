@@ -23,7 +23,7 @@ import bottle
 import unittest
 import uuid
 from pymongo import MongoClient
-from bottle import install, uninstall
+from bottle import install, uninstall, debug
 from bottle.ext import mongo
 from webapi.api import app
 from datetime import datetime
@@ -39,7 +39,6 @@ class AuxTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         cls._dbname = str(uuid.uuid4())
         insert_data = []
 
@@ -65,8 +64,9 @@ class AuxTest(unittest.TestCase):
 
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
-
-        cls.sut = TestApp(app.app)
+        a = app.app
+        a.catchall = False
+        cls.sut = TestApp(a)
 
         for plug in bottle.app().plugins:
             if isinstance(plug, bottle.ext.mongo.MongoPlugin):
