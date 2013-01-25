@@ -22,6 +22,7 @@ gevent.monkey.patch_all()
 #make sure we can find bottle.py
 import sys
 sys.path.append('webapi/')
+import os
 
 import logging
 
@@ -38,6 +39,9 @@ request_logger = logging.getLogger('wsgi')
 
 
 def parse_config(config_file):
+    if not os.path.isfile(config_file):
+        sys.exit("Could not find configuration file: {0}".format(config_file))
+
     parser = ConfigParser()
     parser.read(config_file)
 
