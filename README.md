@@ -1,4 +1,4 @@
-Mnemosyne
+Mnemosyne [![Build Status](https://travis-ci.org/johnnykv/mnemosyne.png?branch=master)](https://travis-ci.org/johnnykv/mnemosyne)
 =========
 ## About
 Mnemosyne has three main objectives:
