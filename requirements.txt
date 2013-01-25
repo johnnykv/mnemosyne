@@ -1,6 +1,5 @@
-webtest
-python-magic
-gevent
 pymongo
+gevent
+python-magic
 paste
 bottle-mongodb
