@@ -3,3 +3,4 @@ gevent
 python-magic
 paste
 bottle-mongodb
+webtest
