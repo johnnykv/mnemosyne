@@ -26,7 +26,7 @@ class MnemoDB(object):
     def __init__(self, database_name):
         conn = MongoClient()
         self.db = conn[database_name]
-        self.db.hpfeed.ensure_index('normalized', unique=True)
+        self.db.hpfeed.ensure_index('normalized', unique=False)
         self.db.url.ensure_index('url', unique=True)
         self.db.file.ensure_index('hashes', unique=True)
 
