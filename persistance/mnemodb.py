@@ -51,6 +51,11 @@ class MnemoDB(object):
                     elif collection is 'session':
                         document['hpfeed_id'] = hpfeed_id
                         self.db[collection].insert(document)
+                    elif collection is 'dork':
+                        self.db[collection].update({'content': document['content'], 'type': document['type']},
+                                                   {'$set': {'lasttime': document['timestamp']}},
+                                                   {'$inc': {'count': document['count']}},
+                                                   upset=True)
                     else:
                         raise Warning('{0} is not a know collection type.'.format(collection))
         self.db.hpfeed.update({'_id': original_hpfeed['_id']}, {"$set": {'normalized': True}})
