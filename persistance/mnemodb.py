@@ -58,6 +58,7 @@ class MnemoDB(object):
                                                    upset=True)
                     else:
                         raise Warning('{0} is not a know collection type.'.format(collection))
+        #If we end up here everything if ok - setting hpfeed entry to normalized
         self.db.hpfeed.update({'_id': original_hpfeed['_id']}, {"$set": {'normalized': True}})
 
     def insert_hpfeed(self, ident, channel, payload):
