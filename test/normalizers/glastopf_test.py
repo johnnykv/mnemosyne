@@ -71,15 +71,16 @@ class GlastopfTests(unittest.TestCase):
 
         #test dork response
         self.assertEqual(1, actual[0]['dork']['count'])
-        self.assertEqual('/someURL', actual[0]['dork']['dork'])
+        self.assertEqual('inurl', actual[0]['dork']['type'])
+        self.assertEqual('/someURL', actual[0]['dork']['content'])
         self.assertTrue('timestamp' in actual[0]['dork'])
 
     def test_make_url_actual(self):
         """
-        Test if a valid, but wierd, http request can be parsed to a valid URL.
+        Test if a valid http request can be parsed to a valid URL.
         """
 
-        #Actual (and wierd) request intercepted by glastopf. (Host sanitized!)
+        #Actual request intercepted by glastopf. (Host sanitized!)
         input_dict = {'request':
                      {'body': '', 'parameters': ['/shop.pl/page'], 'url': '/shop.pl/page',
                       'header':
@@ -158,7 +159,8 @@ class GlastopfTests(unittest.TestCase):
         for (input_, expected_output) in in_url_out_dork:
             input_dict['request']['url'] = input_
             result = sut.make_dork(input_dict)
-            self.assertEqual(result['dork'], expected_output)
+            self.assertEqual(result['content'], expected_output)
+            self.assertEqual(result['type'], 'inurl')
             self.assertEqual(result['count'], 1)
             self.assertTrue ('timestamp' in result)
 

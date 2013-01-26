@@ -40,7 +40,8 @@ class GlastopfEvents(BaseNormalizer):
     def make_dork(self, data):
         dork = urlparse(self.make_url(data)).path
         if dork:
-            return {'dork' : dork,
+            return {'content' : dork,
+                    'type': 'inurl',
                      'timestamp': datetime.utcnow(),
                      'count': 1}
 
