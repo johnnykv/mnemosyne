@@ -158,7 +158,7 @@ class GlastopfTests(unittest.TestCase):
 
         for (input_, expected_output) in in_url_out_dork:
             input_dict['request']['url'] = input_
-            result = sut.make_dork(input_dict)
+            result = sut.make_dork(input_dict, datetime.now())
             self.assertEqual(result['content'], expected_output)
             self.assertEqual(result['type'], 'inurl')
             self.assertEqual(result['count'], 1)
