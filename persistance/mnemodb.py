@@ -15,11 +15,11 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import logging
+import string
 from pymongo import MongoClient
 from datetime import datetime
-import logging
 from bson.errors import InvalidStringData
-import string
 
 
 class MnemoDB(object):
@@ -29,9 +29,9 @@ class MnemoDB(object):
         self.db.hpfeed.ensure_index('normalized', unique=False)
         self.db.url.ensure_index('url', unique=True)
         self.db.file.ensure_index('hashes', unique=True)
+        self.db.dork.ensure_index('content', unique=False)
 
-    def insert_normalized(self, ndata, original_hpfeed):
-        hpfeed_id = original_hpfeed['_id']
+    def insert_normalized(self, ndata, hpfeed_id):
         for item in ndata:
             #every root item is equal to collection name
             for collection, document in item.items():
@@ -53,13 +53,13 @@ class MnemoDB(object):
                     self.db[collection].insert(document)
                 elif collection is 'dork':
                     self.db[collection].update({'content': document['content'], 'type': document['type']},
-                                               {'$set': {'lasttime': document['timestamp']}},
-                                               {'$inc': {'count': document['count']}},
-                                               upset=True)
+                                               {'$set': {'lasttime': document['timestamp']},
+                                                '$inc': {'count': document['count']}},
+                                               upsert=True)
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
-            #If we end up here everything if ok - setting hpfeed entry to normalized
-        self.db.hpfeed.update({'_id': original_hpfeed['_id']}, {"$set": {'normalized': True}})
+        #if we end up here everything if ok - setting hpfeed entry to normalized
+        self.db.hpfeed.update({'_id': hpfeed_id}, {"$set": {'normalized': True}})
 
     def insert_hpfeed(self, ident, channel, payload):
         #thanks rep!

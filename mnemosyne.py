@@ -67,7 +67,7 @@ class Mnemosyne(object):
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
                         norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel, hpfeed_item['timestamp'])
-                        self.database.insert_normalized(norm, hpfeed_item)
+                        self.database.insert_normalized(norm, hpfeed_item['_id'])
                         insertions += 1
                     else:
                         if channel in chan_no_normalizer:
