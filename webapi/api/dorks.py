@@ -23,7 +23,7 @@ from app import app
 
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
-    result = list(mongodb['dorks'].find())
+    result = list(mongodb['dork'].find())
     for entry in result:
         entry['firsttime'] = entry['_id'].generation_time
         del entry['_id']

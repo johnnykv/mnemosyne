@@ -25,7 +25,6 @@ class MnemoWebAPI():
 
     def __init__(self, datebase_name, static_file_path=None):
         mongoplug.plug = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
-        print mongoplug.plug
         install(mongoplug.plug)
         from webapi.api import app as develapp
         mount('/api/', develapp.app)
@@ -35,11 +34,11 @@ class MnemoWebAPI():
         run(host=host, port=port, debug=True, server='paste', quiet=True)
 
 
-#@get('/')
-#def get_index():
-#    return static_file('index.html', root=MnemoWebAPI.static_file_path)
+@get('/')
+def get_index():
+    return static_file('index.html', root=MnemoWebAPI.static_file_path)
 
 
-#@get('/<filename:path>')
-#def static(filename):
-#    return static_file(filename, root=MnemoWebAPI.static_file_path)
+@get('/<filename:path>')
+def static(filename):
+    return static_file(filename, root=MnemoWebAPI.static_file_path)

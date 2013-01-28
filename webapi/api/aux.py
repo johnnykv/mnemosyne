@@ -44,6 +44,5 @@ def get_hpfeed_channels(mongodb):
                   {"count": 4, "channel": "glastopf.files"},
                    "count": 511, "channel": "thug.events"}]
     """
-    print mongodb
     result = simple_group('hpfeed', 'channel', mongodb)
     return jsonify(result, response)

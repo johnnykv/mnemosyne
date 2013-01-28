@@ -38,7 +38,6 @@ def get_files(mongodb):
         elif hash_length is 40:
             query_dict['hashes.sha1'] = request.query['hash']
         elif hash_length is 32:
-            print "md5"
             query_dict['hashes.md5'] = request.query['hash']
         else:
             abort((400), '{0} could not be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')

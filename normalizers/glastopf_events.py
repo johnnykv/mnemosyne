@@ -32,7 +32,6 @@ class GlastopfEvents(BaseNormalizer):
         relations['session']['session_http'] = self.make_session_http(o_data)
         dork = self.make_dork(o_data)
         if dork:
-            print dork
             relations['dork'] = dork
 
         return [relations]
