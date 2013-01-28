@@ -25,7 +25,7 @@ from pymongo import MongoClient
 from datetime import datetime
 
 
-class MnemodbTest(unittest.TestCase):
+class MnemodbTests(unittest.TestCase):
     def setUp(self):
         """
         Generate new db name for each test.
@@ -65,16 +65,19 @@ class MnemodbTest(unittest.TestCase):
 
         #prepare and insert dummy values directly into the hpfeed collection
         insert_items = [
-            {'channel': 'channel1', 'ident': 'ident1', 'payload': 'payload1', 'timestamp': datetime.utcnow(), 'normalized': True},
-            {'channel': 'channel2', 'ident': 'ident2', 'payload': 'payload2', 'timestamp': datetime.utcnow(), 'normalized': True},
-            {'channel': 'channel3', 'ident': 'ident3', 'payload': 'payload3', 'timestamp': datetime.utcnow(), 'normalized': True}
+            {'channel': 'channel1', 'ident': 'ident1', 'payload': 'payload1', 'timestamp': datetime.utcnow(),
+             'normalized': True},
+            {'channel': 'channel2', 'ident': 'ident2', 'payload': 'payload2', 'timestamp': datetime.utcnow(),
+             'normalized': True},
+            {'channel': 'channel3', 'ident': 'ident3', 'payload': 'payload3', 'timestamp': datetime.utcnow(),
+             'normalized': True}
         ]
+
         for item in insert_items:
             db['hpfeed'].insert(item)
-        #create a few dummy collection that we expect to get dropped
+            #create a few dummy collection that we expect to get dropped
         db['somecollection1'].insert({'something': 'something'})
         db['somecollection2'].insert({'something': 'something'})
-
 
         sut = mnemodb.MnemoDB(self.dbname)
         #This is the function we are testing
@@ -85,6 +88,39 @@ class MnemodbTest(unittest.TestCase):
         normalized_true = list(db['hpfeed'].find({'normalized': True}))
         #we expect that  normalized is set to False after the call to reset_normalized
         self.assertEqual(0, len(normalized_true))
+
+    def test_insert_dorks(self):
+        sut = mnemodb.MnemoDB(self.dbname)
+
+        insert_items = [
+            {'dork':
+                 {'type': 'inurl', 'content': '/somedork.php', 'count': 1, 'timestamp': datetime.now()}},
+            {'dork':
+                 {'type': 'inurl', 'content': '/somedork.php', 'count': 1, 'timestamp': datetime.now()}},
+            {'dork':
+                 {'type': 'inurl', 'content': '/otherdork.php', 'count': 1, 'timestamp': datetime.now()}},
+        ]
+
+        sut.insert_normalized(insert_items, '1234')
+
+        db = MongoClient('localhost', 27017)[self.dbname]
+
+        #we expect two entries in the database
+        db_entries = db['dork'].find().count()
+        self.assertEqual(2, db_entries)
+
+        result_one = db['dork'].find_one({'content': '/somedork.php'})
+        self.assertIn('lasttime', result_one)
+        self.assertEqual(2, result_one['count'])
+        self.assertEqual('inurl', result_one['type'])
+
+        result_one = db['dork'].find_one({'content': '/otherdork.php'})
+        self.assertIn('lasttime', result_one)
+        self.assertEqual(1, result_one['count'])
+        self.assertEqual('inurl', result_one['type'])
+
+
+
 
 
 
