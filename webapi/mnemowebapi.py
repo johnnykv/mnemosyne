@@ -34,11 +34,12 @@ class MnemoWebAPI():
         run(host=host, port=port, debug=True, server='paste', quiet=True)
 
 
-@get('/')
-def get_index():
+#TODO: Make api have precedence.
+#@get('/')
+#def get_index():
     return static_file('index.html', root=MnemoWebAPI.static_file_path)
 
 
-@get('/<filename:path>')
-def static(filename):
-    return static_file(filename, root=MnemoWebAPI.static_file_path)
+#@get('/<filename:path>')
+#def static(filename):
+#    return static_file(filename, root=MnemoWebAPI.static_file_path)
