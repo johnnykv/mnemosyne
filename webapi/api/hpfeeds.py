@@ -15,14 +15,15 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import bottle
 from bottle import get, abort, request, response
 from bson import ObjectId
 from bson.errors import InvalidId
-from helpers import simple_group, jsonify
+from helpers import jsonify
+from app import app
 
-
-@get('/api/hpfeeds/')
-@get('/api/hpfeeds')
+@app.get('/hpfeeds/')
+@app.get('/hpfeeds')
 def hpfeeds(mongodb):
     query_keys = request.query.keys()
     query_dict = {}

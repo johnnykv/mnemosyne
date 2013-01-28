@@ -17,10 +17,11 @@
 
 from bottle import get, abort, request, response
 from helpers import jsonify
+from app import app
 
 
-@get('/api/urls')
-@get('/api/urls/')
+@app.get('/urls')
+@app.get('/urls/')
 def urls(mongodb):
 
     query_keys = request.query.keys()

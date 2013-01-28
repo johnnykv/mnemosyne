@@ -15,28 +15,15 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#make sure we can find bottle.py
-import sys
-sys.path.append('webapi/')
-
-import bottle
 import unittest
 import uuid
-from pymongo import MongoClient
-from bottle import install, uninstall, debug
-from bottle.ext import mongo
-from webapi.api import app
-from datetime import datetime
-
-from webtest import TestApp
-
-from datetime import datetime
-
+import helpers
 import json
+from pymongo import MongoClient
 
+from datetime import datetime
 
 class DorkTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls._dbname = str(uuid.uuid4())
@@ -53,23 +40,15 @@ class DorkTest(unittest.TestCase):
             entry = {'type': type_,
                      'content': content,
                      'count': count,
-                     'lasttime': timestamp }
+                     'lasttime': timestamp}
             insert_data.append(entry)
 
         c = MongoClient('localhost', 27017)
 
         for item in insert_data:
             c[cls._dbname].dorks.insert(item)
-        a = app.app
-        a.catchall = False
-        cls.sut = TestApp(a)
 
-        for plug in bottle.app().plugins:
-            if isinstance(plug, bottle.ext.mongo.MongoPlugin):
-                uninstall(plug)
-
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=cls._dbname, json_mongo=True)
-        install(plugin)
+        cls.sut = helpers.prepare_app(cls._dbname)
 
     @classmethod
     def tearDownClass(cls):
@@ -77,10 +56,9 @@ class DorkTest(unittest.TestCase):
         connection.drop_database(cls._dbname)
 
     def test_get_dorks(self):
-
         sut = DorkTest.sut
 
-        res = sut.get('/api/aux/dorks')
+        res = sut.get('/aux/dorks')
         result = json.loads(res.body)['dorks']
 
         expected = [{'content': '/jamesBond.php', 'count': 1, 'type': 'inurl',

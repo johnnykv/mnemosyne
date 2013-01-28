@@ -16,30 +16,30 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import bottle
-from bottle import run, static_file, get, install
+import mongoplug
+from bottle import run, static_file, get, install, Bottle, mount
 from bottle.ext import mongo
-
-from api import aux, files, hpfeeds, sessions, urls
-
 
 class MnemoWebAPI():
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
     def __init__(self, datebase_name, static_file_path=None):
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
-        install(plugin)
+        mongoplug.plug = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
+        print mongoplug.plug
+        install(mongoplug.plug)
+        from webapi.api import app as develapp
+        mount('/api/', develapp.app)
         #if static_file_path != None:
 
     def start_listening(self, host, port):
-
-        run(host=host, port=port, debug=False, server='paste', quiet=True)
-
-
-@get('/')
-def get_index():
-    return static_file('index.html', root=MnemoWebAPI.static_file_path)
+        run(host=host, port=port, debug=True, server='paste', quiet=True)
 
 
-@get('/<filename:path>')
-def static(filename):
-    return static_file(filename, root=MnemoWebAPI.static_file_path)
+#@get('/')
+#def get_index():
+#    return static_file('index.html', root=MnemoWebAPI.static_file_path)
+
+
+#@get('/<filename:path>')
+#def static(filename):
+#    return static_file(filename, root=MnemoWebAPI.static_file_path)

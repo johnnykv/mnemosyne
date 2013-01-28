@@ -15,28 +15,16 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#make sure we can find bottle.py
-import sys
-sys.path.append('webapi/')
-
-import bottle
 import unittest
 import uuid
+import helpers
 from pymongo import MongoClient
-from bottle import install, uninstall, debug
-from bottle.ext import mongo
-from webapi.api import app
-from datetime import datetime
-
-from webtest import TestApp
-
 from datetime import datetime
 
 import json
 
 
 class AuxTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls._dbname = str(uuid.uuid4())
@@ -50,7 +38,7 @@ class AuxTest(unittest.TestCase):
             (2, 'channel_3'),
             (2, 'channel_1'),
             (3, 'channel_1')
-        )
+            )
 
         for day, channel in day_channel_pairs:
             entry = {'channel': '{0}'.format(channel),
@@ -64,16 +52,8 @@ class AuxTest(unittest.TestCase):
 
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
-        a = app.app
-        a.catchall = False
-        cls.sut = TestApp(a)
 
-        for plug in bottle.app().plugins:
-            if isinstance(plug, bottle.ext.mongo.MongoPlugin):
-                uninstall(plug)
-
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=cls._dbname, json_mongo=True)
-        install(plugin)
+        cls.sut = helpers.prepare_app(cls._dbname)
 
     @classmethod
     def tearDownClass(cls):
@@ -81,10 +61,9 @@ class AuxTest(unittest.TestCase):
         connection.drop_database(cls._dbname)
 
     def test_get_hpfeed_stats(self):
-
         sut = AuxTest.sut
 
-        res = sut.get('/api/aux/get_hpfeeds_stats')
+        res = sut.get('/aux/get_hpfeeds_stats')
         result = json.loads(res.body)['result']
 
         expected = [{'date': u'2013-01-01T00:00:00', 'count': 3},
@@ -94,10 +73,9 @@ class AuxTest(unittest.TestCase):
         self.assertItemsEqual(expected, result)
 
     def test_get_hpfeed_channels(self):
-
         sut = AuxTest.sut
 
-        res = sut.get('/api/aux/get_hpfeeds_channels')
+        res = sut.get('/aux/get_hpfeeds_channels')
         result = json.loads(res.body)['channels']
 
         expected = [{'channel': 'channel_1', 'count': 4},

@@ -15,12 +15,13 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import response, get
 from helpers import jsonify, simple_group
 from datetime import date, datetime
+from bottle import response
+from app import app
 
 
-@get('/api/aux/get_hpfeeds_stats')
+@app.get('/aux/get_hpfeeds_stats')
 def get_hpfeed_stats(mongodb):
     result = mongodb['hpfeed'].aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
     del result['ok']
@@ -34,7 +35,7 @@ def get_hpfeed_stats(mongodb):
     return jsonify(result, response)
 
 
-@get('/api/aux/get_hpfeeds_channels')
+@app.get('/aux/get_hpfeeds_channels')
 def get_hpfeed_channels(mongodb):
     """
     Returns a list of channel names and number of events in the immutable hpfeeds store.

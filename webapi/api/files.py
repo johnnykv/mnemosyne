@@ -17,10 +17,11 @@
 
 from bottle import route, abort, request, response
 from api.helpers import simple_group, jsonify
+from app import app
 
 
-@route('/api/files')
-@route('/api/files/')
+@app.route('/files')
+@app.route('/files/')
 def get_files(mongodb):
     query_keys = request.query.keys()
     query_dict = {}
@@ -48,7 +49,7 @@ def get_files(mongodb):
     return jsonify({'files': result}, response)
 
 
-@route('/api/files/types')
+@app.route('/files/types')
 def files_types(mongodb):
     result = simple_group('file', 'content_guess', mongodb)
     return jsonify(result, response)

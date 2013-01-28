@@ -15,17 +15,20 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import response, get
-from helpers import jsonify, simple_group
-from datetime import date, datetime
-from app import app
+from webapi.api import app
+import bottle
+from bottle.ext import mongo
+from webtest import TestApp
 
+def prepare_app(dbname):
+    a = app.app
+    a.catchall = False
+    sut = TestApp(a)
 
-@app.get('/aux/dorks')
-def get_dorks(mongodb):
-    result = list(mongodb['dorks'].find())
-    for entry in result:
-        entry['firsttime'] = entry['_id'].generation_time
-        del entry['_id']
+    for plug in a.plugins:
+        if isinstance(plug, bottle.ext.mongo.MongoPlugin):
+            a.uninstall(plug)
 
-    return jsonify({'dorks': result}, response)
+    plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=dbname, json_mongo=True)
+    a.install(plugin)
+    return sut

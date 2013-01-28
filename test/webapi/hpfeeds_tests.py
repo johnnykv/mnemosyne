@@ -15,31 +15,18 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#make sure we can find bottle.py
-import sys
-sys.path.append('webapi/')
 
-import bottle
 import unittest
 import uuid
-from pymongo import MongoClient
-from bottle import install, uninstall
-from bottle.ext import mongo
-from webapi.api import app
-from datetime import datetime
-
-from webtest import TestApp
-
-from datetime import datetime
-
+import helpers
 import json
+from pymongo import MongoClient
+from datetime import datetime
 
 
 class HPFeedsTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
-
         cls._dbname = str(uuid.uuid4())
         insert_data = []
 
@@ -57,14 +44,7 @@ class HPFeedsTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        cls.sut = TestApp(app.app)
-
-        for plug in bottle.app().plugins:
-            if isinstance(plug, bottle.ext.mongo.MongoPlugin):
-                uninstall(plug)
-
-        plugin = bottle.ext.mongo.MongoPlugin(uri="localhost", db=cls._dbname, json_mongo=True)
-        install(plugin)
+        cls.sut = helpers.prepare_app(cls._dbname)
 
     @classmethod
     def tearDownClass(cls):
@@ -77,7 +57,7 @@ class HPFeedsTest(unittest.TestCase):
         """
         sut = HPFeedsTest.sut
 
-        res = sut.get('/api/hpfeeds')
+        res = sut.get('/hpfeeds')
         result = json.loads(res.body)['hpfeeds']
         #API sets a default limit of 50
         self.assertEqual(50, len(result))
@@ -89,7 +69,7 @@ class HPFeedsTest(unittest.TestCase):
         sut = HPFeedsTest.sut
 
         for limit, expected in ((5, 5), (80, 80), (250, 100)):
-            res = sut.get('/api/hpfeeds?limit={0}'.format(limit))
+            res = sut.get('/hpfeeds?limit={0}'.format(limit))
             result = json.loads(res.body)['hpfeeds']
             self.assertEqual(expected, len(result))
 
@@ -100,7 +80,7 @@ class HPFeedsTest(unittest.TestCase):
         sut = HPFeedsTest.sut
 
         for limit, expected in (('trubadur', 0), ('channel_0', 50), ('channel_1', 50)):
-            res = sut.get('/api/hpfeeds?channel={0}'.format(limit))
+            res = sut.get('/hpfeeds?channel={0}'.format(limit))
             result = json.loads(res.body)['hpfeeds']
             self.assertEqual(expected, len(result))
 
@@ -117,10 +97,10 @@ class HPFeedsTest(unittest.TestCase):
             ('channel_1', 10, 10),
             ('channel_0', 100, 50),
             ('channel_1', 10, 10)
-        )
+            )
 
         for channel, limit, expected in test_triplets:
-            res = sut.get('/api/hpfeeds?channel={0}&limit={1}'.format(channel, limit))
+            res = sut.get('/hpfeeds?channel={0}&limit={1}'.format(channel, limit))
             result = json.loads(res.body)['hpfeeds']
             self.assertEqual(expected, len(result))
 
@@ -131,7 +111,7 @@ class HPFeedsTest(unittest.TestCase):
         sut = HPFeedsTest.sut
 
         #fetch all
-        res = sut.get('/api/hpfeeds?limit=100')
+        res = sut.get('/hpfeeds?limit=100')
         result = json.loads(res.body)['hpfeeds']
 
         for item in result:

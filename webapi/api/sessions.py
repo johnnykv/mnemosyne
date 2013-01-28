@@ -18,9 +18,10 @@
 from bottle import response, request, get
 from bson import ObjectId
 from helpers import simple_group, jsonify
+from app import app
 
 
-@get('/api/sessions')
+@app.get('/sessions')
 def sessions_get_by_query(mongodb):
 
     query_keys = request.query.keys()
@@ -51,7 +52,7 @@ def sessions_get_by_query(mongodb):
     return jsonify({'sessions': result}, response)
 
 
-@get('/api/sessions/protocols')
+@app.get('/sessions/protocols')
 def session_protocols(mongodb):
     """
     Returns a grouped list of all protocols intercepted.
