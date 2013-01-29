@@ -3,4 +3,7 @@ gevent
 python-magic
 paste
 bottle-mongodb
+bottle-cork
+bottle
+beaker
 webtest
