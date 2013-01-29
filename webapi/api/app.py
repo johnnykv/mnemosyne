@@ -2,11 +2,13 @@ import sys
 sys.path.append('webapi')
 
 from bottle import Bottle
-import webapi.shared_state as mongoplug
+
+import webapi.shared_state as state
 
 app = Bottle()
-if shared_state.plug != None:
-    app.install(shared_state.plug)
+
+if state.plug != None:
+    app.install(state.plug)
 
 import aux
 import files
