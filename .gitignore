@@ -37,3 +37,7 @@ log.txt
 doc/_build
 
 .noseids
+
+*.cache
+
+*.lock
