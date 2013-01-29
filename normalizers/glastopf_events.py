@@ -15,10 +15,10 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import json
 from basenormalizer import BaseNormalizer
 from datetime import datetime
 from urlparse import urlparse
-import json
 
 
 class GlastopfEvents(BaseNormalizer):
@@ -39,10 +39,10 @@ class GlastopfEvents(BaseNormalizer):
     def make_dork(self, data, timestamp):
         dork = urlparse(self.make_url(data)).path
         if dork:
-            return {'content' : dork,
+            return {'content': dork,
                     'type': 'inurl',
-                     'timestamp': timestamp,
-                     'count': 1}
+                    'timestamp': timestamp,
+                    'count': 1}
 
     def make_session(self, data):
         session = {}

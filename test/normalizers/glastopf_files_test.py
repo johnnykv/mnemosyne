@@ -16,13 +16,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import unittest
-from normalizers import glastopf_files
 import os
 import base64
+from normalizers import glastopf_files
 
 
 class GlastopfFilesTest(unittest.TestCase):
-
     def test_channels(self):
         """
         Test that the channel variable exists.

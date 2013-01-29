@@ -15,8 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from webapi.api import app
 import bottle
+from webapi.api import app
 from bottle.ext import mongo
 from webtest import TestApp
 

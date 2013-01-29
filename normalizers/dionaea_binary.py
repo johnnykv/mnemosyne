@@ -15,15 +15,14 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from basenormalizer import BaseNormalizer
 import magic
+from basenormalizer import BaseNormalizer
 
 
 class DionaeaBinary(BaseNormalizer):
     channels = ('mwbinary.dionaea.sensorunique',)
 
     def normalize(self, data, channel, submission_timestamp):
-
         decoded = data.decode('hex')
         hashes = super(DionaeaBinary, self).generate_checksum_list(decoded)
         file_ = {

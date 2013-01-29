@@ -15,8 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from basenormalizer import BaseNormalizer
 import json
+from basenormalizer import BaseNormalizer
 
 
 class DionaeaCaptures(BaseNormalizer):
@@ -45,17 +45,17 @@ class DionaeaCaptures(BaseNormalizer):
             {
                 'description': 'Binary extraction',
                 'hashes':
-                {'md5': o_data['md5'],
-                 'sha512': o_data['sha512']}
+                    {'md5': o_data['md5'],
+                     'sha512': o_data['sha512']}
             }, ]
 
         url = {'url': o_data['url'],
                'extractions': [{
-               'timestamp': submission_timestamp,
-               'hashes': {
-                   'md5': o_data['md5'],
-                   'sha512': o_data['sha512']
-               }}]}
+                                   'timestamp': submission_timestamp,
+                                   'hashes': {
+                                       'md5': o_data['md5'],
+                                       'sha512': o_data['sha512']
+                                   }}]}
 
         session['attachments'] = attachments
 

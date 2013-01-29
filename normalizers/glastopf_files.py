@@ -15,16 +15,15 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from basenormalizer import BaseNormalizer
 import magic
 import base64
+from basenormalizer import BaseNormalizer
 
 
 class GlastopfFiles(BaseNormalizer):
     channels = ('glastopf.files',)
 
     def normalize(self, data, channel, submission_timestamp):
-
         md5, data = data.split(' ', 1)
         decoded = base64.b64decode(data)
         hashes = super(GlastopfFiles, self).generate_checksum_list(decoded)

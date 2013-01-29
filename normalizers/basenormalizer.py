@@ -15,8 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from urlparse import urlparse
 import hashlib
+from urlparse import urlparse
 
 
 class BaseNormalizer(object):

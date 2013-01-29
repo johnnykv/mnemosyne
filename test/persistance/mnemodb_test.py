@@ -15,12 +15,9 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#make sure we can find bottle.py
-import sys
-from persistance import mnemodb
-
 import unittest
 import uuid
+from persistance import mnemodb
 from pymongo import MongoClient
 from datetime import datetime
 

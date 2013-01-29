@@ -17,13 +17,15 @@
 
 import gevent
 import gevent.monkey
+
 gevent.monkey.patch_all()
 
 #make sure we can find bottle.py
 import sys
+
 sys.path.append('webapi/')
 import os
-
+import argparse
 import logging
 
 from ConfigParser import ConfigParser
@@ -32,7 +34,6 @@ from persistance import mnemodb
 from webapi import mnemowebapi
 from hpfeeds import feedpuller
 
-import argparse
 
 logger = logging.getLogger()
 request_logger = logging.getLogger('wsgi')
@@ -95,11 +96,11 @@ if __name__ == '__main__':
     parser.add_argument('--stats', action='store_true', default=False)
     parser.add_argument('--webpath', default='webapi/static')
     parser.add_argument('--no_normalizer', action='store_true', default=False,
-        help='Do not start the normalizer')
+                        help='Do not start the normalizer')
     parser.add_argument('--no_feedpuller', action='store_true', default=False,
-        help='Do not start the broker which takes care of storing hpfeed data.')
+                        help='Do not start the broker which takes care of storing hpfeed data.')
     parser.add_argument('--no_webapi', action='store_true', default=False,
-        help='Do not enable the webapi.')
+                        help='Do not enable the webapi.')
 
     args = parser.parse_args()
     c = parse_config(args.config_file)

@@ -16,9 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import unittest
-from normalizers import thug_events
 import datetime
 import os
+from normalizers import thug_events
 
 
 class ThugTests(unittest.TestCase):

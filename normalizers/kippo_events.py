@@ -15,8 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from basenormalizer import BaseNormalizer
 import json
+from basenormalizer import BaseNormalizer
 
 
 class KippoEvents(BaseNormalizer):

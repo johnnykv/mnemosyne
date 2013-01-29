@@ -15,9 +15,9 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import os
 import unittest
 from normalizers import dionaea_binary
-import os
 
 
 class DionaeaBinaryTest(unittest.TestCase):
