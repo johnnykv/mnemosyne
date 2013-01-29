@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import bottle
-import mongoplug
+import shared_state
 from bottle import run, static_file, get, install, Bottle, mount
 from bottle.ext import mongo
 
@@ -24,22 +24,15 @@ class MnemoWebAPI():
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
     def __init__(self, datebase_name, static_file_path=None):
-        mongoplug.plug = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
-        install(mongoplug.plug)
+        shared_state.static_dir = static_file_path
+        shared_state.plug = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
+        install(shared_state.plug)
         from webapi.api import app as develapp
         mount('/api/', develapp.app)
-        #if static_file_path != None:
+
+        #servestaic must be imported AFTER mounts.
+        if shared_state.static_dir != None:
+            import servestatic
 
     def start_listening(self, host, port):
         run(host=host, port=port, debug=True, server='paste', quiet=True)
-
-
-#TODO: Make api have precedence.
-#@get('/')
-#def get_index():
-    return static_file('index.html', root=MnemoWebAPI.static_file_path)
-
-
-#@get('/<filename:path>')
-#def static(filename):
-#    return static_file(filename, root=MnemoWebAPI.static_file_path)

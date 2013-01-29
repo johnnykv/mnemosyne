@@ -16,13 +16,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 from bottle import get, static_file
+import shared_state
 
 
 @get('/')
 def get_index():
-    return static_file('index.html', root=MnemoWebAPI.static_file_path)
+    return static_file('index.html', root=shared_state.static_dir)
 
 
 @get('/<filename:path>')
 def static(filename):
-    return static_file(filename, root=MnemoWebAPI.static_file_path)
+    return static_file(filename, root=shared_state.static_dir)
