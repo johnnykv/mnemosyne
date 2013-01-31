@@ -42,3 +42,4 @@ doc/_build
 *.cache
 
 *.lock
+data/cork/*
