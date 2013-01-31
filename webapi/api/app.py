@@ -10,6 +10,8 @@ app = Bottle()
 if state.plug != None:
     app.install(state.plug)
 
+auth = state.auth
+
 import aux
 import files
 import hpfeeds

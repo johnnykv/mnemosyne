@@ -19,10 +19,12 @@ from bottle import response, get
 from helpers import jsonify, simple_group
 from datetime import date, datetime
 from app import app
+from app import auth
 
 
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
+    auth.require(fail_redirect='/looser')
     result = list(mongodb['dork'].find())
     for entry in result:
         entry['firsttime'] = entry['_id'].generation_time

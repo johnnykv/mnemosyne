@@ -20,6 +20,9 @@ import unittest
 import uuid
 import helpers
 import json
+import os
+import tempfile
+import shutil
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -27,6 +30,7 @@ from datetime import datetime
 class HPFeedsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.tmpdir =  tempfile.mkdtemp()
         cls._dbname = str(uuid.uuid4())
         insert_data = []
 
@@ -44,12 +48,14 @@ class HPFeedsTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        cls.sut = helpers.prepare_app(cls._dbname)
+        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir)
 
     @classmethod
     def tearDownClass(cls):
         connection = MongoClient('localhost', 27017)
         connection.drop_database(cls._dbname)
+        if os.path.isdir(cls.tmpdir):
+            shutil.rmtree(cls.tmpdir)
 
     def test_count_no_query(self):
         """

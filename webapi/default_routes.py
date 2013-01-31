@@ -15,9 +15,20 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import get, static_file
+import bottle
+from bottle import get, post, route, static_file
 import shared_state
 
+@post('/login')
+def login():
+    """Authenticate users"""
+    username = post_get('username')
+    password = post_get('password')
+    shared_state.auth.login(username, password, success_redirect='/winner', fail_redirect='/login')
+
+@route('/logout')
+def logout():
+    shared_state.auth.logout(success_redirect='/login')
 
 @get('/')
 def get_index():
@@ -27,3 +38,7 @@ def get_index():
 @get('/<filename:path>')
 def static(filename):
     return static_file(filename, root=shared_state.static_dir)
+
+def post_get(name, default=''):
+    return bottle.request.POST.get(name, default).strip()
+

@@ -18,6 +18,7 @@
 from bottle import get, abort, request, response
 from helpers import jsonify
 from app import app
+from app import auth
 
 
 @app.get('/urls')

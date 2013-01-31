@@ -18,6 +18,7 @@
 from bottle import route, abort, request, response
 from api.helpers import simple_group, jsonify
 from app import app
+from app import auth
 
 
 @app.route('/files')

@@ -19,6 +19,7 @@ from bottle import response, request, get
 from bson import ObjectId
 from helpers import simple_group, jsonify
 from app import app
+from app import auth
 
 
 @app.get('/sessions')

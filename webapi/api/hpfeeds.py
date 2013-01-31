@@ -21,6 +21,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 from helpers import jsonify
 from app import app
+from app import auth
 
 @app.get('/hpfeeds/')
 @app.get('/hpfeeds')
