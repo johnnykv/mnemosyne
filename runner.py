@@ -35,8 +35,7 @@ from webapi import mnemowebapi
 from hpfeeds import feedpuller
 
 
-logger = logging.getLogger()
-request_logger = logging.getLogger('wsgi')
+logger = logging.getLogger(__name__)
 
 
 def parse_config(config_file):
@@ -47,7 +46,7 @@ def parse_config(config_file):
     parser.read(config_file)
 
     if parser.getboolean('file_log', 'enabled'):
-        do_logging(parser.get('file_log', 'file'))
+        do_logging(parser.get('file_log', 'file'), parser.get('request_log', 'file'))
     else:
         do_logging()
 
@@ -67,7 +66,7 @@ def parse_config(config_file):
     return config
 
 
-def do_logging(file_log=None):
+def do_logging(file_log=None, request_log=None):
     logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter('%(asctime)-15s (%(funcName)s) %(message)s')
@@ -78,16 +77,18 @@ def do_logging(file_log=None):
         file_log.setFormatter(formatter)
         logger.addHandler(file_log)
 
+    if request_log:
+        #TODO: Move to config file
+        request_log_handler = logging.FileHandler('mnemosyne_requests.log')
+        request_log_handler.setLevel(logging.DEBUG)
+        request_log_handler.setFormatter(logging.Formatter('%(message)s'))
+        request_logger = logging.getLogger('wsgi')
+        request_logger.addHandler(request_log_handler)
+
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
     console_log.setFormatter(formatter)
     logger.addHandler(console_log)
-
-    #TODO: Move to config file
-    request_logger = logging.getLogger('wsgi')
-    request_logger.addHandler(console_log)
-    request_logger.addHandler(file_log)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Mnemosyne')

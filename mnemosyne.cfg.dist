@@ -16,3 +16,4 @@ channels = thug.events,beeswarm.hive,dionaea.capture,thug.files,beeswarn.feeder,
 [file_log]
 enabled = True
 file = mnemosyne.log
+request_log = mnemosyne_requests.log
