@@ -15,7 +15,7 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import response, get, request
+from bottle import response, get, request, HTTPError
 from helpers import jsonify, simple_group
 from datetime import date, datetime
 from app import app
@@ -28,6 +28,20 @@ def get_dorks(mongodb):
     query_keys = request.query.keys()
     query_dict = {}
 
+    #set default parameters
+    sort_key = 'count'
+    sort_order = -1
+    limit = 200
+
+    if 'sort_by' in query_keys:
+        sort_key = request.query.sort_by
+
+    if 'sort_order' in query_keys:
+        try:
+            sort_order = int (request.query.sort_order)
+        except ValueError:
+            raise HTTPError(400, 'sort_order must be an integer.')
+
     if 'regex' in query_keys:
         query_dict['content'] = {'$regex': request.query.regex}
 
@@ -37,10 +51,9 @@ def get_dorks(mongodb):
 
     if 'limit' in query_keys:
             limit = int(request.query.limit)
-    else:
-        limit = 200
 
-    result = list(mongodb['dork'].find(query_dict).sort('count', -1).limit(limit))
+    result = list(mongodb['dork'].find(query_dict).sort(sort_key, sort_order).limit(limit))
+
     #delete mongo _id - better way?
     for entry in result:
         entry['firsttime'] = entry['_id'].generation_time

@@ -113,3 +113,29 @@ class DorkTest(unittest.TestCase):
 
         #TODO: Compare the actual output with expected
         self.assertEqual(0, len(result))
+
+    def test_get_dorks_sorted_default(self):
+        """
+        Test if dorks are sorted descending by count by default
+        """
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks')
+        result = json.loads(res.body)['dorks']
+
+        self.assertEqual('/no/fjords/here', result[0]['content'])
+        self.assertEqual('/some/path', result[1]['content'])
+        self.assertEqual('/jamesBond.php', result[2]['content'])
+
+    def test_get_dorks_sorted_ascending(self):
+        """
+        Tests ascending sorting when providing sort_order as parameter.
+        """
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks?sort_order=1')
+        result = json.loads(res.body)['dorks']
+
+        self.assertEqual('/jamesBond.php', result[0]['content'])
+        self.assertEqual('/some/path', result[1]['content'])
+        self.assertEqual('/no/fjords/here', result[2]['content'])
