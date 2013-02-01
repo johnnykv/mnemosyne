@@ -15,7 +15,7 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import response, get
+from bottle import response, get, request
 from helpers import jsonify, simple_group
 from datetime import date, datetime
 from app import app
@@ -25,7 +25,15 @@ from app import auth
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
     auth.require(fail_redirect='/looser')
-    result = list(mongodb['dork'].find())
+    query_keys = request.query.keys()
+
+    if 'limit' in query_keys:
+            limit = int(request.query.limit)
+    else:
+        limit = 200
+
+    result = list(mongodb['dork'].find().sort('count', -1).limit(limit))
+    #delete mongo _id - better way?
     for entry in result:
         entry['firsttime'] = entry['_id'].generation_time
         del entry['_id']
