@@ -16,15 +16,25 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import bottle
-from bottle import get, post, route, static_file
+from bottle import get, route, static_file, view, post
 import shared_state
+import logging
+
+logger = logging.getLogger(__name__)
 
 @post('/login')
 def login():
     """Authenticate users"""
     username = post_get('username')
     password = post_get('password')
-    shared_state.auth.login(username, password, success_redirect='/winner', fail_redirect='/login')
+    logger.info("Authentication attempt with username: [{0}]".format(username))
+    shared_state.auth.login(username, password, success_redirect='/admin', fail_redirect='/login')
+
+@route('/login')
+@view('login_form')
+def login():
+    """Show login form"""
+    return {}
 
 @route('/logout')
 def logout():
