@@ -37,7 +37,7 @@ class DorkTest(unittest.TestCase):
         test_data = (
             ('inurl', '/jamesBond.php', 1, datetime(2011, 1, 1)),
             ('inurl', '/some/path', 2, datetime(2012, 2, 2)),
-            ('inurl', '/no/fjords/here', 3, datetime(2013, 3, 3))
+            ('inurl', '/no/fjords/here', 3, datetime(2013, 3, 3)),
             )
 
         for type_, content, count, timestamp in test_data:
@@ -73,6 +73,43 @@ class DorkTest(unittest.TestCase):
                      'timestamp': '2012-02-02T00:00:00'},
                     {'content': '/no/fjords/here', 'count': 3,
                      'type': 'inurl', 'timestamp': '2013-03-03T00:00:00'}]
+        print result
+        #TODO: Compare the actual output with expected
+        self.assertEqual(3, len(result))
+
+    def test_get_dorks_with_regex(self):
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks?regex=/fjords/')
+        result = json.loads(res.body)['dorks']
+        print result
 
         #TODO: Compare the actual output with expected
-        self.assertEqual(3, len(expected))
+        self.assertEqual(1, len(result))
+
+    def test_get_dorks_with_limit(self):
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks?limit=2')
+        result = json.loads(res.body)['dorks']
+
+        #TODO: Compare the actual output with expected
+        self.assertEqual(2, len(result))
+
+    def test_get_dorks_with_known_type(self):
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks?type=inurl')
+        result = json.loads(res.body)['dorks']
+
+        #TODO: Compare the actual output with expected
+        self.assertEqual(3, len(result))
+
+    def test_get_dorks_with_unknown_type(self):
+        sut = DorkTest.sut
+
+        res = sut.get('/aux/dorks?type=stuff')
+        result = json.loads(res.body)['dorks']
+
+        #TODO: Compare the actual output with expected
+        self.assertEqual(0, len(result))

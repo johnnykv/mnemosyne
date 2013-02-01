@@ -29,7 +29,11 @@ def get_dorks(mongodb):
     query_dict = {}
 
     if 'regex' in query_keys:
-        query_dict['regex'] = {'$regex': request.query.regex}
+        query_dict['content'] = {'$regex': request.query.regex}
+
+    #inurl, intitle, etc.
+    if 'type' in query_keys:
+        query_dict['type'] = request.query.type
 
     if 'limit' in query_keys:
             limit = int(request.query.limit)
