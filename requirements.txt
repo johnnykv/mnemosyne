@@ -7,3 +7,4 @@ bottle-cork
 bottle
 beaker
 webtest
+pycrypto
