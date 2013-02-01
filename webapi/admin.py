@@ -23,7 +23,26 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# Admin-only pages
+@post('/login')
+def login():
+    """Authenticate users"""
+    username = post_get('username')
+    password = post_get('password')
+    logger.info("Authentication attempt with username: [{0}]".format(username))
+    shared_state.auth.login(username, password, success_redirect='/admin', fail_redirect='/login')
+
+
+@route('/login')
+@view('login_form')
+def login():
+    """Show login form"""
+    return {}
+
+
+@route('/logout')
+def logout():
+    shared_state.auth.logout(success_redirect='/login')
+
 
 @route('/admin')
 @view('admin_page')
@@ -31,10 +50,11 @@ def admin():
     """Only admin users can see this"""
     shared_state.auth.require(role='admin', fail_redirect='/sorry_page')
     return dict(
-        current_user = shared_state.auth.current_user,
-        users = shared_state.auth.list_users(),
-        roles = shared_state.auth.list_roles()
+        current_user=shared_state.auth.current_user,
+        users=shared_state.auth.list_users(),
+        roles=shared_state.auth.list_roles()
     )
+
 
 @post('/create_user')
 def create_user():
@@ -43,6 +63,7 @@ def create_user():
         return dict(ok=True, msg='')
     except Exception, e:
         return dict(ok=False, msg=e.message)
+
 
 @post('/delete_user')
 def delete_user():
@@ -53,6 +74,7 @@ def delete_user():
         print repr(e)
         return dict(ok=False, msg=e.message)
 
+
 @post('/create_role')
 def create_role():
     try:
@@ -60,6 +82,7 @@ def create_role():
         return dict(ok=True, msg='')
     except Exception, e:
         return dict(ok=False, msg=e.message)
+
 
 @post('/delete_role')
 def delete_role():
@@ -69,8 +92,10 @@ def delete_role():
     except Exception, e:
         return dict(ok=False, msg=e.message)
 
+
 def postd():
     return bottle.request.forms
+
 
 def post_get(name, default=''):
     return bottle.request.POST.get(name, default).strip()
