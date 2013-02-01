@@ -65,7 +65,7 @@ class MnemoWebAPI():
         #wrap root app in beaker middleware
         session_opts = {
             'session.type': 'file',
-            'session.cookie_expires': 300,
+            'session.cookie_expires': False,
             'session.data_dir': beaker_dir,
             'session.auto': True,
             #set secure attribute on cookie
