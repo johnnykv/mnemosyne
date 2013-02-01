@@ -33,7 +33,6 @@ def login():
 
 
 @route('/login')
-@view('login_form')
 def login():
     """Show login form"""
     return {}
@@ -45,7 +44,6 @@ def logout():
 
 
 @route('/admin')
-@view('admin_page')
 def admin():
     """Only admin users can see this"""
     shared_state.auth.require(role='admin', fail_redirect='/sorry_page')
