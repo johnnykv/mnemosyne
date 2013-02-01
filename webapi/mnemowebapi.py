@@ -103,6 +103,7 @@ class MnemoWebAPI():
             'desc': username + ' test user',
             'creation_date': tstamp
         }
+        cork._store.save_users()
         #for security reasons we do not want this in the log files.
         print "A 'admin' account has been created with the password '{0}'".format(password)
 
