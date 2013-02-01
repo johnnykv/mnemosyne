@@ -50,7 +50,7 @@ class DorkTest(unittest.TestCase):
         c = MongoClient('localhost', 27017)
 
         for item in insert_data:
-            c[cls._dbname].dorks.insert(item)
+            c[cls._dbname].dork.insert(item)
 
         cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir)
 
