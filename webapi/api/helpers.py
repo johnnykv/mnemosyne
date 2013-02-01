@@ -15,6 +15,7 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from bottle import abort
 from datetime import datetime
 from bson import ObjectId
 from bson.code import Code
