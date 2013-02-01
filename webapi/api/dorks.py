@@ -26,13 +26,17 @@ from app import auth
 def get_dorks(mongodb):
     auth.require(fail_redirect='/looser')
     query_keys = request.query.keys()
+    query_dict = {}
+
+    if 'regex' in query_keys:
+        query_dict['regex'] = {'$regex': request.query.regex}
 
     if 'limit' in query_keys:
             limit = int(request.query.limit)
     else:
         limit = 200
 
-    result = list(mongodb['dork'].find().sort('count', -1).limit(limit))
+    result = list(mongodb['dork'].find(query_dict).sort('count', -1).limit(limit))
     #delete mongo _id - better way?
     for entry in result:
         entry['firsttime'] = entry['_id'].generation_time
