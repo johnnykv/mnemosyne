@@ -46,7 +46,7 @@ def parse_config(config_file):
     parser.read(config_file)
 
     if parser.getboolean('file_log', 'enabled'):
-        do_logging(parser.get('file_log', 'file'), parser.get('request_log', 'file'))
+        do_logging(parser.get('file_log', 'file'), parser.get('file_log', 'request_log'))
     else:
         do_logging()
 

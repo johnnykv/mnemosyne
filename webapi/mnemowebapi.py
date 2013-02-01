@@ -17,34 +17,45 @@
 
 import bottle
 import shared_state
+import os
+import uuid
+import shared_state as shared
+import logging
 from bottle import run, install, mount
 from bottle.ext import mongo
 from beaker.middleware import SessionMiddleware
 from datetime import datetime
 from cork import Cork
-import shared_state as shared
 
-from cork import Cork, AAAException, AuthException
-from cork import Mailer
+logger = logging.getLogger(__name__)
 
 class MnemoWebAPI():
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
-    def __init__(self, datebase_name, static_file_path=None, auth_dir='./data/auth'):
-        app = bottle.app()
-        app.catchall = True
+    def __init__(self, datebase_name, static_file_path=None, data_dir='./data'):
+
+        cork_dir = os.path.join(data_dir, 'cork')
+        beaker_dir = os.path.join(data_dir, 'beaker')
+        bottle.TEMPLATE_PATH.insert(0,'webapi/views/')
+
+        #vars which must be visible across all webapi modules
         shared.static_dir = static_file_path
         shared.plug = bottle.ext.mongo.MongoPlugin(uri="localhost", db=datebase_name, json_mongo=True)
+
         #install mongo plugin for root app
         install(shared_state.plug)
 
-        shared.auth = Cork('./data/auth')
+        #check if cork files exists
+        cork_files = ['users.json', 'roles.json', 'register.json']
+        if not set(cork_files).issubset(set(os.listdir(cork_dir))):
+            #if not, create them
+            shared.auth = self.populate_conf_directory(cork_dir)
+        else:
+            shared.auth = Cork(cork_dir)
 
-        #load devel api
+        #webapi.api.* and admin depends on shared.auth
+        import admin
         from webapi.api import app as develapp
-        #develapp.auth = shared_state.auth
-        print "------"
-        print develapp.auth
         mount('/api/', develapp.app)
 
         #must be imported AFTER mounts.
@@ -55,22 +66,25 @@ class MnemoWebAPI():
         session_opts = {
             'session.type': 'file',
             'session.cookie_expires': 300,
-            'session.data_dir': './data/beaker',
+            'session.data_dir': beaker_dir,
             'session.auto': True,
             #set secure attribute on cookie
-            'session.secure': True
+            #'session.secure': True
             }
 
-        self.app = SessionMiddleware(app, session_opts)
+        #bottla.app() returns root app
+        self.app = SessionMiddleware(bottle.app(), session_opts)
 
 
     def start_listening(self, host, port):
-        run(app=self.app, host=host, port=port, debug=True, server='paste', quiet=True)
+        run(app=self.app, host=host, port=port, debug=True, server='paste', quiet=False)
 
+    #defaults
     def populate_conf_directory(self, auth_dir):
         """
         Creation of basic auth files.
         """
+        logger.info("Creating new authentication files, check STDOUT for the generated admin password.")
         cork = Cork(auth_dir, initialize=True)
 
         cork._store.roles['admin'] = 100
@@ -80,7 +94,8 @@ class MnemoWebAPI():
         tstamp = str(datetime.utcnow())
 
         #default admin combo: admin/admin
-        username = password = 'admin'
+        username = 'admin'
+        password = str(uuid.uuid4())
         cork._store.users[username] = {
             'role': 'admin',
             'hash': cork._hash(username, password),
@@ -88,17 +103,10 @@ class MnemoWebAPI():
             'desc': username + ' test user',
             'creation_date': tstamp
         }
+        #for security reasons we do not want this in the log files.
+        print "A 'admin' account has been created with the password '{0}'".format(password)
 
-        #default admin combo: hp/hp
-        username = password = 'hp'
-        cork._store.users[username] = {
-            'role': 'hp_member',
-            'hash': cork._hash(username, password),
-            'email_addr': username + '@localhost.local',
-            'desc': username + ' test user',
-            'creation_date': tstamp
-        }
-        cork._store.save_users()
+        return cork
 
 
 #for debugging
