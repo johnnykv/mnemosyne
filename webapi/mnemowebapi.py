@@ -75,8 +75,10 @@ class MnemoWebAPI():
         self.app = SessionMiddleware(bottle.app(), session_opts)
 
         root_app = bottle.app()
+
         #setup logging hooks
         @root_app.hook('before_request')
+        @develapp.app.hook('before_request')
         def log_request():
             remote_addr = bottle.request.environ['REMOTE_ADDR']
             if 'beaker.session' in bottle.request.environ:
