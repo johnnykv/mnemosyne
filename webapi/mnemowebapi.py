@@ -75,6 +75,19 @@ class MnemoWebAPI():
         #bottla.app() returns root app
         self.app = SessionMiddleware(bottle.app(), session_opts)
 
+        root_app = bottle.app()
+        #setup logging hooks
+        @root_app.hook('before_request')
+        def log_request():
+            remote_addr = bottle.request.environ['REMOTE_ADDR']
+            if 'beaker.session' in bottle.request.environ:
+                session = bottle.request.environ.get('beaker.session')
+                #username = "Hej"
+                username = session.get('username', None)
+            else:
+                username = "None"
+            username ="JohnDoe"
+            logger.info("[REQUEST][{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.path))
 
     def start_listening(self, host, port):
         run(app=self.app, host=host, port=port, debug=False, server='gevent', log="wsgi", quiet=True, keyfile='server.key', certfile='server.crt')
