@@ -24,7 +24,6 @@ from app import auth
 
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
-    print request.environ
     try:
         auth.require()
     except AAAException as e:

@@ -21,7 +21,7 @@ import os
 import uuid
 import shared_state as shared
 import logging
-from bottle import run, install, mount
+from bottle import run, install, mount, request
 from bottle.ext import mongo
 from beaker.middleware import SessionMiddleware
 from datetime import datetime
@@ -72,7 +72,6 @@ class MnemoWebAPI():
             'session.secure': True
             }
 
-        #bottla.app() returns root app
         self.app = SessionMiddleware(bottle.app(), session_opts)
 
         root_app = bottle.app()
@@ -86,11 +85,11 @@ class MnemoWebAPI():
                 username = session.get('username', None)
             else:
                 username = "None"
-            username ="JohnDoe"
-            logger.info("[REQUEST][{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.path))
+            logger.info("[{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.path))
 
     def start_listening(self, host, port):
-        run(app=self.app, host=host, port=port, debug=False, server='gevent', log="wsgi", quiet=True, keyfile='server.key', certfile='server.crt')
+        run(app=self.app, host=host, port=port, debug=False, server='gevent',
+            log="wsgi", quiet=True, keyfile='server.key', certfile='server.crt')
 
     #defaults
     def populate_conf_directory(self, auth_dir):

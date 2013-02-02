@@ -17,13 +17,8 @@
 
 import gevent
 import gevent.monkey
-
 gevent.monkey.patch_all()
 
-#make sure we can find bottle.py
-import sys
-
-sys.path.append('webapi/')
 import os
 import argparse
 import logging
@@ -35,8 +30,7 @@ from webapi import mnemowebapi
 from hpfeeds import feedpuller
 
 
-logger = logging.getLogger(__name__)
-
+logger = logging.getLogger()
 
 def parse_config(config_file):
     if not os.path.isfile(config_file):

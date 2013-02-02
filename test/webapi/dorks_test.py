@@ -73,7 +73,6 @@ class DorkTest(unittest.TestCase):
                      'timestamp': '2012-02-02T00:00:00'},
                     {'content': '/no/fjords/here', 'count': 3,
                      'type': 'inurl', 'timestamp': '2013-03-03T00:00:00'}]
-        print result
         #TODO: Compare the actual output with expected
         self.assertEqual(3, len(result))
 
@@ -82,7 +81,6 @@ class DorkTest(unittest.TestCase):
 
         res = sut.get('/aux/dorks?regex=/fjords/')
         result = json.loads(res.body)['dorks']
-        print result
 
         #TODO: Compare the actual output with expected
         self.assertEqual(1, len(result))

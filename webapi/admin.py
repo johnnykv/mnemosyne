@@ -45,7 +45,7 @@ def logout():
 
 
 @route('/admin')
-#@view('admin_page')
+@view('admin_page')
 def admin():
     """Only admin users can see this"""
     shared_state.auth.require(role='admin', fail_redirect='/unauth')
@@ -71,7 +71,6 @@ def delete_user():
         shared_state.auth.delete_user(post_get('username'))
         return dict(ok=True, msg='')
     except Exception, e:
-        print repr(e)
         return dict(ok=False, msg=e.message)
 
 
