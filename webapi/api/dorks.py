@@ -25,7 +25,7 @@ from app import auth
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
     try:
-        auth.require()
+        auth.require(role='public')
     except AAAException as e:
         return HTTPError(401, e.message)
 

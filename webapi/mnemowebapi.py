@@ -101,6 +101,7 @@ class MnemoWebAPI():
 
         cork._store.roles['admin'] = 100
         cork._store.roles['hp_member'] = 60
+        cork._store.roles['public'] = 10
         cork._store.save_roles()
 
         tstamp = str(datetime.utcnow())
