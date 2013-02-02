@@ -69,7 +69,7 @@ class MnemoWebAPI():
             'session.data_dir': beaker_dir,
             'session.auto': True,
             #set secure attribute on cookie
-            #'session.secure': True
+            'session.secure': True
             }
 
         #bottla.app() returns root app
