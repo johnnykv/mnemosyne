@@ -43,3 +43,7 @@ doc/_build
 
 *.lock
 data/cork/*
+
+server.key
+
+server.crt
