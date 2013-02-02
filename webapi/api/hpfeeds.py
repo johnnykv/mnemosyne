@@ -16,7 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import bottle
-from bottle import get, abort, request, response
+from bottle import get, abort, request, response, HTTPError
+from cork import AAAException
 from bson import ObjectId
 from bson.errors import InvalidId
 from helpers import jsonify
@@ -26,7 +27,11 @@ from app import auth
 @app.get('/hpfeeds/')
 @app.get('/hpfeeds')
 def hpfeeds(mongodb):
-    auth.require()
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
     query_keys = request.query.keys()
     query_dict = {}
 

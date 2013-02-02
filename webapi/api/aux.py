@@ -15,15 +15,20 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from cork import AAAException
 from helpers import jsonify, simple_group
 from datetime import date, datetime
-from bottle import response
+from bottle import response, HTTPError
 from app import app
 from app import auth
 
 @app.get('/aux/get_hpfeeds_stats')
 def get_hpfeed_stats(mongodb):
-    auth.require()
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
     result = mongodb['hpfeed'].aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
     del result['ok']
     for item in result['result']:
@@ -45,6 +50,10 @@ def get_hpfeed_channels(mongodb):
                   {"count": 4, "channel": "glastopf.files"},
                    "count": 511, "channel": "thug.events"}]
     """
-    auth.require(fail_redirect='/looser')
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
     result = simple_group('hpfeed', 'channel', mongodb)
     return jsonify(result, response)

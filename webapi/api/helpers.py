@@ -15,7 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import abort
+from bottle import abort, HTTPError
+from cork import AAAException, AuthException
 from datetime import datetime
 from bson import ObjectId
 from bson.code import Code
@@ -62,3 +63,4 @@ def json_default(obj):
         return str(obj)
     else:
         return None
+

@@ -15,7 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import get, abort, request, response
+from bottle import get, abort, request, response, HTTPError
+from cork import AAAException
 from helpers import jsonify
 from app import app
 from app import auth
@@ -24,7 +25,10 @@ from app import auth
 @app.get('/urls')
 @app.get('/urls/')
 def urls(mongodb):
-    auth.require()
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
 
     query_keys = request.query.keys()
     query_dict = {}

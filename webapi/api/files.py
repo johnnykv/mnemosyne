@@ -15,7 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import route, abort, request, response
+from cork import AAAException
+from bottle import abort, request, response, HTTPError
 from api.helpers import simple_group, jsonify
 from app import app
 from app import auth
@@ -24,7 +25,11 @@ from app import auth
 @app.route('/files')
 @app.route('/files/')
 def get_files(mongodb):
-    auth.require()
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
     query_keys = request.query.keys()
     query_dict = {}
 
@@ -52,6 +57,9 @@ def get_files(mongodb):
 
 @app.route('/files/types')
 def files_types(mongodb):
-    auth.require(fail_redirect='/unauth')
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
     result = simple_group('file', 'content_guess', mongodb)
     return jsonify(result, response)

@@ -15,16 +15,21 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from bottle import response, get, request, HTTPError
-from helpers import jsonify, simple_group
+from cork import AAAException
+from bottle import response, get, request, HTTPError, request
+from helpers import jsonify
 from datetime import date, datetime
 from app import app
 from app import auth
 
-
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
-    auth.require()
+    print request.environ
+    try:
+        auth.require()
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
     query_keys = request.query.keys()
     query_dict = {}
 
