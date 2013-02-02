@@ -46,7 +46,7 @@ def parse_config(config_file):
     parser.read(config_file)
 
     if parser.getboolean('file_log', 'enabled'):
-        do_logging(parser.get('file_log', 'file'), parser.get('file_log', 'request_log'))
+        do_logging(parser.get('file_log', 'file'))
     else:
         do_logging()
 
@@ -66,7 +66,7 @@ def parse_config(config_file):
     return config
 
 
-def do_logging(file_log=None, request_log=None):
+def do_logging(file_log=None):
     logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter('%(asctime)-15s (%(funcName)s) %(message)s')
@@ -76,14 +76,6 @@ def do_logging(file_log=None, request_log=None):
         file_log.setLevel(logging.DEBUG)
         file_log.setFormatter(formatter)
         logger.addHandler(file_log)
-
-    if request_log:
-        #TODO: Move to config file
-        request_log_handler = logging.FileHandler('mnemosyne_requests.log')
-        request_log_handler.setLevel(logging.DEBUG)
-        request_log_handler.setFormatter(logging.Formatter('%(message)s'))
-        request_logger = logging.getLogger('wsgi')
-        request_logger.addHandler(request_log_handler)
 
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
@@ -113,6 +105,11 @@ if __name__ == '__main__':
     if args.reset:
         db.reset_normalized()
 
+    if not args.no_webapi:
+        #start web api and inject mongo info
+        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath)
+        greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
+
     if not args.no_feedpuller:
         puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
         greenlets['puller'] = gevent.spawn(puller.start_listening)
@@ -121,11 +118,6 @@ if __name__ == '__main__':
         #start menmo and inject persistence module
         mnemo = Mnemosyne(db)
         greenlets['mnemo'] = gevent.spawn(mnemo.start_processing, False)
-
-    if not args.no_webapi:
-        #start web api and inject mongo info
-        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath)
-        greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if args.stats:
         while True:
