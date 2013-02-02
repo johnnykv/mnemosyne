@@ -1,7 +1,6 @@
 pymongo
 gevent
 python-magic
-paste
 bottle-mongodb
 bottle-cork
 git+https://github.com/defnull/bottle/

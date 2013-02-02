@@ -77,7 +77,7 @@ class MnemoWebAPI():
 
 
     def start_listening(self, host, port):
-        run(app=self.app, host=host, port=port, debug=True, server='paste', quiet=False)
+        run(app=self.app, host=host, port=port, debug=False, server='gevent', log="wsgi", quiet=True, keyfile='server.key', certfile='server.crt')
 
     #defaults
     def populate_conf_directory(self, auth_dir):
