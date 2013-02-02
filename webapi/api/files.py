@@ -24,6 +24,7 @@ from app import auth
 @app.route('/files')
 @app.route('/files/')
 def get_files(mongodb):
+    auth.require()
     query_keys = request.query.keys()
     query_dict = {}
 
@@ -51,5 +52,6 @@ def get_files(mongodb):
 
 @app.route('/files/types')
 def files_types(mongodb):
+    auth.require(fail_redirect='/unauth')
     result = simple_group('file', 'content_guess', mongodb)
     return jsonify(result, response)

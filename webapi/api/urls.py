@@ -24,6 +24,7 @@ from app import auth
 @app.get('/urls')
 @app.get('/urls/')
 def urls(mongodb):
+    auth.require()
 
     query_keys = request.query.keys()
     query_dict = {}

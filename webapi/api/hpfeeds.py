@@ -26,6 +26,7 @@ from app import auth
 @app.get('/hpfeeds/')
 @app.get('/hpfeeds')
 def hpfeeds(mongodb):
+    auth.require()
     query_keys = request.query.keys()
     query_dict = {}
 

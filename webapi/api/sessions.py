@@ -24,6 +24,7 @@ from app import auth
 
 @app.get('/sessions')
 def sessions_get_by_query(mongodb):
+    auth.require()
 
     query_keys = request.query.keys()
     query_dict = {}
@@ -55,6 +56,7 @@ def sessions_get_by_query(mongodb):
 
 @app.get('/sessions/protocols')
 def session_protocols(mongodb):
+    auth.require()
     """
     Returns a grouped list of all protocols intercepted.
     Example:

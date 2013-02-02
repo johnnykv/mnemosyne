@@ -23,7 +23,7 @@ from app import auth
 
 @app.get('/aux/get_hpfeeds_stats')
 def get_hpfeed_stats(mongodb):
-    auth.require(fail_redirect='/looser')
+    auth.require()
     result = mongodb['hpfeed'].aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
     del result['ok']
     for item in result['result']:

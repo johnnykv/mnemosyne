@@ -16,11 +16,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import bottle
-from bottle import get, post, route, static_file, view
+from bottle import get, post, route, static_file, view, HTTPError
 import shared_state
 import logging
 
 logger = logging.getLogger(__name__)
+
+@route('/unauth')
+def login():
+    return HTTPError(401, 'Unauthorized')
 
 
 @post('/login')
@@ -29,24 +33,22 @@ def login():
     username = post_get('username')
     password = post_get('password')
     logger.info("Authentication attempt with username: [{0}]".format(username))
-    shared_state.auth.login(username, password, success_redirect='/admin', fail_redirect='/login')
-
-
-@route('/login')
-def login():
-    """Show login form"""
-    return {}
+    if shared_state.auth.login(username, password):
+        return "You provided valid credentials"
+    else:
+        return HTTPError(401, 'Invalid credentials')
 
 
 @route('/logout')
 def logout():
-    shared_state.auth.logout(success_redirect='/login')
+    shared_state.auth.logout(success_redirect='/unauth')
 
 
 @route('/admin')
+#@view('admin_page')
 def admin():
     """Only admin users can see this"""
-    shared_state.auth.require(role='admin', fail_redirect='/sorry_page')
+    shared_state.auth.require(role='admin', fail_redirect='/unauth')
     return dict(
         current_user=shared_state.auth.current_user,
         users=shared_state.auth.list_users(),

@@ -24,7 +24,7 @@ from app import auth
 
 @app.get('/aux/dorks')
 def get_dorks(mongodb):
-    auth.require(fail_redirect='/looser')
+    auth.require()
     query_keys = request.query.keys()
     query_dict = {}
 
