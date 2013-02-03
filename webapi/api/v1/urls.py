@@ -26,7 +26,7 @@ from app import auth
 @app.get('/urls/')
 def urls(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 

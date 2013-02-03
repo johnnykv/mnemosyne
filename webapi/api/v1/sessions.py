@@ -26,7 +26,7 @@ from app import auth
 @app.get('/sessions')
 def sessions_get_by_query(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 
@@ -60,7 +60,7 @@ def sessions_get_by_query(mongodb):
 
 @app.get('/sessions/protocols')
 def session_protocols(mongodb):
-    auth.require()
+    auth.require(role='hp_member')
     """
     Returns a grouped list of all protocols intercepted.
     Example:

@@ -28,7 +28,7 @@ from app import auth
 @app.get('/hpfeeds')
 def hpfeeds(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 

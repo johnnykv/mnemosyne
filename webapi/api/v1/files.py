@@ -26,7 +26,7 @@ from app import auth
 @app.route('/files/')
 def get_files(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 
@@ -58,7 +58,7 @@ def get_files(mongodb):
 @app.route('/files/types')
 def files_types(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
     result = simple_group('file', 'content_guess', mongodb)

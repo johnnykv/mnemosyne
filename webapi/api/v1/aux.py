@@ -25,7 +25,7 @@ from app import auth
 @app.get('/aux/get_hpfeeds_stats')
 def get_hpfeed_stats(mongodb):
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 
@@ -51,7 +51,7 @@ def get_hpfeed_channels(mongodb):
                    "count": 511, "channel": "thug.events"}]
     """
     try:
-        auth.require()
+        auth.require(role='hp_member')
     except AAAException as e:
         return HTTPError(401, e.message)
 
