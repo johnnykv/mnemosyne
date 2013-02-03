@@ -17,7 +17,7 @@
 
 from cork import AAAException
 from bottle import abort, request, response, HTTPError
-from api.helpers import simple_group, jsonify
+from helpers import simple_group, jsonify
 from app import app
 from app import auth
 

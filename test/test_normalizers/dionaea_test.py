@@ -28,6 +28,9 @@ class DionaeaTests(unittest.TestCase):
         self.assertTrue(dionaea_capture.DionaeaCaptures.channels)
 
     def test_valid_message(self):
+        """
+        Test correct parsing of a valid dionaea event.
+        """
         input_time = datetime(2012, 12, 14, 12, 22, 51)
         input_string = '{\"url\": \"http://118.167.12.21:1852/psgmioap\", \"daddr\": \"134.61.128.61\", '\
                        '\"saddr\": \"118.167.12.21\", \"dport\": \"445\", \"sport\": \"3006\", '\

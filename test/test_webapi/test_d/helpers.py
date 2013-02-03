@@ -27,16 +27,11 @@ import webapi.shared_state as shared
 
 def prepare_app(dbname, tmppath):
 
-    #setup dummy cork files:
-    #for dummy in ['users.json', 'roles.json', 'register.json']:
-    #    with open(os.path.join(tmppath, dummy), "w") as f:
-    #        f.write('{}')
-
     #mock auth mechanism
     setup_dir(tmppath)
     shared.auth = MockedAdminCork(tmppath)
     #must be imported AFTER mocking
-    from webapi.api import app
+    from webapi.api.d import app
 
     a = app.app
     #when unittesting we want exceptions to break stuff

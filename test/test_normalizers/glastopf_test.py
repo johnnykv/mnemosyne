@@ -165,8 +165,7 @@ class GlastopfTests(unittest.TestCase):
 
     def test_make_dork_filter(self):
         """
-        Tests if unwanted dorks are filtered.
-
+        Tests if unwanted dorks are filtered out.
         """
 
         input_dict = {'request':

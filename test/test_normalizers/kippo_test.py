@@ -25,8 +25,6 @@ class KippoTests(unittest.TestCase):
         """
         Test if a valid kippo json message get parsed as expected.
         """
-        #kippo hpfeed modules does not provide an timestamp, we must use the one
-        #provided by mnemosyne
 
         input_submission_time = datetime(2012, 12, 14, 12, 22, 51)
         input_string = """{\"peerIP\": \"223.5.23.53\", \"loggedin\": null, \"ttylog\": \"01babadeadbeef\", \"hostIP\": \"192.168.6.211\", \"peerPort\": 36868, \"version\": \"SSH-2.0-libssh-0.1\", \"hostPort\": 2222, \"credentials\": [[\"root\", \"123muie123\"]]}"""

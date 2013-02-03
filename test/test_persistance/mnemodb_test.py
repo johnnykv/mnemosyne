@@ -34,6 +34,9 @@ class MnemodbTests(unittest.TestCase):
         connection.drop_database(self.dbname)
 
     def test_insert_hpfeed(self):
+        """
+        Test correct insertion of raw hpfeed entry into mongodb.
+        """
         sut = mnemodb.MnemoDB(self.dbname)
 
         #ident, channel, payload
@@ -87,6 +90,9 @@ class MnemodbTests(unittest.TestCase):
         self.assertEqual(0, len(normalized_true))
 
     def test_insert_dorks(self):
+        """
+        Test insertion into the dorks collection.
+        """
         sut = mnemodb.MnemoDB(self.dbname)
 
         insert_items = [
