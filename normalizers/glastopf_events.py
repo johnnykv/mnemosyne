@@ -24,6 +24,10 @@ from urlparse import urlparse
 class GlastopfEvents(BaseNormalizer):
     channels = ('glastopf.events',)
 
+    def __init__(self):
+        #dorks to be filtered out
+        self.dork_filter = ['/', '/headers', '/favicon.ico']
+
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
         relations = {}
@@ -38,7 +42,7 @@ class GlastopfEvents(BaseNormalizer):
 
     def make_dork(self, data, timestamp):
         dork = urlparse(self.make_url(data)).path
-        if dork:
+        if dork and dork not in self.dork_filter:
             return {'content': dork,
                     'type': 'inurl',
                     'timestamp': timestamp,

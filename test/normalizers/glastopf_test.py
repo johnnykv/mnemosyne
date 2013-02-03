@@ -163,5 +163,32 @@ class GlastopfTests(unittest.TestCase):
             self.assertEqual(result['count'], 1)
             self.assertTrue('timestamp' in result)
 
+    def test_make_dork_filter(self):
+        """
+        Tests if unwanted dorks are filtered.
+
+        """
+
+        input_dict = {'request':
+                          {'body': '', 'parameters': [], 'url': '/shop.pl/page;thisisaparam?a=b&c=d',
+                           'header':
+                               {'Accept-Language': 'en-US', 'Accept-Encoding': 'gzip',
+                                'Host': 'a.b.c.d', 'Accept': '*/*', 'User-Agent':
+                                   'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+                                'Connection': 'close'},
+                           'version': 'HTTP/1.1', 'method': 'GET'}}
+
+        #input and expected output
+        in_urls = ( 'http://somesite.pp/',
+                    'http://somesite.pp/favicon.ico',
+                    'http://somesite.pp/headers')
+
+        sut = glastopf_events.GlastopfEvents()
+
+        for url in in_urls:
+            input_dict['request']['url'] = url
+            result = sut.make_dork(input_dict, datetime.now())
+            self.assertIsNone(result)
+
 if __name__ == '__main__':
     unittest.main()
