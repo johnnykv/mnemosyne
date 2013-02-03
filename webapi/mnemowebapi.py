@@ -53,10 +53,16 @@ class MnemoWebAPI():
         else:
             shared.auth = Cork(cork_dir)
 
-        #webapi.api.* and admin depends on shared.auth
+        #admin depends on shared.auth
         import admin
-        from webapi.api import app as develapp
-        mount('/api/', develapp.app)
+
+        #import and mount api version 1 (stable)
+        from webapi.api.v1 import app as api_v1
+        mount('/api/v1/', api_v1.app)
+
+        #import and mount development version (unstable)
+        from webapi.api.d import app as api_d
+        mount('/api/d/', api_d.app)
 
         #must be imported AFTER mounts.
         if shared.static_dir != None:
@@ -78,12 +84,12 @@ class MnemoWebAPI():
 
         #setup logging hooks
         @root_app.hook('before_request')
-        @develapp.app.hook('before_request')
+        @api_d.app.hook('before_request')
+        @api_v1.app.hook('before_request')
         def log_request():
             remote_addr = bottle.request.environ['REMOTE_ADDR']
             if 'beaker.session' in bottle.request.environ:
                 session = bottle.request.environ.get('beaker.session')
-                #username = "Hej"
                 username = session.get('username', None)
             else:
                 username = "None"
