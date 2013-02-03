@@ -72,7 +72,7 @@ def setup_dir(testdir):
     with open("%s/users.json" % testdir, 'w') as f:
         f.write("""{"admin": {"email_addr": null, "desc": null, "role": "admin", "hash": "69f75f38ac3bfd6ac813794f3d8c47acc867adb10b806e8979316ddbf6113999b6052efe4ba95c0fa9f6a568bddf60e8e5572d9254dbf3d533085e9153265623", "creation_date": "2012-04-09 14:22:27.075596"}}""")
     with open("%s/roles.json" % testdir, 'w') as f:
-        f.write("""{"special": 200, "admin": 100, "user": 50}""")
+        f.write("""{"public": 10, "admin": 100, "hp_member": 60}""")
     with open("%s/register.json" % testdir, 'w') as f:
         f.write("""{}""")
 
