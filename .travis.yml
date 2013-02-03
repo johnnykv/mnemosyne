@@ -11,5 +11,4 @@ install:
   - "sudo pip install -r requirements.txt --use-mirrors"
 # command to run tests
 script:
- - nosetests --version
- - nosetests -vvv
+ - nosetests
