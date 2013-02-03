@@ -93,7 +93,7 @@ class MnemoWebAPI():
                 username = session.get('username', None)
             else:
                 username = "None"
-            logger.info("[{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.path))
+            logger.info("[{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.fullpath))
 
     def start_listening(self, host, port):
         run(app=self.app, host=host, port=port, debug=False, server='gevent',
