@@ -39,7 +39,7 @@ curl -k -b cookies.txt "<...>/api/urls?url_regex=\.ru(\/|\:|$)" | python -mjson.
 ```
 ``` json
 {
-    "url": "http://bananamamor.ru:8080/forum/links/public_version.php",
+    "url": "http://xxxyyy.ru:8080/forum/links/django_version.php",
     "_id": "510c35bfc6b6082a30d50bba", 
     "extractions": [
         {
@@ -178,6 +178,60 @@ curl -k -b cookies.txt "<...>/api/aux/dorks?limit=10" | python -mjson.tool
         <--- SNIP --- >
         
          ]   
+}
+```
+
+### Sessions
+Searching for all honeypot attacks comming from an specific source port.
+``` bash
+curl -k -b cookies.txt "<...>/api/sessions?source_port=37337" | python -mjson.tool
+```
+```json
+
+{
+  "sessions": [
+    {
+          "_id": "510c2f1209ce45385d3ed584", 
+          "honeypot": "dionaea", 
+          "attachments": [
+              {
+                  "description": "Binary extraction", 
+                  "hashes": {
+                      "md5": "984cef500b81e7ad2f7a69d9208e64e6", 
+                      "sha512": "e899155228a1d3b5ed9864a7fed944716b7b0a3061b76e0f720bf9f7f6c65c633d8fdd4799335b9d92238b4b18e8076718a87a5d7a6538fec4223f111224b5e5"
+                  }
+              }
+          ], 
+          "destination_ip": [
+              "xxx.yyy.zzz.ppp"
+          ], 
+          "destination_port": 445, 
+          "hpfeed_id": "50ec09b709ce451dac5c844e", 
+          "protocol": "microsoft-ds", 
+          "source_ip": "xxx.yy.xx.xxx", 
+          "source_port": 37337, 
+          "timestamp": "2013-01-08T11:57:43.390000"
+      }, 
+      {
+          "_id": "510c2fbc09ce45385d3fcd16",
+          "honeypot": "glastopf", 
+          "destination_port": 80, 
+          "hpfeed_id": "50ec74f509ce452427303b50", 
+          "protocol": "http", 
+          "session_http": {
+              "request": {
+                  "body": "", 
+                  "header": "{<--- SNIP --->}", 
+                  "host": "<--- SNIP --->", 
+                  "url": "<--- SNIP --->", 
+                  "verb": "GET"
+              }
+          }, 
+          "source_ip": "xxx.zzz.yy.zzz", 
+          "source_port": 37337, 
+          "timestamp": "2013-01-08T13:28:15"
+      },
+      ]
 }
 ```
 
