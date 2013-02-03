@@ -22,6 +22,7 @@ gevent.monkey.patch_all()
 import os
 import argparse
 import logging
+import sys
 
 from ConfigParser import ConfigParser
 from mnemosyne import Mnemosyne
