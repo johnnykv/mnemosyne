@@ -18,6 +18,7 @@
 import logging
 import string
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from datetime import datetime
 from bson.errors import InvalidStringData
 
@@ -27,6 +28,7 @@ class MnemoDB(object):
         conn = MongoClient()
         self.db = conn[database_name]
         self.db.hpfeed.ensure_index('normalized', unique=False)
+        self.db.hpfeed.ensure_index('last_error', unique=False)
         self.db.url.ensure_index('url', unique=True)
         self.db.file.ensure_index('hashes', unique=True)
         self.db.dork.ensure_index('content', unique=False)
@@ -60,7 +62,8 @@ class MnemoDB(object):
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
         #if we end up here everything if ok - setting hpfeed entry to normalized
-        self.db.hpfeed.update({'_id': hpfeed_id}, {"$set": {'normalized': True}})
+        self.db.hpfeed.update({'_id': hpfeed_id}, {'$set': {'normalized': True},
+                                                   '$unset': {'last_error': 1, 'last_error_timestamp': 1}})
 
     def insert_hpfeed(self, ident, channel, payload):
         #thanks rep!
@@ -83,8 +86,17 @@ class MnemoDB(object):
                 'Failed to insert hpfeed data on {0} channel due to invalid string data. ({1})'.format(entry['channel'],
                                                                                                        err))
 
+    def hpfeed_set_errors(self, items):
+        for item in items:
+            self.db.hpfeed.update({'_id': item['_id']},
+                                  {'$set':
+                                       {'last_error': str(item['last_error']),
+                                       'last_error_timestamp': item['last_error_timestamp']}
+                                  })
+
     def get_hpfeed_data(self, max=None):
-        data = self.db.hpfeed.find({'normalized': False}, limit=max)
+        #entries which asre not normalized and not in error state
+        data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
         return data
 
     def reset_normalized(self):
@@ -95,7 +107,10 @@ class MnemoDB(object):
             if collection not in ['system.indexes', 'hpfeed', 'hpfeeds']:
                 logging.warning('Dropping collection: {0}.'.format(collection))
                 self.db.drop_collection(collection)
-        self.db.hpfeed.update({}, {"$set": {'normalized': False}}, multi=True)
+
+        self.db.hpfeed.update({}, {"$set": {'normalized': False},
+                                   '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
+                                  multi=True)
         logging.info('Database reset.')
 
     def collection_count(self):
@@ -105,3 +120,7 @@ class MnemoDB(object):
                 count = self.db[collection].count()
                 result[collection] = count
         return result
+
+    def get_hpfeed_error_count(self):
+        count = self.db.hpfeed.find({'last_error': {'$exists': 1}}).count()
+        return count

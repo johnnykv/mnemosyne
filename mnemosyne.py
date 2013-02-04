@@ -15,6 +15,8 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from datetime import datetime
+
 from normalizers import basenormalizer
 from normalizers import glastopf_events
 from normalizers import glastopf_files
@@ -47,8 +49,7 @@ class Mnemosyne(object):
                 else:
                     self.normalizers[channel] = normalizer
 
-    def start_processing(self, warn_no_normalizers):
-        error_list = []
+    def start_processing(self):
         while self.enabled:
 
             #Usefull to pause inserts while doing db resets.
@@ -57,12 +58,11 @@ class Mnemosyne(object):
                 self.pause = 0
 
             insertions = 0
-
-            chan_no_normalizer = {}
+            error_list = []
             to_be_processed = self.database.get_hpfeed_data(500)
+
             for hpfeed_item in to_be_processed:
-                if hpfeed_item['_id'] in error_list:
-                    continue
+                #Remove this line when done!
                 try:
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
@@ -70,18 +70,18 @@ class Mnemosyne(object):
                         self.database.insert_normalized(norm, hpfeed_item['_id'])
                         insertions += 1
                     else:
-                        if channel in chan_no_normalizer:
-                            chan_no_normalizer[channel] = chan_no_normalizer[channel] + 1
-                        else:
-                            chan_no_normalizer[channel] = 1
+                        error_list.append({'_id': hpfeed_item['_id'],
+                                           'last_error': "No normalizer found",
+                                           'last_error_timestamp': datetime.now()})
+                        logging.warning('No normalizer could be found for channel: {0}.'.format(channel))
                 except (TypeError, ValueError, ParseError) as err:
-                    error_list.append(hpfeed_item['_id'])
-                    logging.exception('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s)' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
+                    error_list.append({'_id': hpfeed_item['_id'],
+                                       'last_error': err,
+                                       'last_error_timestamp': datetime.now()})
+                    logging.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s). Exception details has been stored in the database.' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
 
-            if warn_no_normalizers:
-                if chan_no_normalizer:
-                    for key, value in chan_no_normalizer.items():
-                        logging.warning('No normalizer could be found for %s. (Repeated %i times).' % (key, value))
+            if len(error_list) > 0:
+                self.database.hpfeed_set_errors(error_list)
 
             if insertions is 0:
                 gevent.sleep(3)

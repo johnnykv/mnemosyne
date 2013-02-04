@@ -17,9 +17,10 @@
 
 import unittest
 import uuid
+from bson.objectid import ObjectId
 from persistance import mnemodb
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class MnemodbTests(unittest.TestCase):
@@ -70,7 +71,7 @@ class MnemodbTests(unittest.TestCase):
             {'channel': 'channel2', 'ident': 'ident2', 'payload': 'payload2', 'timestamp': datetime.utcnow(),
              'normalized': True},
             {'channel': 'channel3', 'ident': 'ident3', 'payload': 'payload3', 'timestamp': datetime.utcnow(),
-             'normalized': True}
+             'normalized': True, 'last_error': "Some error", 'last_error_timestamp': datetime.now()}
         ]
 
         for item in insert_items:
@@ -83,11 +84,18 @@ class MnemodbTests(unittest.TestCase):
         #This is the function we are testing
         sut.reset_normalized()
 
+        #has normalized collections been removed
         self.assertNotIn('somecollection1', db.collection_names())
         self.assertNotIn('somecollection2', db.collection_names())
-        normalized_true = list(db['hpfeed'].find({'normalized': True}))
-        #we expect that  normalized is set to False after the call to reset_normalized
-        self.assertEqual(0, len(normalized_true))
+
+        #has all normalized been set to True
+        self.assertEquals(0, db['hpfeed'].find({'normalized': True}).count())
+        #has last_error attribute been removed
+        self.assertEquals(0, db['hpfeed'].find({'last_error': {'$exists': 1}}).count())
+        #has last_error_timestamp attribute been removed
+        self.assertEquals(0, db['hpfeed'].find({'last_error_timestamp': {'$exists': 1}}).count())
+
+
 
     def test_insert_dorks(self):
         """
@@ -104,7 +112,7 @@ class MnemodbTests(unittest.TestCase):
                  {'type': 'inurl', 'content': '/otherdork.php', 'count': 1, 'timestamp': datetime.now()}},
         ]
 
-        sut.insert_normalized(insert_items, '1234')
+        sut.insert_normalized(insert_items, ObjectId())
 
         db = MongoClient('localhost', 27017)[self.dbname]
 
@@ -122,8 +130,69 @@ class MnemodbTests(unittest.TestCase):
         self.assertEqual(1, result_one['count'])
         self.assertEqual('inurl', result_one['type'])
 
+    def test_set_errors(self):
+        """
+        Test that error state is correctly set in the specified hpfeed entries.
+        """
+
+        #the entry we are going to manipulate
+        o = ObjectId()
+        insert_items = [
+            {'channel': 'channel1', 'ident': 'ident1', 'payload': 'payload1', 'timestamp': datetime.utcnow(),
+             'normalized': True},
+            {'_id': o, 'channel': 'channel2', 'ident': 'ident2', 'payload': 'payload2', 'timestamp': datetime.utcnow(),
+             'normalized': True},
+            {'channel': 'channel3', 'ident': 'ident3', 'payload': 'payload3', 'timestamp': datetime.utcnow(),
+             'normalized': True}
+                ]
+
+        db = MongoClient('localhost', 27017)[self.dbname]
+
+        for item in insert_items:
+            db['hpfeed'].insert(item)
+
+        sut = mnemodb.MnemoDB(self.dbname)
+        #set a single item in error state
+        dt = datetime.now()
+        sut.hpfeed_set_errors([ {'_id': o,
+                               'last_error': "Some error message",
+                               'last_error_timestamp': dt} ])
+
+        #retrieve it again and check if the error state was set.
+        r = db['hpfeed'].find_one({'_id': o})
+        self.assertEqual('Some error message', r['last_error'])
+        self.assertAlmostEqual(dt, r['last_error_timestamp'], delta=timedelta(seconds=1))
+
+    def test_reset_errors_on_successful_normalization(self):
+        """
+        Test that error state is removed from hpfeed entries on successful normalizations.
+        """
+
+        #the entry we are going to manipulate
+        o = ObjectId()
 
 
+
+        db = MongoClient('localhost', 27017)[self.dbname]
+
+        db['hpfeed'].insert( {'_id': o,
+                              'channel': 'channel3', 'ident': 'ident3',
+                              'payload': 'payload3', 'timestamp': datetime.utcnow(),
+                              'normalized': False,
+                              'last_error': 'Some error',
+                              'last_error_timestamp': datetime.now()})
+
+        sut = mnemodb.MnemoDB(self.dbname)
+
+        #insert dummy url entry
+        sut.insert_normalized([{'url': {'url': '/dummy/url'}}], o)
+
+        #retrieve the item from the database
+        r = db['hpfeed'].find_one({'_id': o})
+        #check that stats is as expected
+        self.assertTrue(r['normalized'])
+        self.assertNotIn('last_error', r)
+        self.assertNotIn('last_error_timestamp', r)
 
 
 

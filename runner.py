@@ -112,13 +112,15 @@ if __name__ == '__main__':
     if not args.no_normalizer:
         #start menmo and inject persistence module
         mnemo = Mnemosyne(db)
-        greenlets['mnemo'] = gevent.spawn(mnemo.start_processing, False)
+        greenlets['mnemo'] = gevent.spawn(mnemo.start_processing)
 
     if args.stats:
         while True:
             counts = db.collection_count()
             log_string = 'Mongo collection count:'
             for key, value in counts.items():
+                if key == 'hpfeed':
+                    value = '{0} ({1} in error state)'.format(value, db.get_hpfeed_error_count())
                 log_string += ' {0}: {1}, '.format(key, value)
             logging.info(log_string)
             gevent.sleep(1800)
