@@ -32,6 +32,7 @@ class MnemoDB(object):
         self.db.dork.ensure_index('content', unique=False)
 
     def insert_normalized(self, ndata, hpfeed_id):
+        assert isinstance(hpfeed_id, ObjectId)
         for item in ndata:
             #every root item is equal to collection name
             for collection, document in item.items():
