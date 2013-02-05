@@ -78,6 +78,7 @@ def do_logging(file_log=None):
     logger.addHandler(console_log)
 
 if __name__ == '__main__':
+    logger.info('Starting mnemosyne.')
     parser = argparse.ArgumentParser(description='Mnemosyne')
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
     parser.add_argument('--reset', action='store_true', default=False)
@@ -101,15 +102,18 @@ if __name__ == '__main__':
         db.reset_normalized()
 
     if not args.no_webapi:
+        logger.info("Spawning web api.")
         #start web api and inject mongo info
         webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath)
         greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if not args.no_feedpuller:
+        logger.info("Spawning feed puller.")
         puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
         greenlets['puller'] = gevent.spawn(puller.start_listening)
 
     if not args.no_normalizer:
+        logger.info("Spawning normalizer.")
         #start menmo and inject persistence module
         mnemo = Mnemosyne(db)
         greenlets['mnemo'] = gevent.spawn(mnemo.start_processing)

@@ -49,6 +49,7 @@ class MnemoWebAPI():
         cork_files = ['users.json', 'roles.json', 'register.json']
         if not set(cork_files).issubset(set(os.listdir(cork_dir))):
             #if not, create them
+            logger.info('Cork authentication files not found, creating new files.')
             shared.auth = self.populate_conf_directory(cork_dir)
         else:
             shared.auth = Cork(cork_dir)

@@ -22,9 +22,11 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from bson.errors import InvalidStringData
 
+logger = logging.getLogger(__name__)
 
 class MnemoDB(object):
     def __init__(self, database_name):
+        logger.info('Connecting to the mongodb: {0}'.format(database_name))
         conn = MongoClient()
         self.db = conn[database_name]
         self.db.hpfeed.ensure_index('normalized', unique=False)
@@ -103,15 +105,16 @@ class MnemoDB(object):
         """
         Deletes all normalized data from the mongo instance.
         """
+        logger.info('Initiating database reset - all normalized data will be deleted.')
         for collection in self.db.collection_names():
             if collection not in ['system.indexes', 'hpfeed', 'hpfeeds']:
-                logging.warning('Dropping collection: {0}.'.format(collection))
+                logger.warning('Dropping collection: {0}.'.format(collection))
                 self.db.drop_collection(collection)
 
         self.db.hpfeed.update({}, {"$set": {'normalized': False},
                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
                                   multi=True)
-        logging.info('Database reset.')
+        logger.info('Database reset.')
 
     def collection_count(self):
         result = {}
