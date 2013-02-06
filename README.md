@@ -16,6 +16,7 @@ Mnemosyne currently supports normalization of data from the following channels:
 * glastopf.events
 * glastopf.files
 * thug.events
+* thug.files
 
 ## Preliminary REST API
 Can be found at [http://johnnykv.github.com/mnemosyne/WebAPI.html](http://johnnykv.github.com/mnemosyne/WebAPI.html)
