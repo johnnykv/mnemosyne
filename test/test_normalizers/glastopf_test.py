@@ -189,5 +189,15 @@ class GlastopfTests(unittest.TestCase):
             result = sut.make_dork(input_dict, datetime.now())
             self.assertIsNone(result)
 
+    def test_clean_url(self):
+        sut = glastopf_events.GlastopfEvents()
+
+        in_out_pars = ( ('/thisisok', '/thisisok'),
+                        ('//removeleading', '/removeleading') )
+
+        for input_, expected_output in in_out_pars:
+            result = sut.clean_url(input_)
+            self.assertEqual(expected_output, result)
+
 if __name__ == '__main__':
     unittest.main()

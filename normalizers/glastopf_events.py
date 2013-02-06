@@ -82,6 +82,11 @@ class GlastopfEvents(BaseNormalizer):
             session_http['response'] = response
         return session_http
 
+    def clean_url(self, url):
+        if len(url) > 2 and url[:2] == '//':
+            url = url[1:]
+        return url
+
     def make_url(self, data):
         """
         Tries to make a valid URL from the attackers request.
