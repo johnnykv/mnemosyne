@@ -1,7 +1,6 @@
 pymongo
 bson
 gevent
-python-magic
 bottle-mongodb
 bottle-cork
 git+https://github.com/defnull/bottle/
