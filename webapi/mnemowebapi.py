@@ -106,6 +106,7 @@ class MnemoWebAPI():
 
 
     def start_listening(self, host, port):
+        logger.info('Starting web api, listening on {0}:{1}'.format(host, port))
         run(app=self.app, host=host, port=port, debug=False, server='gevent',
             log="wsgi", quiet=True, keyfile='server.key', certfile='server.crt')
 
@@ -131,7 +132,7 @@ class MnemoWebAPI():
             'role': 'admin',
             'hash': cork._hash(username, password),
             'email_addr': username + '@localhost.local',
-            'desc': username + ' test user',
+            'desc': 'Default administrative account',
             'creation_date': tstamp
         }
         cork._store.save_users()
