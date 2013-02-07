@@ -1,6 +1,5 @@
-magic
-bson
 pymongo
+bson
 gevent
 python-magic
 bottle-mongodb
@@ -9,3 +8,4 @@ git+https://github.com/defnull/bottle/
 beaker
 webtest
 pycrypto
+python-magic
