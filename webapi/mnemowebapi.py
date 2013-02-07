@@ -66,7 +66,7 @@ class MnemoWebAPI():
         mount('/api/d/', api_d.app)
 
         #must be imported AFTER mounts.
-        if shared.static_dir != None:
+        if shared.static_dir is not None:
             import default_routes
 
         #wrap root app in beaker middleware

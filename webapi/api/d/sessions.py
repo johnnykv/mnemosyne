@@ -33,8 +33,7 @@ def sessions_get_by_query(mongodb):
     query_keys = request.query.keys()
     query_dict = {}
 
-    mongo_keys = set(('id', '_id', 'protocol', 'source_ip', 'source_port', 'destination_ip',
-                      'destination_port', 'honeypot'))
+    mongo_keys = {'id', '_id', 'protocol', 'source_ip', 'source_port', 'destination_ip', 'destination_port', 'honeypot'}
 
     #intersection
     common_keys = (set(query_keys) & mongo_keys)
@@ -60,7 +59,6 @@ def sessions_get_by_query(mongodb):
 
 @app.get('/sessions/protocols')
 def session_protocols(mongodb):
-    auth.require(role='hp_member')
     """
     Returns a grouped list of all protocols intercepted.
     Example:
@@ -68,5 +66,6 @@ def session_protocols(mongodb):
                    {"count": 125, "protocol": "ssh},
                    {"count": 74,  "protocol": "imap}]}
     """
+    auth.require(role='hp_member')
     result = simple_group('session', 'protocol', mongodb)
     return jsonify(result, response)

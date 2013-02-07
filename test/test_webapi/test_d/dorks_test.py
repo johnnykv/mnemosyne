@@ -74,7 +74,7 @@ class DorkTest(unittest.TestCase):
                     {'content': '/no/fjords/here', 'count': 3,
                      'type': 'inurl', 'timestamp': '2013-03-03T00:00:00'}]
         #TODO: Compare the actual output with expected
-        self.assertEqual(3, len(result))
+        self.assertEqual(len(expected), len(result))
 
     def test_get_dorks_with_regex(self):
         sut = DorkTest.sut

@@ -47,11 +47,11 @@ def get_files(mongodb):
         elif hash_length is 32:
             query_dict['hashes.md5'] = request.query['hash']
         else:
-            abort((400), '{0} could not be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
+            abort(400, '{0} could not be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
     else:
-        abort((400), 'Only supported query parameter is "hash"')
+        abort(400, 'Only supported query parameter is "hash"')
 
-    result = list(mongodb['file'].find(query_dict).limit(50))
+    result = list(mongodb['file'].find(query_dict).limit(limit))
     return jsonify({'files': result}, response)
 
 

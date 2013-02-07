@@ -1,3 +1,5 @@
+magic
+bson
 pymongo
 gevent
 python-magic

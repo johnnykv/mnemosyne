@@ -35,7 +35,7 @@ class KippoEvents(BaseNormalizer):
             'session_ssh': {'version': o_data['version']}
         }
 
-        if 'ttylog' in o_data and o_data['ttylog'] != None:
+        if 'ttylog' in o_data and o_data['ttylog'] is not None:
             attachments = [
                 {
                     'description': 'Kippo session log (ttylog).',

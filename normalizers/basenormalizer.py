@@ -49,5 +49,3 @@ class BaseNormalizer(object):
         result['sha1'] = hashlib.sha1(data).hexdigest()
         result['sha512'] = hashlib.sha512(data).hexdigest()
         return result
-
-

@@ -35,7 +35,7 @@ def hpfeeds(mongodb):
     query_keys = request.query.keys()
     query_dict = {}
 
-    mongo_keys = set(('_id', 'id', 'channel'))
+    mongo_keys = {'_id', 'id', 'channel'}
 
     #intersection
     common_keys = (set(query_keys) & mongo_keys)

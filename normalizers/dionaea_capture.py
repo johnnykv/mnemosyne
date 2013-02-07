@@ -38,7 +38,7 @@ class DionaeaCaptures(BaseNormalizer):
             session['destination_ip'] = o_data['daddr'],
 
         protocol = super(DionaeaCaptures, self).port_to_service(int(o_data['dport']))
-        if protocol != None:
+        if protocol is not None:
             session['protocol'] = protocol
 
         attachments = [

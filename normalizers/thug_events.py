@@ -39,7 +39,6 @@ class ThugEvents(BaseNormalizer):
             for a in analysis:
                 timestamp = datetime.strptime(
                     a.attrib['start_datetime'], '%Y-%m-%d %H:%M:%S.%f')
-                a.attrib['start_datetime']
 
                 data = {}
                 object_element = a.find(

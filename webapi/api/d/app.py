@@ -7,7 +7,7 @@ import webapi.shared_state as state
 
 app = Bottle()
 
-if state.plug != None:
+if state.plug is not None:
     app.install(state.plug)
 
 auth = state.auth

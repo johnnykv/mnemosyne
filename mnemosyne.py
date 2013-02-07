@@ -46,7 +46,7 @@ class Mnemosyne(object):
             normalizer = n()
             for channel in normalizer.channels:
                 if channel in self.normalizers:
-                    raise Exception('Only one normalizer for each channel allowed (%s).' % (channel,))
+                    raise Exception('Only one normalizer for each channel allowed (%s).'.format(channel))
                 else:
                     self.normalizers[channel] = normalizer
 
@@ -67,7 +67,8 @@ class Mnemosyne(object):
                 try:
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
-                        norm = self.normalizers[channel].normalize(hpfeed_item['payload'], channel, hpfeed_item['timestamp'])
+                        norm = self.normalizers[channel].normalize(hpfeed_item['payload'],
+                                                                   channel, hpfeed_item['timestamp'])
                         self.database.insert_normalized(norm, hpfeed_item['_id'])
                         insertions += 1
                     else:
@@ -79,7 +80,9 @@ class Mnemosyne(object):
                     error_list.append({'_id': hpfeed_item['_id'],
                                        'last_error': err,
                                        'last_error_timestamp': datetime.now()})
-                    logging.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s). Exception details has been stored in the database.' % (hpfeed_item['_id'], hpfeed_item['channel'], err))
+                    logging.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s). '
+                                    'Exception details has been stored in the database.'
+                                    .format(hpfeed_item['_id'], hpfeed_item['channel'], err))
 
             if len(error_list) > 0:
                 self.database.hpfeed_set_errors(error_list)
