@@ -1,5 +1,4 @@
 pymongo
-bson
 gevent
 bottle-mongodb
 bottle-cork
