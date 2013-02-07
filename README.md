@@ -19,7 +19,12 @@ Mnemosyne currently supports normalization of data from the following channels:
 * thug.files
 
 ## Preliminary REST API
+
 Can be found at [http://johnnykv.github.com/mnemosyne/WebAPI.html](http://johnnykv.github.com/mnemosyne/WebAPI.html)
+
+## Speciality services
+
+Mnemosyne is currently serving a speciality service, which on one side collects live dorks from the [Glastopf](https://github.com/glastopf/) [hpfeed](https://redmine.honeynet.org/projects/hpfeeds/wiki), and on the other side correlate the collected data, which allows virgin [Glastopf](https://github.com/glastopf/) instances to bootstrap themselves by using a Mnemosyne service.
 
 # Example queries with curl
 
