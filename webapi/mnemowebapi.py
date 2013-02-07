@@ -21,6 +21,7 @@ import os
 import uuid
 import shared_state as shared
 import logging
+import types
 from bottle import run, install, mount, request
 from bottle.ext import mongo
 from beaker.middleware import SessionMiddleware
@@ -95,6 +96,14 @@ class MnemoWebAPI():
             else:
                 username = "None"
             logger.info("[{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.fullpath))
+
+        def return_text(self, e):
+            return e.status
+
+        #make sure error pages for API are pure text
+        api_d.app.default_error_handler = types.MethodType(return_text, self)
+        api_v1.app.default_error_handler = types.MethodType(return_text, self)
+
 
     def start_listening(self, host, port):
         run(app=self.app, host=host, port=port, debug=False, server='gevent',
