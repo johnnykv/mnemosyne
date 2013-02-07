@@ -33,6 +33,7 @@ class MnemodbTests(unittest.TestCase):
     def tearDown(self):
         connection = MongoClient('localhost', 27017)
         connection.drop_database(self.dbname)
+        connection.drop_database(self.dbname)
 
     def test_insert_hpfeed(self):
         """
