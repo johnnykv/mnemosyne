@@ -64,7 +64,7 @@ def parse_config(config_file):
 def do_logging(file_log=None):
     logger.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter('%(asctime)-15s (%(funcName)s) %(message)s')
+    formatter = logging.Formatter('%(asctime)-15s (%(name)s) %(message)s')
 
     if file_log:
         file_log = logging.FileHandler(file_log)
