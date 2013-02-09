@@ -25,10 +25,14 @@ from bson.errors import InvalidStringData
 logger = logging.getLogger(__name__)
 
 class MnemoDB(object):
+
     def __init__(self, database_name):
         logger.info('Connecting to the mongodb: {0}'.format(database_name))
         conn = MongoClient()
         self.db = conn[database_name]
+        self.ensure_index()
+
+    def ensure_index(self):
         self.db.hpfeed.ensure_index('normalized', unique=False)
         self.db.hpfeed.ensure_index('last_error', unique=False)
         self.db.url.ensure_index('url', unique=True)
@@ -104,7 +108,7 @@ class MnemoDB(object):
                                   })
 
     def get_hpfeed_data(self, max=None):
-        #entries which asre not normalized and not in error state
+        #entries which are not normalized and not in error state
         data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
         return data
 
@@ -121,6 +125,8 @@ class MnemoDB(object):
         self.db.hpfeed.update({}, {"$set": {'normalized': False},
                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
                                   multi=True)
+        self.ensure_index()
+
         logger.info('Database reset.')
 
     def collection_count(self):
