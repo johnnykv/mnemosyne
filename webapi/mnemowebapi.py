@@ -89,13 +89,16 @@ class MnemoWebAPI():
         @api_d.app.hook('before_request')
         @api_v1.app.hook('before_request')
         def log_request():
+            user_agent = ""
+            if 'HTTP_USER_AGENT' in bottle.request.environ:
+                user_agent = bottle.request.environ['HTTP_USER_AGENT']
             remote_addr = bottle.request.environ['REMOTE_ADDR']
             if 'beaker.session' in bottle.request.environ:
                 session = bottle.request.environ.get('beaker.session')
                 username = session.get('username', None)
             else:
                 username = "None"
-            logger.info("[{0}/{1}] {2} {3}".format(remote_addr, username, request.method, request.fullpath))
+            logger.info("[{0}/{1}] {2} {3} ({4})".format(remote_addr, username, request.method, request.fullpath, user_agent))
 
         def return_text(self, e):
             return e.status
