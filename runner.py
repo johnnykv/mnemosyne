@@ -78,7 +78,6 @@ def do_logging(file_log=None):
     logger.addHandler(console_log)
 
 if __name__ == '__main__':
-    logger.info('Starting mnemosyne.')
     parser = argparse.ArgumentParser(description='Mnemosyne')
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
     parser.add_argument('--reset', action='store_true', default=False)
@@ -93,6 +92,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     c = parse_config(args.config_file)
+
+    git_ref = "Unknown"
+    if os.path.isfile('.git/refs/heads/master'):
+        with open('.git/refs/heads/master', 'r') as f:
+            git_ref = f.readline().rstrip()
+
+    logger.info('Starting mnemosyne. (Git: {0})'.format(git_ref))
 
     greenlets = {}
 
