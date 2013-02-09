@@ -4,15 +4,15 @@ WebAPI
 
 Versioning
 ==========
-To maintain backwards compatibility the REST path will be prefixed with version numbers. This will be in effect after the first stable release. A path without version number will refer to the development API.
+To maintain backwards compatibility the REST path will be prefixed with version numbers, a prefix of /api/d/ will serve the current unstable development api, whereas /api/v* will serve the specified stable version.
 
 Examples:
 
-**/1.0/sessions**
-   Sessions resource as it was defined in release 1.0.
-**/1.1/sessions**
-   Sessions resource as it was defined in release 1.1.
-**/sessions**
+**/api/v1/sessions**
+   Sessions resource as it was defined in release 1.
+**/api/v2/sessions**
+   Sessions resource as it was defined in release 2.
+**/api/d/sessions**
    Sessions resource under development.
 
 Path conventions
@@ -22,14 +22,14 @@ To ensure a clean API, Mnemosyne has the following conventions for URL construct
 1. If the consumer has filtering options use query strings.
 2. If the consumer has no options in regards to filtering use a clean path.
 
-Resources
-=========
+Resources as of version 1
+=========================
 
 HPFeeds
 *******
-The HPFeeds resource located at /hpfeeds contains unparsed data from various channels.
+The HPFeeds resource located at /api/v1/hpfeeds serves unparsed data from various HPFeed channels.
 
-.. http:get:: /api/hpfeeds
+.. http:get:: /api/v1/hpfeeds
 
    Returns filtered HPFeeds data.
 
@@ -37,7 +37,7 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
 
    .. sourcecode:: http
 
-      GET /api/hpfeeds?channel=glastopf.events HTTP/1.1
+      GET /api/v1/hpfeeds?channel=glastopf.events HTTP/1.1
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -78,9 +78,9 @@ The HPFeeds resource located at /hpfeeds contains unparsed data from various cha
 
 Sessions
 ********
-The Sessions resource located at /sessions contains normalized data from traditional serverside honeypots.
+The Sessions resource located at /api/v1/sessions contains normalized data from traditional serverside honeypots.
 
-.. http:get:: /api/sessions
+.. http:get:: /api/v1/sessions
 
    Returns sessions filtered by query parameters.
 
@@ -88,7 +88,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
 
    .. sourcecode:: http
 
-       GET /api/sessions?honeypot=kippo&source_port=36888 HTTP/1.1
+       GET /api/v1/sessions?honeypot=kippo&source_port=36888 HTTP/1.1
        Host: example.com
        Accept: application/json, text/javascript
 
@@ -153,7 +153,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /api/sessions/protocols
+.. http:get:: /api/v1/sessions/protocols
 
    Distinct protocols and session count from normalized honeypot sessions.
 
@@ -161,7 +161,7 @@ The Sessions resource located at /sessions contains normalized data from traditi
 
    .. sourcecode:: http
 
-          GET /api/sessions/protocols HTTP/1.1
+          GET /api/v1/sessions/protocols HTTP/1.1
           Host: example.com
           Accept: application/json, text/javascript
 
@@ -197,7 +197,7 @@ URLS
 ****
 The URLS resource located at /urls, contains urls which potentially are serving malicious content.
 
-.. http:get:: /api/urls
+.. http:get:: /api/v1/urls
 
    Returns urls serving potential malicious content. If any files has been extracted, an reference to the checksum will be provided.
 
@@ -205,7 +205,7 @@ The URLS resource located at /urls, contains urls which potentially are serving 
 
    .. sourcecode:: http
 
-         GET /api/urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
+         GET /api/v1/urls?url_regex=\.ru(\/|\:|$) HTTP/1.1
          Host: example.com
          Accept: application/json
 
@@ -260,9 +260,9 @@ The URLS resource located at /urls, contains urls which potentially are serving 
 
 Files
 *****
-The Files resource located at /files contains various forms of binaries and code samples collected from HPFeeds channels.
+The Files resource located at /api/v1/files contains various forms of binaries and code samples collected from HPFeeds channels.
 
-.. http:get:: /api/files
+.. http:get:: /api/v1/files
 
    Returns matches for the given hash. The following hashes are supported: MD5, SHA1, SHA512
 
@@ -270,7 +270,7 @@ The Files resource located at /files contains various forms of binaries and code
 
    .. sourcecode:: http
 
-       GET /api/files?hash=549eccb6939274ac9664f0201e4771c4 HTTP/1.1
+       GET /api/v1/files?hash=549eccb6939274ac9664f0201e4771c4 HTTP/1.1
        Host: example.com
        Accept: application/json, text/javascript
 
@@ -304,7 +304,7 @@ The Files resource located at /files contains various forms of binaries and code
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
-.. http:get:: /api/files/types
+.. http:get:: /api/v1/files/types
 
    Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed Mnemosyne will fallback to identification with libmagic.
 
@@ -312,7 +312,7 @@ The Files resource located at /files contains various forms of binaries and code
 
    .. sourcecode:: http
 
-       GET /api/files/types HTTP/1.1
+       GET /api/v1/files/types HTTP/1.1
        Host: example.com
        Accept: application/json
 
@@ -372,10 +372,10 @@ The Files resource located at /files contains various forms of binaries and code
 
 Aux
 *****
-The Aux (Auxiliary) resource located at /api/aux...
+Aux (Auxiliary) resources located at /api/v1/aux/.
 
 
-.. http:get:: /api/aux/get_hpfeeds_channels
+.. http:get:: /api/v1/aux/get_hpfeeds_channels
 
    Distinct channel names and count of items.
 
@@ -383,7 +383,7 @@ The Aux (Auxiliary) resource located at /api/aux...
 
    .. sourcecode:: http
 
-       GET /api/aux/get_hpfeeds_channels HTTP/1.1
+       GET /api/v1/aux/get_hpfeeds_channels HTTP/1.1
        Accept: application/json, text/javascript
 
    **Example response**:
@@ -427,3 +427,49 @@ The Aux (Auxiliary) resource located at /api/aux...
       }
 
 
+.. http:get:: /api/v1/aux/dorks
+
+   Serves Dorks collected by Glastopf.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+       GET /api/v1/aux/dorks HTTP/1.1
+       Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+       "dorks": [
+        {
+         "content": "/pivotx/includes/index.php",
+         "count": 716,
+         "firsttime": "2013-02-01T20:38:42+00:00",
+         "lasttime": "2013-01-14T16:20:51.504000",
+         "type": "inurl"
+        },
+        {
+         "content": "/axis-cgi/mjpg/wp-content/themes/diner/timthumb.php",
+         "count": 545,
+         "firsttime": "2013-02-01T20:38:32+00:00",
+         "lasttime": "2013-01-14T16:26:03.036000",
+         "type": "inurl"
+        },
+        {
+         "content": "/board/board/include/pivotx/includes/wp-content/pivotx/includes/timthumb.php",
+         "count": 493,
+         "firsttime": "2013-02-01T20:39:03+00:00",
+         "lasttime": "2013-01-14T10:55:50.197000",
+         "type": "inurl"
+        },
+
+        <--- SNIP --- >
+
+         ]
+       }
