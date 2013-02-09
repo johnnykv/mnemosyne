@@ -34,6 +34,13 @@ class MnemoDB(object):
         self.db.url.ensure_index('url', unique=True)
         self.db.file.ensure_index('hashes', unique=True)
         self.db.dork.ensure_index('content', unique=False)
+        self.db.session.ensure_index('protocol', unique=False)
+        self.db.session.ensure_index('source_ip', unique=False)
+        self.db.session.ensure_index('source_port', unique=False)
+        self.db.session.ensure_index('destination_ip', unique=False)
+        self.db.session.ensure_index('source_port', unique=False)
+        self.db.session.ensure_index('honeypot', unique=False)
+        self.db.session.ensure_index('timestamp', unique=False)
 
     def insert_normalized(self, ndata, hpfeed_id):
         assert isinstance(hpfeed_id, ObjectId)
