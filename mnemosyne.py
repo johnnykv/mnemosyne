@@ -80,7 +80,7 @@ class Mnemosyne(object):
                     error_list.append({'_id': hpfeed_item['_id'],
                                        'last_error': err,
                                        'last_error_timestamp': datetime.now()})
-                    logging.warning('Failed to normalize and import item with hpfeed id = %s, channel = %s. (%s). '
+                    logging.warning('Failed to normalize and import item with hpfeed id = {0}, channel = {1}. ({2}). '
                                     'Exception details has been stored in the database.'
                                     .format(hpfeed_item['_id'], hpfeed_item['channel'], err))
 
