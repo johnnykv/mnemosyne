@@ -51,11 +51,12 @@
 <li><a class="reference internal" href="#">WebAPI</a><ul>
 <li><a class="reference internal" href="#versioning">Versioning</a></li>
 <li><a class="reference internal" href="#path-conventions">Path conventions</a></li>
-<li><a class="reference internal" href="#resources">Resources</a><ul>
+<li><a class="reference internal" href="#resources-as-of-version-1">Resources as of version 1</a><ul>
 <li><a class="reference internal" href="#hpfeeds">HPFeeds</a></li>
 <li><a class="reference internal" href="#sessions">Sessions</a></li>
 <li><a class="reference internal" href="#urls">URLS</a></li>
 <li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#aux">Aux</a></li>
 </ul>
 </li>
 </ul>
@@ -95,14 +96,14 @@
 <h1>WebAPI<a class="headerlink" href="#webapi" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="versioning">
 <h2>Versioning<a class="headerlink" href="#versioning" title="Permalink to this headline">¶</a></h2>
-<p>To maintain backwards compatibility the REST path will be prefixed with version numbers. This will be in effect after the first stable release. A path without version number will refer to the development API.</p>
+<p>To maintain backwards compatibility the REST path will be prefixed with version numbers, a prefix of /api/d/ will serve the current unstable development api, whereas /api/v* will serve the specified stable version.</p>
 <p>Examples:</p>
 <dl class="docutils">
-<dt><strong>/1.0/sessions</strong></dt>
-<dd>Sessions resource as it was defined in release 1.0.</dd>
-<dt><strong>/1.1/sessions</strong></dt>
-<dd>Sessions resource as it was defined in release 1.1.</dd>
-<dt><strong>/sessions</strong></dt>
+<dt><strong>/api/v1/sessions</strong></dt>
+<dd>Sessions resource as it was defined in release 1.</dd>
+<dt><strong>/api/v2/sessions</strong></dt>
+<dd>Sessions resource as it was defined in release 2.</dd>
+<dt><strong>/api/d/sessions</strong></dt>
 <dd>Sessions resource under development.</dd>
 </dl>
 </div>
@@ -114,17 +115,17 @@
 <li>If the consumer has no options in regards to filtering use a clean path.</li>
 </ol>
 </div>
-<div class="section" id="resources">
-<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="resources-as-of-version-1">
+<h2>Resources as of version 1<a class="headerlink" href="#resources-as-of-version-1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="hpfeeds">
 <h3>HPFeeds<a class="headerlink" href="#hpfeeds" title="Permalink to this headline">¶</a></h3>
-<p>The HPFeeds resource located at /hpfeeds contains unparsed data from various channels.</p>
+<p>The HPFeeds resource located at /api/v1/hpfeeds serves unparsed data from various HPFeed channels.</p>
 <dl class="get">
-<dt id="get--api-hpfeeds">
-<tt class="descname">GET </tt><tt class="descname">/api/hpfeeds</tt><a class="headerlink" href="#get--api-hpfeeds" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-hpfeeds">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/hpfeeds</tt><a class="headerlink" href="#get--api-v1-hpfeeds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns filtered HPFeeds data.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/hpfeeds?channel=glastopf.events</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/hpfeeds?channel=glastopf.events</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
 </pre></div>
 </div>
@@ -176,65 +177,16 @@
 </table>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--api-hpfeeds-channels">
-<tt class="descname">GET </tt><tt class="descname">/api/hpfeeds/channels</tt><a class="headerlink" href="#get--api-hpfeeds-channels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distinct channel names and count of items.</p>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/hpfeeds/channels</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span>
-  <span class="nt">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3165</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.files&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.events&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.files&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;kippo.sessions&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">70035</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;dionaea.capture&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;mwbinary.dionaea.sensorunique&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </div>
 <div class="section" id="sessions">
 <h3>Sessions<a class="headerlink" href="#sessions" title="Permalink to this headline">¶</a></h3>
-<p>The Sessions resource located at /sessions contains normalized data from traditional serverside honeypots.</p>
+<p>The Sessions resource located at /api/v1/sessions contains normalized data from traditional serverside honeypots.</p>
 <dl class="get">
-<dt id="get--api-sessions">
-<tt class="descname">GET </tt><tt class="descname">/api/sessions</tt><a class="headerlink" href="#get--api-sessions" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-sessions">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/sessions</tt><a class="headerlink" href="#get--api-v1-sessions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns sessions filtered by query parameters.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/sessions?honeypot=kippo&amp;source_port=36888</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/sessions?honeypot=kippo&amp;source_port=36888</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
 </pre></div>
@@ -315,11 +267,11 @@
 </dd></dl>
 
 <dl class="get">
-<dt id="get--api-sessions-protocols">
-<tt class="descname">GET </tt><tt class="descname">/api/sessions/protocols</tt><a class="headerlink" href="#get--api-sessions-protocols" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-sessions-protocols">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/sessions/protocols</tt><a class="headerlink" href="#get--api-v1-sessions-protocols" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distinct protocols and session count from normalized honeypot sessions.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/sessions/protocols</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/sessions/protocols</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
 </pre></div>
@@ -357,11 +309,11 @@
 <h3>URLS<a class="headerlink" href="#urls" title="Permalink to this headline">¶</a></h3>
 <p>The URLS resource located at /urls, contains urls which potentially are serving malicious content.</p>
 <dl class="get">
-<dt id="get--api-urls">
-<tt class="descname">GET </tt><tt class="descname">/api/urls</tt><a class="headerlink" href="#get--api-urls" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-urls">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/urls</tt><a class="headerlink" href="#get--api-v1-urls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns urls serving potential malicious content. If any files has been extracted, an reference to the checksum will be provided.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/urls?url_regex=\.ru(\/|\:|$)</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/urls?url_regex=\.ru(\/|\:|$)</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -432,13 +384,13 @@
 </div>
 <div class="section" id="files">
 <h3>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
-<p>The Files resource located at /files contains various forms of binaries and code samples collected from HPFeeds channels.</p>
+<p>The Files resource located at /api/v1/files contains various forms of binaries and code samples collected from HPFeeds channels.</p>
 <dl class="get">
-<dt id="get--api-files">
-<tt class="descname">GET </tt><tt class="descname">/api/files</tt><a class="headerlink" href="#get--api-files" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-files">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/files</tt><a class="headerlink" href="#get--api-v1-files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns matches for the given hash. The following hashes are supported: MD5, SHA1, SHA512</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/files?hash=549eccb6939274ac9664f0201e4771c4</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/files?hash=549eccb6939274ac9664f0201e4771c4</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
 </pre></div>
@@ -488,11 +440,11 @@
 </dd></dl>
 
 <dl class="get">
-<dt id="get--api-files-types">
-<tt class="descname">GET </tt><tt class="descname">/api/files/types</tt><a class="headerlink" href="#get--api-files-types" title="Permalink to this definition">¶</a></dt>
+<dt id="get--api-v1-files-types">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/files/types</tt><a class="headerlink" href="#get--api-v1-files-types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed Mnemosyne will fallback to identification with libmagic.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/files/types</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/files/types</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 <span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -558,6 +510,103 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</div>
+<div class="section" id="aux">
+<h3>Aux<a class="headerlink" href="#aux" title="Permalink to this headline">¶</a></h3>
+<p>Aux (Auxiliary) resources located at /api/v1/aux/.</p>
+<dl class="get">
+<dt id="get--api-v1-aux-get_hpfeeds_channels">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/aux/get_hpfeeds_channels</tt><a class="headerlink" href="#get--api-v1-aux-get_hpfeeds_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distinct channel names and count of items.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/aux/get_hpfeeds_channels</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3165</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.files&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.events&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.files&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;kippo.sessions&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">70035</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;dionaea.capture&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;mwbinary.dionaea.sensorunique&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-v1-aux-dorks">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/aux/dorks</tt><a class="headerlink" href="#get--api-v1-aux-dorks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serves Dorks collected by Glastopf.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/aux/dorks</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+ "dorks": [
+  {
+   "content": "/pivotx/includes/index.php",
+   "count": 716,
+   "firsttime": "2013-02-01T20:38:42+00:00",
+   "lasttime": "2013-01-14T16:20:51.504000",
+   "type": "inurl"
+  },
+  {
+   "content": "/axis-cgi/mjpg/wp-content/themes/diner/timthumb.php",
+   "count": 545,
+   "firsttime": "2013-02-01T20:38:32+00:00",
+   "lasttime": "2013-01-14T16:26:03.036000",
+   "type": "inurl"
+  },
+  {
+   "content": "/board/board/include/pivotx/includes/wp-content/pivotx/includes/timthumb.php",
+   "count": 493,
+   "firsttime": "2013-02-01T20:39:03+00:00",
+   "lasttime": "2013-01-14T10:55:50.197000",
+   "type": "inurl"
+  },
+
+  &lt;--- SNIP --- &gt;
+
+   ]
+ }</pre>
+</div>
 </dd></dl>
 
 </div>
