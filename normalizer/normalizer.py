@@ -41,7 +41,6 @@ class Normalizer(object):
         #injected instance of database.Database
         self.database = database
         self.enabled = True
-        self.pause = 0
 
         #map normalizers
         for n in basenormalizer.BaseNormalizer.__subclasses__():
@@ -54,11 +53,6 @@ class Normalizer(object):
 
     def start_processing(self):
         while self.enabled:
-
-            #Usefull to pause inserts while doing db resets.
-            if self.pause > 0:
-                gevent.sleep(self.pause)
-                self.pause = 0
 
             insertions = 0
             error_list = []
@@ -92,9 +86,6 @@ class Normalizer(object):
             if insertions is 0:
                 gevent.sleep(3)
         logger.info("Mnemosyne stopped")
-
-    def pause(self, seconds):
-        self.pause = seconds
 
     def stop(self):
         self.enabled = False
