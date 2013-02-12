@@ -17,7 +17,7 @@
 
 import base64
 import json
-from basenormalizer import BaseNormalizer
+from normalizer.modules.basenormalizer import BaseNormalizer
 
 
 class ThugFiles(BaseNormalizer):

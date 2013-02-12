@@ -19,7 +19,7 @@ import unittest
 import os
 import base64
 from datetime import datetime
-from normalizers import thug_files
+from normalizer.modules import thug_files
 
 
 class ThugFilesTest(unittest.TestCase):

@@ -16,25 +16,21 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import magic
-import base64
-from basenormalizer import BaseNormalizer
+from normalizer.modules.basenormalizer import BaseNormalizer
 
 
-class GlastopfFiles(BaseNormalizer):
-    channels = ('glastopf.files',)
+class DionaeaBinary(BaseNormalizer):
+    channels = ('mwbinary.dionaea.sensorunique',)
 
     def normalize(self, data, channel, submission_timestamp):
-        md5, data = data.split(' ', 1)
-        decoded = base64.b64decode(data)
-        hashes = super(GlastopfFiles, self).generate_checksum_list(decoded)
-
+        decoded = data.decode('hex')
+        hashes = super(DionaeaBinary, self).generate_checksum_list(decoded)
         file_ = {
             'encoding': 'hex',
             'content_guess': magic.from_buffer(decoded),
-            'data': decoded.encode('hex'),
+            'data': data,
             'hashes': hashes
         }
 
         relations = {'file': file_}
-
-        return [relations, ]
+        return [relations]

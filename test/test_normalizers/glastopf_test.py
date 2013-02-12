@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import unittest
-from normalizers import glastopf_events
+from normalizer.modules import glastopf_events
 from datetime import datetime
 
 

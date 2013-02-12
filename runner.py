@@ -17,6 +17,7 @@
 
 import gevent
 import gevent.monkey
+
 gevent.monkey.patch_all()
 
 import os
@@ -25,7 +26,7 @@ import logging
 import sys
 
 from ConfigParser import ConfigParser
-from mnemosyne import Mnemosyne
+from normalizer.normalizer import Normalizer
 from persistance import mnemodb
 from webapi import mnemowebapi
 from hpfeeds import feedpuller
@@ -78,6 +79,7 @@ def do_logging(file_log=None):
     console_log.setFormatter(formatter)
     logger.addHandler(console_log)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Mnemosyne')
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
@@ -121,9 +123,9 @@ if __name__ == '__main__':
 
     if not args.no_normalizer:
         #start menmo and inject persistence module
-        mnemo = Mnemosyne(db)
+        normalizer = Normalizer(db)
         logger.info("Spawning normalizer")
-        greenlets['mnemo'] = gevent.spawn(mnemo.start_processing)
+        greenlets['normalizer'] = gevent.spawn(normalizer.start_processing)
 
     if args.stats:
         while True:

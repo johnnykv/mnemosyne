@@ -18,7 +18,7 @@
 import unittest
 import datetime
 import os
-from normalizers import thug_events
+from normalizer.modules import thug_events
 
 
 class ThugTests(unittest.TestCase):

@@ -17,14 +17,14 @@
 
 from datetime import datetime
 
-from normalizers import basenormalizer
-from normalizers import glastopf_events
-from normalizers import glastopf_files
-from normalizers import thug_events
-from normalizers import thug_files
-from normalizers import kippo_events
-from normalizers import dionaea_capture
-from normalizers import dionaea_binary
+from modules import basenormalizer
+from modules import glastopf_events
+from modules import glastopf_files
+from modules import thug_events
+from modules import thug_files
+from modules import kippo_events
+from modules import dionaea_capture
+from modules import dionaea_binary
 
 import gevent
 
@@ -35,7 +35,7 @@ from xml.etree.ElementTree import ParseError
 
 logger = logging.getLogger(__name__)
 
-class Mnemosyne(object):
+class Normalizer(object):
     def __init__(self, database):
         self.normalizers = {}
         #injected instance of database.Database

@@ -18,7 +18,7 @@
 import unittest
 import os
 import base64
-from normalizers import glastopf_files
+from normalizer.modules import glastopf_files
 
 
 class GlastopfFilesTest(unittest.TestCase):

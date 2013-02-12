@@ -17,7 +17,7 @@
 
 import os
 import unittest
-from normalizers import dionaea_binary
+from normalizer.modules import dionaea_binary
 
 
 class DionaeaBinaryTest(unittest.TestCase):

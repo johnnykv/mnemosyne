@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import json
-from basenormalizer import BaseNormalizer
+from normalizer.modules.basenormalizer import BaseNormalizer
 
 
 class KippoEvents(BaseNormalizer):

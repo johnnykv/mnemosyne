@@ -16,9 +16,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import json
-from basenormalizer import BaseNormalizer
 from datetime import datetime
 from urlparse import urlparse
+
+from normalizer.modules.basenormalizer import BaseNormalizer
 
 
 class GlastopfEvents(BaseNormalizer):

@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import unittest
-from normalizers import dionaea_capture
+from normalizer.modules import dionaea_capture
 from datetime import datetime
 
 
