@@ -49,8 +49,9 @@ class MnemoDB(object):
 
     def insert_normalized(self, ndata, hpfeed_id):
         assert isinstance(hpfeed_id, ObjectId)
+        #ndata is a collection of dictionaries
         for item in ndata:
-            #every root item is equal to collection name
+            #key = collection name, value = content
             for collection, document in item.items():
                 if collection is 'url':
                     if 'extractions' in document:
@@ -96,7 +97,7 @@ class MnemoDB(object):
         try:
             self.db.hpfeed.insert(entry)
         except InvalidStringData as err:
-            logging.error(
+            logger.error(
                 'Failed to insert hpfeed data on {0} channel due to invalid string data. ({1})'.format(entry['channel'],
                                                                                                        err))
 
