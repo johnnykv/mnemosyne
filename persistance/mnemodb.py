@@ -17,6 +17,7 @@
 
 import logging
 import string
+import time
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -117,6 +118,7 @@ class MnemoDB(object):
         Deletes all normalized data from the mongo instance.
         """
         logger.info('Initiating database reset - all normalized data will be deleted.')
+        start = time.time()
         for collection in self.db.collection_names():
             if collection not in ['system.indexes', 'hpfeed', 'hpfeeds']:
                 logger.warning('Dropping collection: {0}.'.format(collection))
@@ -126,8 +128,8 @@ class MnemoDB(object):
                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
                                   multi=True)
         self.ensure_index()
-
-        logger.info('Database reset.')
+        elapse = time.time() - start
+        logger.info('Database reset. ({0} seconds)'.format(elapse))
 
     def collection_count(self):
         result = {}
