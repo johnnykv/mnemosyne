@@ -33,6 +33,8 @@ import traceback
 
 from xml.etree.ElementTree import ParseError
 
+logger = logging.getLogger(__name__)
+
 class Mnemosyne(object):
     def __init__(self, database):
         self.normalizers = {}
@@ -75,12 +77,12 @@ class Mnemosyne(object):
                         error_list.append({'_id': hpfeed_item['_id'],
                                            'last_error': "No normalizer found",
                                            'last_error_timestamp': datetime.now()})
-                        logging.warning('No normalizer could be found for channel: {0}.'.format(channel))
+                        logger.warning('No normalizer could be found for channel: {0}.'.format(channel))
                 except (TypeError, ValueError, ParseError) as err:
                     error_list.append({'_id': hpfeed_item['_id'],
                                        'last_error': err,
                                        'last_error_timestamp': datetime.now()})
-                    logging.warning('Failed to normalize and import item with hpfeed id = {0}, channel = {1}. ({2}). '
+                    logger.warning('Failed to normalize and import item with hpfeed id = {0}, channel = {1}. ({2}). '
                                     'Exception details has been stored in the database.'
                                     .format(hpfeed_item['_id'], hpfeed_item['channel'], err))
 
@@ -89,7 +91,7 @@ class Mnemosyne(object):
 
             if insertions is 0:
                 gevent.sleep(3)
-        logging.info("Mnemosyne stopped")
+        logger.info("Mnemosyne stopped")
 
     def pause(self, seconds):
         self.pause = seconds

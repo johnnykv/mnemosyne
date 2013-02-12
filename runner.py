@@ -33,6 +33,7 @@ from hpfeeds import feedpuller
 
 logger = logging.getLogger()
 
+
 def parse_config(config_file):
     if not os.path.isfile(config_file):
         sys.exit("Could not find configuration file: {0}".format(config_file))
@@ -119,9 +120,9 @@ if __name__ == '__main__':
         greenlets['puller'] = gevent.spawn(puller.start_listening)
 
     if not args.no_normalizer:
-        logger.info("Spawning normalizer.")
         #start menmo and inject persistence module
         mnemo = Mnemosyne(db)
+        logger.info("Spawning normalizer")
         greenlets['mnemo'] = gevent.spawn(mnemo.start_processing)
 
     if args.stats:

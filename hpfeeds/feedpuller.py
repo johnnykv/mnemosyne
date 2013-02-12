@@ -18,6 +18,8 @@
 import hpfeeds
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 class FeedPuller:
     def __init__(self, database, ident, secret, port, host, feeds):
@@ -38,7 +40,7 @@ class FeedPuller:
         try:
             self.hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
         except hpfeeds.FeedException, e:
-            logging.error('Error: {0}'.format(e))
+            logger.error('Error: {0}'.format(e))
 
         def on_message(ident, chan, payload):
             self.database.insert_hpfeed(ident, chan, payload)
@@ -48,7 +50,7 @@ class FeedPuller:
                 self.stats[chan] = 1
 
         def on_error(payload):
-            logging.error('Error message from broker: {0}'.format(payload))
+            logger.error('Error message from broker: {0}'.format(payload))
             self.hpc.stop()
 
         self.hpc.subscribe(self.feeds)
@@ -59,4 +61,4 @@ class FeedPuller:
 
     def stop(self):
         self.hpc.stop()
-        self.logger.info("FeedPuller stopped.")
+        logger.info("FeedPuller stopped.")
