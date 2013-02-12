@@ -107,7 +107,7 @@ class MnemoDB(object):
                                        'last_error_timestamp': item['last_error_timestamp']}
                                   })
 
-    def get_hpfeed_data(self, max=None):
+    def get_hpfeed_data(self, max=250):
         #entries which are not normalized and not in error state
         data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
         return data
