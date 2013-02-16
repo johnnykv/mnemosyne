@@ -25,8 +25,8 @@ from bson.errors import InvalidStringData
 
 logger = logging.getLogger(__name__)
 
-class MnemoDB(object):
 
+class MnemoDB(object):
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
         conn = MongoClient()
@@ -76,7 +76,7 @@ class MnemoDB(object):
                                                upsert=True)
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
-        #if we end up here everything if ok - setting hpfeed entry to normalized
+            #if we end up here everything if ok - setting hpfeed entry to normalized
         self.db.hpfeed.update({'_id': hpfeed_id}, {'$set': {'normalized': True},
                                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}})
 
@@ -106,7 +106,7 @@ class MnemoDB(object):
             self.db.hpfeed.update({'_id': item['_id']},
                                   {'$set':
                                        {'last_error': str(item['last_error']),
-                                       'last_error_timestamp': item['last_error_timestamp']}
+                                        'last_error_timestamp': item['last_error_timestamp']}
                                   })
 
     def get_hpfeed_data(self, max=250):
@@ -118,19 +118,20 @@ class MnemoDB(object):
         """
         Deletes all normalized data from the mongo instance.
         """
-        logger.info('Initiating database reset - all normalized data will be deleted.')
+        logger.info('Initiating database reset - all normalized data will be deleted. (Starting timer)')
         start = time.time()
         for collection in self.db.collection_names():
             if collection not in ['system.indexes', 'hpfeed', 'hpfeeds']:
                 logger.warning('Dropping collection: {0}.'.format(collection))
                 self.db.drop_collection(collection)
-
+        logger.info('All collections dropped. (Elapse: {0})'.format(time.time() - start))
         self.db.hpfeed.update({}, {"$set": {'normalized': False},
                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
                                   multi=True)
+        logger.info('Error states removed from hpfeeds data (Elapse: {0}'.format(time.time() - start))
         self.ensure_index()
-        elapse = time.time() - start
-        logger.info('Database reset. ({0} seconds)'.format(elapse))
+        logger.info('Done ensuring indexes (Elapse: {0})'.format(time.time() - start))
+        logger.info('Full reset done in {0} seconds'.format(time.time() - start))
 
     def collection_count(self):
         result = {}
