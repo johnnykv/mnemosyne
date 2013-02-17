@@ -57,7 +57,7 @@ class AuxTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir)
+        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir, 'access_all')
 
     @classmethod
     def tearDownClass(cls):

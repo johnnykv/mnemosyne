@@ -92,7 +92,10 @@ class MnemoWebAPI():
             user_agent = ""
             if 'HTTP_USER_AGENT' in bottle.request.environ:
                 user_agent = bottle.request.environ['HTTP_USER_AGENT']
-            remote_addr = bottle.request.environ['REMOTE_ADDR']
+            if 'REMOTE_ADDR' in bottle.request.environ:
+                remote_addr = bottle.request.environ['REMOTE_ADDR']
+            else:
+                remote_addr = ""
             if 'beaker.session' in bottle.request.environ:
                 session = bottle.request.environ.get('beaker.session')
                 username = session.get('username', None)
@@ -106,7 +109,6 @@ class MnemoWebAPI():
         #make sure error pages for API are pure text
         api_d.app.default_error_handler = types.MethodType(return_text, self)
         api_v1.app.default_error_handler = types.MethodType(return_text, self)
-
 
     def start_listening(self, host, port):
         logger.info('Starting web api, listening on {0}:{1}'.format(host, port))
@@ -122,7 +124,8 @@ class MnemoWebAPI():
         cork = Cork(auth_dir, initialize=True)
 
         cork._store.roles['admin'] = 100
-        cork._store.roles['hp_member'] = 60
+        cork._store.roles['access_all'] = 70
+        cork._store.roles['access_normalized'] = 60
         cork._store.roles['public'] = 10
         cork._store.save_roles()
 
@@ -139,7 +142,7 @@ class MnemoWebAPI():
             'creation_date': tstamp
         }
         cork._store.save_users()
-        #for security reasons we do not want this in the log files.
+        #for security reasons we fdo not want this in the log files.
         print "A 'admin' account has been created with the password '{0}'".format(password)
 
         return cork

@@ -25,7 +25,7 @@ from app import auth
 @app.get('/aux/get_hpfeeds_stats')
 def get_hpfeed_stats(mongodb):
     try:
-        auth.require(role='hp_member')
+        auth.require(role='access_all')
     except AAAException as e:
         return HTTPError(401, e.message)
 
@@ -51,8 +51,9 @@ def get_hpfeed_channels(mongodb):
                    "count": 511, "channel": "thug.events"}]
     """
     try:
-        auth.require(role='hp_member')
+        auth.require(role='access_all')
     except AAAException as e:
+        print auth
         return HTTPError(401, e.message)
 
     result = simple_group('hpfeed', 'channel', mongodb)

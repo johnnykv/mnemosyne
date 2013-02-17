@@ -48,7 +48,8 @@ class HPFeedsTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir)
+        #mock sut with auth mock which ensures we are using a valid user
+        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir, 'a_all')
 
     @classmethod
     def tearDownClass(cls):
@@ -133,3 +134,4 @@ class HPFeedsTest(unittest.TestCase):
                 self.assertEqual('payload_1', item['payload'])
             else:
                 raise Exception('Unexpected channel name: {0}'.format(item['channel']))
+

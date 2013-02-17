@@ -26,7 +26,7 @@ from app import auth
 @app.get('/sessions')
 def sessions_get_by_query(mongodb):
     try:
-        auth.require(role='hp_member')
+        auth.require(role='access_normalized')
     except AAAException as e:
         return HTTPError(401, e.message)
 
@@ -53,7 +53,17 @@ def sessions_get_by_query(mongodb):
     else:
         limit = 50
 
-    result = list(mongodb['session'].find(query_dict).limit(limit))
+    #remove ip of honeypot if user is not authorized to see it
+    u = auth.current_user.role
+    lvl = auth._store.roles[u]
+    needed_lvl = auth._store.roles['access_normalized']
+    if lvl < needed_lvl:
+        print "BELOW"
+        p_limit = {'destination_ip': False}
+    else:
+        p_limit = None
+
+    result = list(mongodb['session'].find(spec=query_dict, fields=p_limit).limit(limit))
     return jsonify({'sessions': result}, response)
 
 
@@ -66,6 +76,6 @@ def session_protocols(mongodb):
                    {"count": 125, "protocol": "ssh},
                    {"count": 74,  "protocol": "imap}]}
     """
-    auth.require(role='hp_member')
+    auth.require(role='access_normalized')
     result = simple_group('session', 'protocol', mongodb)
     return jsonify(result, response)

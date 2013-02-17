@@ -48,7 +48,7 @@ class HPFeedsTest(unittest.TestCase):
         for item in insert_data:
             c[cls._dbname].hpfeed.insert(item)
 
-        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir)
+        cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir, 'a_all')
 
     @classmethod
     def tearDownClass(cls):
