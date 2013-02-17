@@ -51,6 +51,7 @@
 <li><a class="reference internal" href="#">WebAPI</a><ul>
 <li><a class="reference internal" href="#versioning">Versioning</a></li>
 <li><a class="reference internal" href="#path-conventions">Path conventions</a></li>
+<li><a class="reference internal" href="#access-levels">Access levels</a></li>
 <li><a class="reference internal" href="#resources-as-of-version-1">Resources as of version 1</a><ul>
 <li><a class="reference internal" href="#hpfeeds">HPFeeds</a></li>
 <li><a class="reference internal" href="#sessions">Sessions</a></li>
@@ -114,6 +115,34 @@
 <li>If the consumer has filtering options use query strings.</li>
 <li>If the consumer has no options in regards to filtering use a clean path.</li>
 </ol>
+</div>
+<div class="section" id="access-levels">
+<h2>Access levels<a class="headerlink" href="#access-levels" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="94%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Level</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100</td>
+<td>Administrator</td>
+</tr>
+<tr class="row-odd"><td>70</td>
+<td>Access to all data, including raw hpfeeds store</td>
+</tr>
+<tr class="row-even"><td>60</td>
+<td>Access to normalized data where IP of honeypots has been removed.</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>Public access to basic sanitized data. (Example: Dorks service for glastopf)</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="resources-as-of-version-1">
 <h2>Resources as of version 1<a class="headerlink" href="#resources-as-of-version-1" title="Permalink to this headline">¶</a></h2>
