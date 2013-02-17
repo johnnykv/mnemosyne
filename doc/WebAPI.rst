@@ -22,6 +22,18 @@ To ensure a clean API, Mnemosyne has the following conventions for URL construct
 1. If the consumer has filtering options use query strings.
 2. If the consumer has no options in regards to filtering use a clean path.
 
+Access levels
+=========================
+
+=====   ===========
+Level   Description
+=====   ===========
+100     Administrator
+70      Access to all data, including raw hpfeeds store
+60      Access to normalized data where IP of honeypots has been removed.
+10      Public access to basic sanitized data. (Example: Dorks service for glastopf)
+=====   ===========
+
 Resources as of version 1
 =========================
 
