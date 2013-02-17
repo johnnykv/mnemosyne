@@ -104,43 +104,43 @@
 <div class="section" id="dataflow">
 <h2>Dataflow<a class="headerlink" href="#dataflow" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="_images/graphviz-84fcac8ec0aad6c2447ebdf1d709245da4d588c5.svg" alt="digraph G {
-   compound=true;
+<img src="_images/graphviz-cf961ddf96902285b8d194d5dbb2613f86d8c9b9.svg" alt="digraph ggg {
+compound=true;
 
-   subgraph cluster_1 {
-      style=filled;
-      fillcolor=&quot;cornsilk2&quot;
-      node [style=filled];
-      feedpuller [label=&quot;Feedpuller&quot;];
-      normalizer [label=&quot;Normalizer&quot;];
-      webapi [label=&quot;WebAPI&quot;];
-      label = &quot;Mnemosyne&quot;;
-   }
+subgraph cluster_1 {
+   style=filled;
+   fillcolor=&quot;cornsilk2&quot;
+   node [style=filled];
+   feedpuller [label=&quot;Feedpuller&quot;];
+   normalizer [label=&quot;Normalizer&quot;];
+   webapi [label=&quot;WebAPI&quot;];
+   label = &quot;Mnemosyne&quot;;
+}
 
-   subgraph cluster_2 {
-      node [shape=box]
-      style=filled;
-      fillcolor=&quot;.7 .3 1.0;
-      node [style=filled];
-      hpfeed [label=&quot;HPFeeds&quot;];
-      file [label=&quot;Files&quot;]
-      url [label=&quot;URLs&quot;]
-      session [label=&quot;Sessions&quot;]
-      label = &quot;Mongo collections&quot;;
-      labelloc = b;
-   }
-
-
-   hpf [label=&quot;hpfeeds.honeycloud.net&quot;];
-   hpf -&gt; feedpuller [color=red];
-   feedpuller -&gt; hpfeed [color=red];
-   hpfeed -&gt; normalizer [color=red];
-   normalizer -&gt; file [color=green];
-   normalizer -&gt; url [color=green];
-   normalizer -&gt; session [color=green];
+subgraph cluster_2 {
+   node [shape=box]
+   style=filled;
+   fillcolor=&quot;.7 .3 1.0&quot;;
+   node [style=filled];
+   hpfeed [label=&quot;HPFeeds&quot;];
+   file [label=&quot;Files&quot;]
+   url [label=&quot;URLs&quot;]
+   session [label=&quot;Sessions&quot;]
+   label = &quot;Mongo collections&quot;;
+   labelloc = b;
+}
 
 
-   session -&gt; webapi [ ltail=cluster_2, lhead=cluster_1];
+hpf [label=&quot;hpfeeds.honeycloud.net&quot;];
+hpf -&gt; feedpuller [color=red];
+feedpuller -&gt; hpfeed [color=red];
+hpfeed -&gt; normalizer [color=red];
+normalizer -&gt; file [color=green];
+normalizer -&gt; url [color=green];
+normalizer -&gt; session [color=green];
+
+
+session -&gt; webapi [ ltail=cluster_2, lhead=cluster_1];
 }" />
 </p>
 </div>

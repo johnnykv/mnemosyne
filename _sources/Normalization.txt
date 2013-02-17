@@ -6,9 +6,9 @@ Normalization
 Dataflow
 ========
 
-.. graphviz::
+.. digraph:: ggg
 
-   digraph G {
+
       compound=true;
 
       subgraph cluster_1 {
@@ -24,7 +24,7 @@ Dataflow
       subgraph cluster_2 {
          node [shape=box]
          style=filled;
-         fillcolor=".7 .3 1.0;
+         fillcolor=".7 .3 1.0";
          node [style=filled];
          hpfeed [label="HPFeeds"];
          file [label="Files"]
@@ -45,9 +45,6 @@ Dataflow
 
 
       session -> webapi [ ltail=cluster_2, lhead=cluster_1];
-   }
-
-
 
 
 Overview
