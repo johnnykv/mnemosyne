@@ -42,10 +42,15 @@ def parse_config(config_file):
     parser = ConfigParser()
     parser.read(config_file)
 
+    log_file = None
+    loggly_token = None
+
     if parser.getboolean('file_log', 'enabled'):
-        do_logging(parser.get('file_log', 'file'))
-    else:
-        do_logging()
+        log_file = parser.get('file_log', 'file')
+    if parser.getboolean('loggly_log', 'enabled'):
+        loggly_token = parser.get('loggly_log', 'token')
+
+    do_logging(log_file, loggly_token)
 
     config = {}
 
@@ -63,7 +68,7 @@ def parse_config(config_file):
     return config
 
 
-def do_logging(file_log=None):
+def do_logging(file_log=None, loggly_token=None):
     logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter('%(asctime)-15s (%(name)s) %(message)s')
@@ -73,6 +78,11 @@ def do_logging(file_log=None):
         file_log.setLevel(logging.DEBUG)
         file_log.setFormatter(formatter)
         logger.addHandler(file_log)
+
+    if loggly_token:
+        import hoover
+        loggly_handler = hoover.LogglyHttpHandler(token=loggly_token)
+        logger.addHandler(loggly_handler)
 
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
