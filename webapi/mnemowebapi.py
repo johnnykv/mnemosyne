@@ -26,6 +26,7 @@ from bottle import run, install, mount, request
 from bottle.ext import mongo
 from beaker.middleware import SessionMiddleware
 from datetime import datetime
+from kumo.loggly import Loggly
 from cork import Cork
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ logger = logging.getLogger(__name__)
 class MnemoWebAPI():
     """Exposes raw and normalized data from hpfeeds through a RESTful api"""
 
-    def __init__(self, datebase_name, static_file_path=None, data_dir='./data'):
+    def __init__(self, datebase_name, static_file_path=None, data_dir='./data', loggly_token=None):
 
         cork_dir = os.path.join(data_dir, 'cork')
         beaker_dir = os.path.join(data_dir, 'beaker')
@@ -80,8 +81,11 @@ class MnemoWebAPI():
             'session.secure': True
             }
 
-        self.app = SessionMiddleware(bottle.app(), session_opts)
-
+        self.app = bottle.app()
+        if loggly_token:
+            self.app = Loggly(bottle.app(), loggly_token)
+        self.app = SessionMiddleware(self.app, session_opts)
+        
         root_app = bottle.app()
 
         #setup logging hooks

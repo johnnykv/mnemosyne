@@ -47,12 +47,13 @@ def parse_config(config_file):
 
     if parser.getboolean('file_log', 'enabled'):
         log_file = parser.get('file_log', 'file')
-    if parser.getboolean('loggly_log', 'enabled'):
-        loggly_token = parser.get('loggly_log', 'token')
 
     do_logging(log_file, loggly_token)
 
     config = {}
+
+    if parser.getboolean('loggly_log', 'enabled'):
+        config['loggly_token'] = parser.get('loggly_log', 'token')
 
     config['mongo_db'] = parser.get('mongodb', 'database')
 
@@ -78,11 +79,6 @@ def do_logging(file_log=None, loggly_token=None):
         file_log.setLevel(logging.DEBUG)
         file_log.setFormatter(formatter)
         logger.addHandler(file_log)
-
-    if loggly_token:
-        import hoover
-        loggly_handler = hoover.LogglyHttpHandler(token=loggly_token)
-        logger.addHandler(loggly_handler)
 
     console_log = logging.StreamHandler()
     console_log.setLevel(logging.DEBUG)
@@ -123,7 +119,11 @@ if __name__ == '__main__':
     if not args.no_webapi:
         logger.info("Spawning web api.")
         #start web api and inject mongo info
-        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath)
+        if 'loggly_token' in c:
+            loggly_token = c['loggly_token']
+        else:
+            loggly_token = None
+        webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath, loggly_token=loggly_token)
         greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if not args.no_feedpuller:

@@ -8,3 +8,4 @@ webtest
 pycrypto
 python-magic
 nose
+kumo
