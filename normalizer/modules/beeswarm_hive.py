@@ -21,7 +21,7 @@ from normalizer.modules.basenormalizer import BaseNormalizer
 
 
 class BeeswarmHive(BaseNormalizer):
-    channels = ('beeswarm.sessions',)
+    channels = ('beeswarm.hive',)
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
