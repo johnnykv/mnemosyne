@@ -25,6 +25,7 @@ from modules import thug_files
 from modules import kippo_events
 from modules import dionaea_capture
 from modules import dionaea_binary
+from modules import beeswarm_hive
 
 import gevent
 
