@@ -17,6 +17,7 @@ Mnemosyne currently supports normalization of data from the following channels:
 * glastopf.files
 * thug.events
 * thug.files
+* beeswarm.hive
 
 ## Preliminary REST API
 
