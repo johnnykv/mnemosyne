@@ -31,6 +31,10 @@ class GlastopfEvents(BaseNormalizer):
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
+
+        if self.is_RFC1918_addr(o_data['source'][0]):
+            return []
+
         relations = {}
 
         relations['session'] = self.make_session(o_data)

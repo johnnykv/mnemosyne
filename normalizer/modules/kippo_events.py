@@ -25,6 +25,9 @@ class KippoEvents(BaseNormalizer):
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
 
+        if self.is_RFC1918_addr(o_data['peerIP']):
+            return []
+
         session = {
             'timestamp': submission_timestamp,
             'source_ip': o_data['peerIP'],

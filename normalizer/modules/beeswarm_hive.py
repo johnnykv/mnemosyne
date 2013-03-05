@@ -26,6 +26,9 @@ class BeeswarmHive(BaseNormalizer):
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
 
+        if self.is_RFC1918_addr(o_data['attacker_ip']):
+            return []
+
         auth_attempts = []
         for attempt in o_data['login_attempts']:
             auth_attempts.append({'login': attempt['username'], 'password': attempt['password']})

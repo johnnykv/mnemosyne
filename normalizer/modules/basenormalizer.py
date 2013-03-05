@@ -16,6 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import hashlib
+import socket
+import struct
 from urlparse import urlparse
 
 
@@ -49,3 +51,20 @@ class BaseNormalizer(object):
         result['sha1'] = hashlib.sha1(data).hexdigest()
         result['sha512'] = hashlib.sha512(data).hexdigest()
         return result
+
+    def is_RFC1918_addr(self, ip):
+        #10.0.0.0 = 167772160
+        #172.16.0.0 = 2886729728
+        #192.168.0.0 = 3232235520
+        RFC1918_net_bits = ((167772160, 8), (2886729728, 12), (3232235520, 16))
+
+        #ip to decimal
+        ip = struct.unpack("!L", socket.inet_aton(ip))[0]
+
+        for net, mask_bits in RFC1918_net_bits:
+            ip_masked = ip & (2 ** 32 - 1 << (32 - mask_bits))
+            if ip_masked == net:
+                return True
+
+        return False
+
