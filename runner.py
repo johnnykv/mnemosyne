@@ -63,6 +63,12 @@ def parse_config(config_file):
     config['hp_port'] = parser.getint('hpfeeds', 'port')
     config['hp_host'] = parser.get('hpfeeds', 'host')
 
+    config['hpf_feeds'] = parser.get('hpfriends', 'channels').split(',')
+    config['hpf_ident'] = parser.get('hpfriends', 'ident')
+    config['hpf_secret'] = parser.get('hpfriends', 'secret')
+    config['hpf_port'] = parser.getint('hpfriends', 'port')
+    config['hpf_host'] = parser.get('hpfriends', 'host')
+
     config['webapi_port'] = parser.getint('webapi', 'port')
     config['webapi_host'] = parser.get('webapi', 'host')
 
@@ -127,9 +133,14 @@ if __name__ == '__main__':
         greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
     if not args.no_feedpuller:
-        logger.info("Spawning feed puller.")
+        #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
+        logger.info("Spawning hpfeed feed puller.")
         puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-        greenlets['puller'] = gevent.spawn(puller.start_listening)
+        greenlets['hpfeed-puller'] = gevent.spawn(puller.start_listening)
+
+        logger.info("Spawning hpfriends feed puller.")
+        puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
+        greenlets['hpfriends-puller'] = gevent.spawn(puller.start_listening)
 
     if not args.no_normalizer:
         #start menmo and inject persistence module

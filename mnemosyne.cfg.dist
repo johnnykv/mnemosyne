@@ -6,11 +6,19 @@ port = 8181
 [mongodb]
 database = mnemosyne
 
+#During the transition phase to hpfriends there will be two instances of feedpuller
 [hpfeeds]
 ident =
 secret =
 host = hpfeeds.honeycloud.net
 port = 10000
+channels = thug.events,beeswarm.hive,dionaea.capture,thug.files,beeswarn.feeder,cuckoo.analysis,kippo.sessions,glastopf.events,glastopf.files,mwbinary.dionaea.sensorunique
+
+[hpfriends]
+ident =
+secret =
+host = hpfriends.honeycloud.net
+port = 20000
 channels = thug.events,beeswarm.hive,dionaea.capture,thug.files,beeswarn.feeder,cuckoo.analysis,kippo.sessions,glastopf.events,glastopf.files,mwbinary.dionaea.sensorunique
 
 [file_log]
