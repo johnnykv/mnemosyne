@@ -27,7 +27,7 @@ class GlastopfEvents(BaseNormalizer):
 
     def __init__(self):
         #dorks to be filtered out
-        self.dork_filter = ['/', '/headers', '/favicon.ico']
+        self.dork_filter = ['/', '/headers', '/favicon.ico', '/w00tw00t.at.ISC.SANS.DFind:)']
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
