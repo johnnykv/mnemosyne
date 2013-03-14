@@ -28,6 +28,7 @@ from modules import dionaea_binary
 from modules import beeswarm_hive
 
 import gevent
+from gevent.pool import Pool
 
 import logging
 import traceback
@@ -43,6 +44,9 @@ class Normalizer(object):
         self.database = database
         self.enabled = True
 
+        #max number of concurrent mongodb inserters
+        self.worker_pool = Pool(5)
+
         #map normalizers
         for n in basenormalizer.BaseNormalizer.__subclasses__():
             normalizer = n()
@@ -55,19 +59,21 @@ class Normalizer(object):
     def start_processing(self):
         while self.enabled:
 
-            insertions = 0
+            normalizations = 0
             error_list = []
             to_be_processed = self.database.get_hpfeed_data(500)
+            to_be_inserted = []
 
             for hpfeed_item in to_be_processed:
-                #Remove this line when done!
                 try:
                     channel = hpfeed_item['channel']
                     if channel in self.normalizers:
                         norm = self.normalizers[channel].normalize(hpfeed_item['payload'],
                                                                    channel, hpfeed_item['timestamp'])
-                        self.database.insert_normalized(norm, hpfeed_item['_id'])
-                        insertions += 1
+
+                        #batch up normalized items
+                        to_be_inserted.append((norm, hpfeed_item['_id']))
+                        normalizations += 1
                     else:
                         error_list.append({'_id': hpfeed_item['_id'],
                                            'last_error': "No normalizer found",
@@ -84,9 +90,16 @@ class Normalizer(object):
             if len(error_list) > 0:
                 self.database.hpfeed_set_errors(error_list)
 
-            if insertions is 0:
+            self.worker_pool.spawn(self.inserter, to_be_inserted)
+
+            if normalizations is 0:
                 gevent.sleep(3)
+                
         logger.info("Mnemosyne stopped")
+
+    def inserter(self, to_be_inserted):
+        for norm, id in to_be_inserted:
+            self.database.insert_normalized(norm, id)
 
     def stop(self):
         self.enabled = False
