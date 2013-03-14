@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class MnemoDB(object):
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
-        conn = MongoClient()
+        conn = MongoClient(auto_start_request=False)
         self.db = conn[database_name]
         self.ensure_index()
 
