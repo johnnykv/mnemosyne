@@ -153,25 +153,29 @@ if __name__ == '__main__':
         logger.info("Spawning normalizer")
         greenlets['normalizer'] = gevent.spawn(normalizer.start_processing)
 
-    if args.stats:
-        while True:
-            counts = db.collection_count()
-            log_string = 'Mongo collection count:'
-            for key, value in counts.items():
-                if key == 'hpfeed':
-                    value = '{0} ({1} in error state)'.format(value, db.get_hpfeed_error_count())
-                log_string += ' {0}: {1}, '.format(key, value)
-            logging.info(log_string)
-            gevent.sleep(1800)
-
     try:
+
+        if args.stats:
+            while True:
+                counts = db.collection_count()
+                log_string = 'Mongo collection count:'
+                for key, value in counts.items():
+                    if key == 'hpfeed':
+                        value = '{0} ({1} in error state)'.format(value, db.get_hpfeed_error_count())
+                    log_string += ' {0}: {1}, '.format(key, value)
+                logging.info(log_string)
+                gevent.sleep(1800)
+
         gevent.joinall(greenlets.values())
     except KeyboardInterrupt as err:
         if hpfriends_puller:
+            logger.info('Stopping HPFriends puller')
             hpfriends_puller.stop()
         if hpfeed_puller:
+            logger.info('Stopping HPFeeds puller')
             hpfeed_puller.stop()
         if normalizer:
+            logger.info('Stopping Normalizer')
             normalizer.stop()
         if 'webapi' in greenlets:
             greenlets['webapi'].kill(block=False)
