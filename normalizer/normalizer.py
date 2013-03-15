@@ -89,13 +89,13 @@ class Normalizer(object):
 
             if len(error_list) > 0:
                 self.database.hpfeed_set_errors(error_list)
-
             self.worker_pool.spawn(self.inserter, to_be_inserted)
 
             if normalizations is 0:
                 gevent.sleep(3)
-                
-        logger.info("Mnemosyne stopped")
+
+        gevent.joinall(self.worker_pool)
+        logger.info("Normalizer stopped.")
 
     def inserter(self, to_be_inserted):
         for norm, id in to_be_inserted:

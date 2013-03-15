@@ -109,7 +109,7 @@ class MnemoDB(object):
     def hpfeed_set_errors(self, items):
         for item in items:
             if item['_id'] in self.being_processed:
-                del self.being_processed['_id']
+                del self.being_processed[item['_id']]
             self.db.hpfeed.update({'_id': item['_id']},
                                   {'$set':
                                        {'last_error': str(item['last_error']),
@@ -117,12 +117,16 @@ class MnemoDB(object):
                                   })
 
     def get_hpfeed_data(self, max=250):
-        #entries which are not normalized and not in error state
+
+        return_list = []
         with self.hpfeed_lock:
             data = list(self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max))
+            #this is a pretty lame hack to allow concurrent reads, must be fixed!
             for d in data:
-                self.being_processed[d['_id']] = 1
-        return data
+                if not d['_id'] in self.being_processed:
+                    return_list.append(d)
+                    self.being_processed[d['_id']] = 1
+        return return_list
 
     def reset_normalized(self):
         """

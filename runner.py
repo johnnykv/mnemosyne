@@ -122,6 +122,11 @@ if __name__ == '__main__':
     if args.reset:
         db.reset_normalized()
 
+    webapi = None
+    hpfeed_puller = None
+    hpfriends_puller = None
+    normalizer = None
+
     if not args.no_webapi:
         logger.info("Spawning web api.")
         #start web api and inject mongo info
@@ -135,12 +140,12 @@ if __name__ == '__main__':
     if not args.no_feedpuller:
         #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
         logger.info("Spawning hpfeed feed puller.")
-        puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-        greenlets['hpfeed-puller'] = gevent.spawn(puller.start_listening)
+        hpfeed_puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
+        greenlets['hpfeed-puller'] = gevent.spawn(hpfeed_puller.start_listening)
 
         logger.info("Spawning hpfriends feed puller.")
-        puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
-        greenlets['hpfriends-puller'] = gevent.spawn(puller.start_listening)
+        hpfriends_puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
+        greenlets['hpfriends-puller'] = gevent.spawn(hpfriends_puller.start_listening)
 
     if not args.no_normalizer:
         #start menmo and inject persistence module
@@ -162,4 +167,16 @@ if __name__ == '__main__':
     try:
         gevent.joinall(greenlets.values())
     except KeyboardInterrupt as err:
-        pass
+        if hpfriends_puller:
+            hpfriends_puller.stop()
+        if hpfeed_puller:
+            hpfeed_puller.stop()
+        if normalizer:
+            normalizer.stop()
+        if 'webapi' in greenlets:
+            greenlets['webapi'].kill(block=False)
+
+    #wait for greenlets to do a graceful stop
+    gevent.joinall(greenlets.values())
+
+
