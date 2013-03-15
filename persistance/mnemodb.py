@@ -22,6 +22,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from datetime import datetime
 from bson.errors import InvalidStringData
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ class MnemoDB(object):
         conn = MongoClient(auto_start_request=False)
         self.db = conn[database_name]
         self.ensure_index()
+        self.being_processed = {}
+        self.hpfeed_lock = threading.Lock()
 
     def ensure_index(self):
         self.db.hpfeed.ensure_index('normalized', unique=False)
@@ -77,6 +80,8 @@ class MnemoDB(object):
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
             #if we end up here everything if ok - setting hpfeed entry to normalized
+            if item['_id'] in self.being_processed:
+                del self.being_processed['_id']
         self.db.hpfeed.update({'_id': hpfeed_id}, {'$set': {'normalized': True},
                                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}})
 
@@ -103,6 +108,8 @@ class MnemoDB(object):
 
     def hpfeed_set_errors(self, items):
         for item in items:
+            if item['_id'] in self.being_processed:
+                del self.being_processed['_id']
             self.db.hpfeed.update({'_id': item['_id']},
                                   {'$set':
                                        {'last_error': str(item['last_error']),
@@ -111,7 +118,10 @@ class MnemoDB(object):
 
     def get_hpfeed_data(self, max=250):
         #entries which are not normalized and not in error state
-        data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
+        with self.hpfeed_lock:
+            data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
+            for d in data:
+                self.being_processed[data['_id']] = 1
         return data
 
     def reset_normalized(self):
