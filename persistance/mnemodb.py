@@ -80,8 +80,8 @@ class MnemoDB(object):
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
             #if we end up here everything if ok - setting hpfeed entry to normalized
-            if item['_id'] in self.being_processed:
-                del self.being_processed['_id']
+            if hpfeed_id in self.being_processed:
+                del self.being_processed[hpfeed_id]
         self.db.hpfeed.update({'_id': hpfeed_id}, {'$set': {'normalized': True},
                                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}})
 
@@ -119,9 +119,9 @@ class MnemoDB(object):
     def get_hpfeed_data(self, max=250):
         #entries which are not normalized and not in error state
         with self.hpfeed_lock:
-            data = self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max)
+            data = list(self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max))
             for d in data:
-                self.being_processed[data['_id']] = 1
+                self.being_processed[d['_id']] = 1
         return data
 
     def reset_normalized(self):
