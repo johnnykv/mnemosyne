@@ -61,7 +61,7 @@ class Normalizer(object):
 
             normalizations = 0
             error_list = []
-            to_be_processed = self.database.get_hpfeed_data(500)
+            to_be_processed = self.database.get_hpfeed_data(1500)
             to_be_inserted = []
 
             for hpfeed_item in to_be_processed:
