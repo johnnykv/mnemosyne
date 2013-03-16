@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Johnny Vestergaard <jkv@unixcluster.dk>
+# Copyright (C) 2013 Johnny Vestergaard <jkv@unixcluster.dk>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ from modules import kippo_events
 from modules import dionaea_capture
 from modules import dionaea_binary
 from modules import beeswarm_hive
+from bson import ObjectId
 
 import gevent
 from gevent.pool import Pool
@@ -36,6 +37,7 @@ import traceback
 from xml.etree.ElementTree import ParseError
 
 logger = logging.getLogger(__name__)
+
 
 class Normalizer(object):
     def __init__(self, database):
@@ -56,17 +58,21 @@ class Normalizer(object):
                 else:
                     self.normalizers[channel] = normalizer
 
-    def start_processing(self):
+    def start_processing(self, fetch_count=1500):
+
+        oldest_id = ObjectId("ffffffffffffffffffffffff")
         while self.enabled:
 
             normalizations = 0
             error_list = []
-            to_be_processed = self.database.get_hpfeed_data(1500)
+            to_be_processed = self.database.get_hpfeed_data(oldest_id, fetch_count)
             to_be_inserted = []
 
             for hpfeed_item in to_be_processed:
                 try:
                     channel = hpfeed_item['channel']
+                    if hpfeed_item['_id'] < oldest_id:
+                        oldest_id = hpfeed_item['_id']
                     if channel in self.normalizers:
                         norm = self.normalizers[channel].normalize(hpfeed_item['payload'],
                                                                    channel, hpfeed_item['timestamp'])
@@ -89,9 +95,12 @@ class Normalizer(object):
 
             if len(error_list) > 0:
                 self.database.hpfeed_set_errors(error_list)
-            self.worker_pool.spawn(self.inserter, to_be_inserted)
+
+            if len(to_be_inserted):
+                self.worker_pool.spawn(self.inserter, to_be_inserted)
 
             if normalizations is 0:
+                oldest_id = ObjectId("ffffffffffffffffffffffff")
                 gevent.sleep(3)
 
         gevent.joinall(self.worker_pool)

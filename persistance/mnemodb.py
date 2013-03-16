@@ -18,11 +18,12 @@
 import logging
 import string
 import time
+from datetime import datetime
+
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from datetime import datetime
 from bson.errors import InvalidStringData
-import threading
+
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +34,6 @@ class MnemoDB(object):
         conn = MongoClient(auto_start_request=False)
         self.db = conn[database_name]
         self.ensure_index()
-        self.being_processed = {}
-        self.hpfeed_lock = threading.Lock()
 
     def ensure_index(self):
         self.db.hpfeed.ensure_index('normalized', unique=False)
@@ -79,9 +78,7 @@ class MnemoDB(object):
                                                upsert=True)
                 else:
                     raise Warning('{0} is not a know collection type.'.format(collection))
-            #if we end up here everything if ok - setting hpfeed entry to normalized
-            if hpfeed_id in self.being_processed:
-                del self.being_processed[hpfeed_id]
+                    #if we end up here everything if ok - setting hpfeed entry to normalized
         self.db.hpfeed.update({'_id': hpfeed_id}, {'$set': {'normalized': True},
                                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}})
 
@@ -107,31 +104,33 @@ class MnemoDB(object):
                                                                                                        err))
 
     def hpfeed_set_errors(self, items):
+        """Marks hpfeeds entries in the datadstore as having errored while normalizing.
+
+        :param items: a list of hpfeed entries.
+        """
         for item in items:
-            if item['_id'] in self.being_processed:
-                del self.being_processed[item['_id']]
             self.db.hpfeed.update({'_id': item['_id']},
                                   {'$set':
                                        {'last_error': str(item['last_error']),
                                         'last_error_timestamp': item['last_error_timestamp']}
                                   })
 
-    def get_hpfeed_data(self, max=250):
+    def get_hpfeed_data(self, get_before_id, max=250):
+        """Fetched unnormalized hpfeed items from the datastore.
 
-        return_list = []
-        with self.hpfeed_lock:
-            data = list(self.db.hpfeed.find({'normalized': False, 'last_error': {'$exists': False}}, limit=max))
-            #this is a pretty lame hack to allow concurrent reads, must be fixed!
-            for d in data:
-                if not d['_id'] in self.being_processed:
-                    return_list.append(d)
-                    self.being_processed[d['_id']] = 1
-        return return_list
+        :param max: maximum number of entries to return
+        :param get_before_id: only return entries which are below the value of this ObjectId
+        :return: a list of dictionaries
+        """
+
+        data = list(self.db.hpfeed.find({'_id': {'$lt': get_before_id}, 'normalized': False,
+                                         'last_error': {'$exists': False}}, limit=max,
+                                         sort=[('_id', -1)]))
+        return data
 
     def reset_normalized(self):
-        """
-        Deletes all normalized data from the mongo instance.
-        """
+        """Deletes all normalized data from the datastore."""
+
         logger.info('Initiating database reset - all normalized data will be deleted. (Starting timer)')
         start = time.time()
         for collection in self.db.collection_names():
@@ -141,7 +140,7 @@ class MnemoDB(object):
         logger.info('All collections dropped. (Elapse: {0})'.format(time.time() - start))
         self.db.hpfeed.update({}, {"$set": {'normalized': False},
                                    '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
-                                  multi=True)
+                                   multi=True)
         logger.info('Error states removed from hpfeeds data (Elapse: {0}'.format(time.time() - start))
         self.ensure_index()
         logger.info('Done ensuring indexes (Elapse: {0})'.format(time.time() - start))
