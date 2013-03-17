@@ -61,5 +61,6 @@ def files_types(mongodb):
         auth.require(role='access_normalized')
     except AAAException as e:
         return HTTPError(401, e.message)
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
     result = simple_group('file', 'content_guess', mongodb)
     return jsonify(result, response)

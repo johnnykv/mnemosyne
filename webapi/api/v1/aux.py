@@ -28,6 +28,7 @@ def get_hpfeed_stats(mongodb):
         auth.require(role='access_all')
     except AAAException as e:
         return HTTPError(401, e.message)
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
 
     result = mongodb['hpfeed'].aggregate({'$group': {'_id': {'$dayOfYear': '$timestamp'}, 'count': {'$sum': 1}}})
     del result['ok']
@@ -55,5 +56,6 @@ def get_hpfeed_channels(mongodb):
     except AAAException as e:
         return HTTPError(401, e.message)
 
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
     result = simple_group('hpfeed', 'channel', mongodb)
     return jsonify(result, response)

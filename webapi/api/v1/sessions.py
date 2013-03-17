@@ -24,6 +24,7 @@ from app import auth
 
 
 @app.get('/sessions')
+@app.get('/sessions/')
 def sessions_get_by_query(mongodb):
     try:
         auth.require(role='access_normalized')
@@ -76,6 +77,7 @@ def session_protocols(mongodb):
                {"count": 125, "protocol": "ssh},
                {"count": 74,  "protocol": "imap}]}
     """
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
     auth.require(role='access_normalized')
     result = simple_group('session', 'protocol', mongodb)
     return jsonify(result, response)
