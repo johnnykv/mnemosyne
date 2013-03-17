@@ -29,16 +29,18 @@ def simple_group(collection, attribute, mongodb):
     """
     Helper method to ease group_by operations.
     """
-    reducer = Code("""
-        function (current, result) { result.count += 1; }
-        """)
+    #Disabled due to bringing the system down
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
+    #reducer = Code("""
+    #    function (current, result) { result.count += 1; }
+    #    """)
     #TODO: Convert to map/reduce. (current state sets read-lock)
-    result = mongodb[collection].group(key={attribute: 1}, condition={}, initial={"count": 0}, reduce=reducer)
-    output_rootname = attribute + 's'
+    #result = mongodb[collection].group(key={attribute: 1}, condition={}, initial={"count": 0}, reduce=reducer)
+    #output_rootname = attribute + 's'
     #Why does pymongo return the aggregation as float?
-    for item in result:
-        item['count'] = int(item['count'])
-    return {output_rootname: result}
+    #for item in result:
+    #    item['count'] = int(item['count'])
+    #return {output_rootname: result}
 
 
 def jsonify(i, r):
