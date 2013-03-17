@@ -32,6 +32,8 @@ def hpfeeds(mongodb):
     except AAAException as e:
         return HTTPError(401, e.message)
 
+
+    return HTTPError(410, 'This part of the API has been temporarily disabled to due to performance issues.')
     query_keys = request.query.keys()
     query_dict = {}
 
