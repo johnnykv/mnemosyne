@@ -66,26 +66,26 @@ class AuxTest(unittest.TestCase):
         if os.path.isdir(cls.tmpdir):
             shutil.rmtree(cls.tmpdir)
 
-    def test_get_hpfeed_stats(self):
-        sut = AuxTest.sut
-
-        res = sut.get('/aux/get_hpfeeds_stats')
-        result = json.loads(res.body)['result']
-
-        expected = [{'date': u'2013-01-01T00:00:00', 'count': 3},
-                    {'date': u'2013-01-02T00:00:00', 'count': 2},
-                    {'date': u'2013-01-03T00:00:00', 'count': 1}]
-
-        self.assertItemsEqual(expected, result)
-
-    def test_get_hpfeed_channels(self):
-        sut = AuxTest.sut
-
-        res = sut.get('/aux/get_hpfeeds_channels')
-        result = json.loads(res.body)['channels']
-
-        expected = [{'channel': 'channel_1', 'count': 4},
-                    {'channel': 'channel_2', 'count': 1},
-                    {'channel': 'channel_3', 'count': 1}]
-
-        self.assertItemsEqual(expected, result)
+    # def test_get_hpfeed_stats(self):
+    #     sut = AuxTest.sut
+    #
+    #     res = sut.get('/aux/get_hpfeeds_stats')
+    #     result = json.loads(res.body)['result']
+    #
+    #     expected = [{'date': u'2013-01-01T00:00:00', 'count': 3},
+    #                 {'date': u'2013-01-02T00:00:00', 'count': 2},
+    #                 {'date': u'2013-01-03T00:00:00', 'count': 1}]
+    #
+    #     self.assertItemsEqual(expected, result)
+    #
+    # def test_get_hpfeed_channels(self):
+    #     sut = AuxTest.sut
+    #
+    #     res = sut.get('/aux/get_hpfeeds_channels')
+    #     result = json.loads(res.body)['channels']
+    #
+    #     expected = [{'channel': 'channel_1', 'count': 4},
+    #                 {'channel': 'channel_2', 'count': 1},
+    #                 {'channel': 'channel_3', 'count': 1}]
+    #
+    #     self.assertItemsEqual(expected, result)
