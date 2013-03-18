@@ -85,7 +85,7 @@ class Normalizer(object):
                                            'last_error': "No normalizer found",
                                            'last_error_timestamp': datetime.now()})
                         logger.warning('No normalizer could be found for channel: {0}.'.format(channel))
-                except (TypeError, ValueError, ParseError) as err:
+                except Exception as err:
                     error_list.append({'_id': hpfeed_item['_id'],
                                        'last_error': err,
                                        'last_error_timestamp': datetime.now()})
