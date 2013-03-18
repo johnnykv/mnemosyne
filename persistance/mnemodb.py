@@ -115,7 +115,7 @@ class MnemoDB(object):
                                         'last_error_timestamp': item['last_error_timestamp']}
                                   })
 
-    def get_hpfeed_data(self, get_before_id, max=250):
+    def get_hpfeed_data(self, get_before_id, max=250, max_scan=10000):
         """Fetched unnormalized hpfeed items from the datastore.
 
         :param max: maximum number of entries to return
@@ -125,7 +125,7 @@ class MnemoDB(object):
 
         data = list(self.db.hpfeed.find({'_id': {'$lt': get_before_id}, 'normalized': False,
                                          'last_error': {'$exists': False}}, limit=max,
-                                         sort=[('_id', -1)]))
+                                         sort=[('_id', -1)], max_scan=max_scan))
         return data
 
     def reset_normalized(self):
