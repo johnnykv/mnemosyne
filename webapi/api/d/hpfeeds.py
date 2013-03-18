@@ -56,7 +56,7 @@ def hpfeeds(mongodb):
     else:
         limit = 50
 
-    result = list(mongodb['hpfeed'].find(query_dict).sort('timestamp', -1).limit(limit))
+    result = list(mongodb['hpfeed'].find(query_dict, fields={'_id': False}).sort('timestamp', -1).limit(limit))
     return jsonify({'hpfeeds': result}, response)
 
 

@@ -52,5 +52,5 @@ def urls(mongodb):
         else:
             abort(400, '{0} could be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
 
-    result = list(mongodb['url'].find(query_dict).limit(limit))
+    result = list(mongodb['url'].find(query_dict, fields={'_id': False}).limit(limit))
     return jsonify({'urls': result}, response)

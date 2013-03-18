@@ -59,7 +59,6 @@ def sessions_get_by_query(mongodb):
     lvl = auth._store.roles[u]
     needed_lvl = auth._store.roles['access_normalized']
     if lvl < needed_lvl:
-        print "BELOW"
         p_limit = {'destination_ip': False}
     else:
         p_limit = None

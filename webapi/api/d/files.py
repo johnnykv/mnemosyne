@@ -51,7 +51,7 @@ def get_files(mongodb):
     else:
         abort(400, 'Only supported query parameter is "hash"')
 
-    result = list(mongodb['file'].find(query_dict).limit(limit))
+    result = list(mongodb['file'].find(query_dict, fields={'_id': False}).limit(limit))
     return jsonify({'files': result}, response)
 
 
