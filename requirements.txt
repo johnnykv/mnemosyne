@@ -9,3 +9,6 @@ pycrypto
 python-magic
 nose
 kumo
+
+sphinx
+sphinxcontrib-httpdomain
