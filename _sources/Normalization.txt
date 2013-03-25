@@ -6,7 +6,7 @@ Normalization
 Dataflow
 ========
 
-.. digraph:: ggg
+.. digraph:: foo
 
 
       compound=true;

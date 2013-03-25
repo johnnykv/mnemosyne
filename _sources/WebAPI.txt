@@ -313,6 +313,7 @@ The Files resource located at /api/v1/files contains various forms of binaries a
          }
 
    :query hash: SHA1, SHA51 or MD5 digest (required).
+   :query no_data: If present the 'data' field will not be returned (optional).
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
