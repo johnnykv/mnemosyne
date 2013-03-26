@@ -42,15 +42,15 @@ def urls(mongodb):
         query_dict['url'] = {'$regex': request.query.url_regex}
 
     if 'hash' in query_keys:
-        hash_length = len(query_dict['hash'])
+        hash_length = len(request.query['hash'])
         if hash_length is 128:
-            query_dict['hash.sha512'] = query_dict['hash']
+            query_dict['extractions.hashes.sha512'] = request.query['hash']
         elif hash_length is 40:
-            query_dict['hash.sha1'] = query_dict['hash']
+            query_dict['extractions.hashes.sha1'] = request.query['hash']
         elif hash_length is 32:
-            query_dict['hash.md5'] = query_dict['hash']
+            query_dict['extractions.hashes.md5'] = request.query['hash']
         else:
-            abort(400, '{0} could be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
+            abort(400, '{0} could not be recognized as a supported hash. Currently supported hashes are: SHA1, SHA512 and MD5. ')
 
     result = list(mongodb['url'].find(query_dict, fields={'_id': False}).limit(limit))
     return jsonify({'urls': result}, response)
