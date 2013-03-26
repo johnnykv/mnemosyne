@@ -266,6 +266,7 @@ The URLS resource located at /urls, contains urls which potentially are serving 
          }
 
    :query url_regex: PCRE regex which will be tried against the stored url (optional).
+   :query hash: returns URL's where the files with the specified HASH has been downloaded (optional).
    :query limit: limit number of returned items (optional, default is 50).
    :statuscode 200: no error.
    :statuscode 400: Bad request.
