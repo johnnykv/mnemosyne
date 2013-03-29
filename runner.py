@@ -119,13 +119,24 @@ if __name__ == '__main__':
 
     db = mnemodb.MnemoDB(c['mongo_db'])
 
-    if args.reset:
-        db.reset_normalized()
-
     webapi = None
     hpfeed_puller = None
     hpfriends_puller = None
     normalizer = None
+
+
+    if not args.no_feedpuller:
+        #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
+        logger.info("Spawning hpfeed feed puller.")
+        hpfeed_puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
+        greenlets['hpfeed-puller'] = gevent.spawn(hpfeed_puller.start_listening)
+
+        logger.info("Spawning hpfriends feed puller.")
+        hpfriends_puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
+        greenlets['hpfriends-puller'] = gevent.spawn(hpfriends_puller.start_listening)
+
+    if args.reset:
+        db.reset_normalized()
 
     if not args.no_webapi:
         logger.info("Spawning web api.")
@@ -137,15 +148,6 @@ if __name__ == '__main__':
         webapi = mnemowebapi.MnemoWebAPI(c['mongo_db'], static_file_path=args.webpath, loggly_token=loggly_token)
         greenlets['webapi'] = gevent.spawn(webapi.start_listening, c['webapi_host'], c['webapi_port'])
 
-    if not args.no_feedpuller:
-        #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
-        logger.info("Spawning hpfeed feed puller.")
-        hpfeed_puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-        greenlets['hpfeed-puller'] = gevent.spawn(hpfeed_puller.start_listening)
-
-        logger.info("Spawning hpfriends feed puller.")
-        hpfriends_puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
-        greenlets['hpfriends-puller'] = gevent.spawn(hpfriends_puller.start_listening)
 
     if not args.no_normalizer:
         #start menmo and inject persistence module
