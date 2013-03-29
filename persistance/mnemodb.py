@@ -36,8 +36,7 @@ class MnemoDB(object):
         self.ensure_index()
 
     def ensure_index(self):
-        self.db.hpfeed.ensure_index('normalized', unique=False, background=True)
-        self.db.hpfeed.ensure_index('last_error', unique=False, background=True)
+        self.db.hpfeed.ensure_index([('normalized', 1), ('last_error', 1)], unique=False, background=True)
         self.db.url.ensure_index('url', unique=True, background=True)
         self.db.url.ensure_index('extractions.hashes.md5', unique=False, background=True)
         self.db.url.ensure_index('extractions.hashes.sha1', unique=False, background=True)
