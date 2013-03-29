@@ -52,15 +52,16 @@ class DionaeaCaptures(BaseNormalizer):
                      'sha512': o_data['sha512']}
             }, ]
 
-        url = {'url': o_data['url'],
-               'extractions': [{
-                                   'timestamp': submission_timestamp,
-                                   'hashes': {
-                                       'md5': o_data['md5'],
-                                       'sha512': o_data['sha512']
-                                   }}]}
+        #url = {'url': o_data['url'],
+        #       'extractions': [{
+        #                           'timestamp': submission_timestamp,
+        #                           'hashes': {
+        #                               'md5': o_data['md5'],
+        #                               'sha512': o_data['sha512']
+        #                           }}]}
 
         session['attachments'] = attachments
 
-        relations = {'session': session, 'url': url}
+        relations = {'session': session}
+        #relations = {'session': session, 'url': url}
         return [relations]
