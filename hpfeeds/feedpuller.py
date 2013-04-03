@@ -15,15 +15,18 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import hpfeeds
 import logging
+
+import gevent
+
+import hpfeeds
+
 
 logger = logging.getLogger(__name__)
 
 
 class FeedPuller:
     def __init__(self, database, ident, secret, port, host, feeds):
-        self.logger = logging.getLogger()
 
         self.database = database
 
@@ -33,32 +36,30 @@ class FeedPuller:
         self.host = host
         self.feeds = feeds
 
-        self.stats = {}
+        self.enabled = True
 
     def start_listening(self):
+        while self.enabled:
+            try:
+                self.hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
 
-        try:
-            self.hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
-        except hpfeeds.FeedException, e:
-            logger.error('Error: {0}'.format(e))
+                def on_error(payload):
+                    logger.error('Error message from broker: {0}'.format(payload))
+                    self.hpc.stop()
 
-        def on_message(ident, chan, payload):
-            self.database.insert_hpfeed(ident, chan, payload)
-            if chan in self.stats:
-                self.stats[chan] += 1
-            else:
-                self.stats[chan] = 1
+                def on_message(ident, chan, payload):
+                    self.database.insert_hpfeed(ident, chan, payload)
 
-        def on_error(payload):
-            logger.error('Error message from broker: {0}'.format(payload))
-            self.hpc.stop()
+                self.hpc.subscribe(self.feeds)
+                self.hpc.run(on_message, on_error)
+            except Exception as ex:
+                self.hpc.stop()
+                logger.exception('Exception caught: {0}'.format(ex))
+                #throttle
+            gevent.sleep(5)
 
-        self.hpc.subscribe(self.feeds)
-        try:
-            self.hpc.run(on_message, on_error)
-        except hpfeeds.FeedException, e:
-            self.logger.error('Error: {0}'.format(e))
 
     def stop(self):
         self.hpc.stop()
+        self.enabled = False
         logger.info("FeedPuller stopped.")
