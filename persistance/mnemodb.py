@@ -110,7 +110,7 @@ class MnemoDB(object):
         self.rg.hpfeeds(entry)
 
     def hpfeed_set_errors(self, items):
-        """Marks hpfeeds entries in the datadstore as having errored while normalizing.
+        """Marks hpfeeds entries in the datastore as having errored while normalizing.
 
         :param items: a list of hpfeed entries.
         """
@@ -122,7 +122,7 @@ class MnemoDB(object):
                                   })
 
     def get_hpfeed_data(self, get_before_id, max=250, max_scan=10000):
-        """Fetched unnormalized hpfeed items from the datastore.
+        """Fetches unnormalized hpfeed items from the datastore.
 
         :param max: maximum number of entries to return
         :param get_before_id: only return entries which are below the value of this ObjectId
