@@ -124,6 +124,8 @@ if __name__ == '__main__':
     hpfriends_puller = None
     normalizer = None
 
+    if args.reset:
+        db.reset_normalized()
 
     if not args.no_feedpuller:
         #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
@@ -134,9 +136,6 @@ if __name__ == '__main__':
         logger.info("Spawning hpfriends feed puller.")
         hpfriends_puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
         greenlets['hpfriends-puller'] = gevent.spawn(hpfriends_puller.start_listening)
-
-    if args.reset:
-        db.reset_normalized()
 
     if not args.no_webapi:
         logger.info("Spawning web api.")

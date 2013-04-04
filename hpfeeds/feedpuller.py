@@ -55,7 +55,7 @@ class FeedPuller:
             except Exception as ex:
                 self.hpc.stop()
                 logger.exception('Exception caught: {0}'.format(ex))
-                #throttle
+            #throttle
             gevent.sleep(5)
 
     def stop(self):
