@@ -58,7 +58,6 @@ class FeedPuller:
                 #throttle
             gevent.sleep(5)
 
-
     def stop(self):
         self.hpc.stop()
         self.enabled = False

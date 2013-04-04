@@ -23,6 +23,7 @@ from datetime import datetime
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.errors import InvalidStringData
+from preagg_reports import ReportGenerator
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ class MnemoDB(object):
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
         conn = MongoClient(auto_start_request=False)
+        self.rg = ReportGenerator(database_name)
         self.db = conn[database_name]
         self.ensure_index()
 
@@ -105,6 +107,7 @@ class MnemoDB(object):
             logger.error(
                 'Failed to insert hpfeed data on {0} channel due to invalid string data. ({1})'.format(entry['channel'],
                                                                                                        err))
+        self.rg.hpfeeds(entry)
 
     def hpfeed_set_errors(self, items):
         """Marks hpfeeds entries in the datadstore as having errored while normalizing.

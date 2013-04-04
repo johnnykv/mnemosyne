@@ -15,9 +15,12 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 import logging
+from datetime import datetime
+
 from pymongo import MongoClient
 
 logger = logging.getLogger(__name__)
+
 
 class ReportGenerator:
     """
@@ -26,5 +29,20 @@ class ReportGenerator:
 
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
-        conn = MongoClient()
+        conn = MongoClient(w=0)
         self.db = conn[database_name]
+
+    def hpfeeds(self, entry, utc=datetime.utcnow()):
+        hour = utc.hour
+
+        id = utc.strftime('%Y%m%d/') + 'hpfeeds'
+        query = {'_id': id}
+        #no dots in mongodb fields
+        channel = entry['channel'].replace('.', '_')
+        update = {'$inc': {'hourly.{0}.{1}'.format(hour,channel) : 1}}
+        self.db.daily_stats.update(query, update, upsert=True)
+
+    def do_legacy_hpfeeds(self):
+        result = self.db.hpfeed.find({}, fields=['channel', 'timestamp'])
+        for item in result:
+            self.hpfeeds(item, item['timestamp'])
