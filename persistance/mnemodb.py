@@ -24,6 +24,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.errors import InvalidStringData
 from preagg_reports import ReportGenerator
+from gevent import Greenlet
 
 
 logger = logging.getLogger(__name__)
@@ -150,7 +151,11 @@ class MnemoDB(object):
         logger.info('Error states removed from hpfeeds data (Elapse: {0}'.format(time.time() - start))
         self.ensure_index()
         logger.info('Done ensuring indexes (Elapse: {0})'.format(time.time() - start))
+
         logger.info('Full reset done in {0} seconds'.format(time.time() - start))
+
+        #This is a one-off job to generate stats for hpfeeds which takes a while.
+        Greenlet.spawn(self.rg.do_legacy_hpfeeds)
 
     def collection_count(self):
         result = {}
