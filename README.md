@@ -88,15 +88,15 @@ curl -k -b cookies.txt "<...>/api/v1/files?hash=b420138b88eda83a51fea5298f72864a
 {
     "files": [
         {
-            "_id": "510c3ce5c6b6082a30d548f3", 
-            "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed", 
-            "data": "4d5a90000300000004000000ffff0000b8 <--- SNIP! --->", 
-            "encoding": "hex", 
+            "_id": "510c3ce5c6b6082a30d548f3",
+            "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed",
+            "data": "4d5a90000300000004000000ffff0000b8 <--- SNIP! --->",
+            "encoding": "hex",
             "hashes": {
-                "md5": "b420138b88eda83a51fea5298f72864a", 
-                "sha1": "0e644fc39a287e6f020ede6d6c9dd708b1a871ba", 
+                "md5": "b420138b88eda83a51fea5298f72864a",
+                "sha1": "0e644fc39a287e6f020ede6d6c9dd708b1a871ba",
                 "sha512": "98a2110f389790b5fd66f50e26e85465b3d22662245969b1fd03025194ef7a00a928c3709b57e20d165876231cdab12d38b7ff17e5c173b6562e924dc4087d85"
-            }, 
+            },
             "hpfeed_ids": [
                 "50f3e41b09ce4533629cea00"
             ]
@@ -104,54 +104,7 @@ curl -k -b cookies.txt "<...>/api/v1/files?hash=b420138b88eda83a51fea5298f72864a
     ]
 }
 ```
-### Overview of the file store
-``` bash
-curl -k -b cookies.txt "<...>/api/v1/files/types" | python -mjson.tool
-```
-```json
-{
-    "content_guesses": [
-        {
-            "content_guess": "Javascript", 
-            "count": 1182
-        }, 
-        {
-            "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows", 
-            "count": 481
-        }, 
-        {
-            "content_guess": "PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed", 
-            "count": 732
-        }, 
-        {
-            "content_guess": "MS-DOS executable, MZ for MS-DOS", 
-            "count": 1
-        }, 
-        {
-            "content_guess": "PE32 executable (GUI) Intel 80386, for MS Windows", 
-            "count": 46
-        }, 
-        {
-            "content_guess": "Applesoft BASIC program data", 
-            "count": 5
-        },
-        {
-            "content_guess": "GIF image data, version 89a, 16129 x 16129", 
-            "count": 31
-        }, 
-        {
-            "content_guess": "DOS executable (COM)", 
-            "count": 2
-        },
-        {
-            "content_guess": "PE32 executable (GUI) Intel 80386, for MS Windows, UPX compressed", 
-            "count": 3
-        },
-        
-        <--- SNIP! --->
-    ]
-}
-```
+
 ### Dorks
 Dorks collected by [Glastopf](https://github.com/glastopf/glastopf)
 ``` bash
