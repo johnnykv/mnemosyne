@@ -57,7 +57,6 @@
 <li><a class="reference internal" href="#sessions">Sessions</a></li>
 <li><a class="reference internal" href="#urls">URLS</a></li>
 <li><a class="reference internal" href="#files">Files</a></li>
-<li><a class="reference internal" href="#aux">Aux</a></li>
 </ul>
 </li>
 </ul>
@@ -295,44 +294,6 @@
 </table>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--api-v1-sessions-protocols">
-<tt class="descname">GET </tt><tt class="descname">/api/v1/sessions/protocols</tt><a class="headerlink" href="#get--api-v1-sessions-protocols" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distinct protocols and session count from normalized honeypot sessions.</p>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/sessions/protocols</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
-<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span>
-  <span class="nt">&quot;protocols&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3212</span><span class="p">,</span>
-      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;http&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
-      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;ssh&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">75392</span><span class="p">,</span>
-      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;microsoft-ds&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-      <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;dcom-scm&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </div>
 <div class="section" id="urls">
 <h3>URLS<a class="headerlink" href="#urls" title="Permalink to this headline">¶</a></h3>
@@ -468,132 +429,6 @@
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--api-v1-files-types">
-<tt class="descname">GET </tt><tt class="descname">/api/v1/files/types</tt><a class="headerlink" href="#get--api-v1-files-types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an overview of files and code snippets extracted from hpfeed. If the file content is not specified in the feed Mnemosyne will fallback to identification with libmagic.</p>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/files/types</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
-<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span>
-  <span class="nt">&quot;content_guesss&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;Javascript&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">268</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;Assembly&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">5</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;GIF image data, version 89a, 16129 x 16129&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">12</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">28</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;C++ source, ASCII text, with very long lines, with CRLF line terminators&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;PHP script, ASCII text, with CRLF line terminators&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;PE32 executable (DLL) (GUI) Intel 80386, for MS Windows, UPX compressed&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">64</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;PE32 executable (DLL) (GUI) Intel 80386, for MS Windows&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">43</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;PE32 executable (GUI) Intel 80386, for MS Windows, UPX compressed&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;content_guess&quot;</span><span class="p">:</span> <span class="s2">&quot;PE32 executable (GUI) Intel 80386, for MS Windows&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
-<li><strong>200</strong> &#8211; no error.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="aux">
-<h3>Aux<a class="headerlink" href="#aux" title="Permalink to this headline">¶</a></h3>
-<p>Aux (Auxiliary) resources located at /api/v1/aux/.</p>
-<dl class="get">
-<dt id="get--api-v1-aux-get_hpfeeds_channels">
-<tt class="descname">GET </tt><tt class="descname">/api/v1/aux/get_hpfeeds_channels</tt><a class="headerlink" href="#get--api-v1-aux-get_hpfeeds_channels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distinct channel names and count of items.</p>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/aux/get_hpfeeds_channels</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span>
-  <span class="nt">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3165</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.events&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.files&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;thug.events&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;glastopf.files&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">728</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;kippo.sessions&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">70035</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;dionaea.capture&quot;</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
-      <span class="nt">&quot;channel&quot;</span><span class="p">:</span> <span class="s2">&quot;mwbinary.dionaea.sensorunique&quot;</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="get">
