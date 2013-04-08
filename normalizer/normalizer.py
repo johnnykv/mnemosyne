@@ -26,6 +26,7 @@ from modules import kippo_events
 from modules import dionaea_capture
 from modules import dionaea_binary
 from modules import beeswarm_hive
+from modules import conpot_events
 from bson import ObjectId
 
 import gevent
