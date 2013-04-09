@@ -43,7 +43,7 @@ class ConpotTest(unittest.TestCase):
             'session_modbus':{ 'pdus':
                 [
                     {'request_pdu': '0300000002', 'function_code': 3, 'slave_id': 1, 'response_pdu': '030400000001'},
-                    {'request_pdu': '0100000001', 'function_code': 1, 'slave_id': 5, 'response_pdu': '010100'}
+                    {'request_pdu': '0100000002', 'function_code': 1, 'slave_id': 5, 'response_pdu': '010100'}
                 ]
             }
         }

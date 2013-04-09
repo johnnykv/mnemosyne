@@ -29,7 +29,7 @@ class ThugEvents(BaseNormalizer):
         #split up original payload, so that there are only one root element
         data = '<THUG_DATA>' + data + '</THUG_DATA>'
 
-        fake_root = ET.fromstring(self.escape_xml_illegal_chars(data))
+        fake_root = ET.fromstring(escape_xml_illegal_chars(data))
 
         return_list = []
 
@@ -76,5 +76,5 @@ class ThugEvents(BaseNormalizer):
 #http://lsimons.wordpress.com/2011/03/17/stripping-illegal-characters-out-of-xml-in-python/
 #_illegal_xml_chars_RE = re.compile(u'[\x00-\x08\x0b\x0c\x0e-\x1F\uD800-\uDFFF\uFFFE\uFFFF]')
 _illegal_xml_chars_RE = re.compile(u'[\x0e-\x1F]')
-def escape_xml_illegal_chars(self, val, replacement='SOMETHING_REMOVED_BY_MNEMOSYNE'):
+def escape_xml_illegal_chars(val, replacement='SOMETHING_REMOVED_BY_MNEMOSYNE'):
     return _illegal_xml_chars_RE.sub(replacement, val)
