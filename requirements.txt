@@ -1,7 +1,7 @@
 pymongo
 gevent
 bottle-mongodb
-bottle-cork
+bottle-cork==0.6
 git+https://github.com/defnull/bottle/
 beaker
 webtest
