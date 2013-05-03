@@ -57,12 +57,6 @@ def parse_config(config_file):
 
     config['mongo_db'] = parser.get('mongodb', 'database')
 
-    config['hp_feeds'] = parser.get('hpfeeds', 'channels').split(',')
-    config['hp_ident'] = parser.get('hpfeeds', 'ident')
-    config['hp_secret'] = parser.get('hpfeeds', 'secret')
-    config['hp_port'] = parser.getint('hpfeeds', 'port')
-    config['hp_host'] = parser.get('hpfeeds', 'host')
-
     config['hpf_feeds'] = parser.get('hpfriends', 'channels').split(',')
     config['hpf_ident'] = parser.get('hpfriends', 'ident')
     config['hpf_secret'] = parser.get('hpfriends', 'secret')
@@ -120,7 +114,6 @@ if __name__ == '__main__':
     db = mnemodb.MnemoDB(c['mongo_db'])
 
     webapi = None
-    hpfeed_puller = None
     hpfriends_puller = None
     normalizer = None
 
@@ -128,11 +121,6 @@ if __name__ == '__main__':
         db.reset_normalized()
 
     if not args.no_feedpuller:
-        #NOTE: During the transition phase to hpfriends there needs to be two instances of feedpuller
-        logger.info("Spawning hpfeed feed puller.")
-        hpfeed_puller = feedpuller.FeedPuller(db, c['hp_ident'], c['hp_secret'], c['hp_port'], c['hp_host'], c['hp_feeds'])
-        greenlets['hpfeed-puller'] = gevent.spawn(hpfeed_puller.start_listening)
-
         logger.info("Spawning hpfriends feed puller.")
         hpfriends_puller = feedpuller.FeedPuller(db, c['hpf_ident'], c['hpf_secret'], c['hpf_port'], c['hpf_host'], c['hpf_feeds'])
         greenlets['hpfriends-puller'] = gevent.spawn(hpfriends_puller.start_listening)
@@ -172,9 +160,6 @@ if __name__ == '__main__':
         if hpfriends_puller:
             logger.info('Stopping HPFriends puller')
             hpfriends_puller.stop()
-        if hpfeed_puller:
-            logger.info('Stopping HPFeeds puller')
-            hpfeed_puller.stop()
         if normalizer:
             logger.info('Stopping Normalizer')
             normalizer.stop()
