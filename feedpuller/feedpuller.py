@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Johnny Vestergaard <jkv@unixcluster.dk>
+# Copyright (C) 2013 Johnny Vestergaard <jkv@unixcluster.dk>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,11 +21,10 @@ import gevent
 
 import hpfeeds
 
-
 logger = logging.getLogger(__name__)
 
 
-class FeedPuller:
+class FeedPuller(object):
     def __init__(self, database, ident, secret, port, host, feeds):
 
         self.database = database
@@ -53,6 +52,7 @@ class FeedPuller:
                 self.hpc.subscribe(self.feeds)
                 self.hpc.run(on_message, on_error)
             except Exception as ex:
+                print ex
                 self.hpc.stop()
                 logger.exception('Exception caught: {0}'.format(ex))
             #throttle

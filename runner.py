@@ -29,7 +29,7 @@ from ConfigParser import ConfigParser
 from normalizer.normalizer import Normalizer
 from persistance import mnemodb
 from webapi import mnemowebapi
-from hpfeeds import feedpuller
+from feedpuller import feedpuller
 
 
 logger = logging.getLogger()
