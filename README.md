@@ -31,7 +31,7 @@ Mnemosyne is currently serving a speciality service, which on one side collects 
 
 ### Login to the mnemosyne webservice with the provided credentials
 ``` bash
-curl -k -c cookies.txt -d "username=james&password=bond" https://mnemosyne.honeycloud.net:8282/login
+curl -k -c cookies.txt -X POST -d "username=james&password=bond" https://mnemosyne.honeycloud.net:8282/login
 [~]$ cat cookies.txt 
 
 mnemosyne.honeycloud.net  FALSE	/	TRUE	2147487247	beaker.session.id	1f7x19deadbeef8f802fbabe18f1f01a
