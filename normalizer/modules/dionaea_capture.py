@@ -20,7 +20,7 @@ from normalizer.modules.basenormalizer import BaseNormalizer
 
 
 class DionaeaCaptures(BaseNormalizer):
-    channels = ('dionaea.capture', 'dionaea.capture.anon')
+    channels = ('dionaea.capture', 'dionaea.capture.anon', 'dionaea.captures')
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
