@@ -28,7 +28,7 @@ class ConpotTest(unittest.TestCase):
         """
 
         input_submission_time = datetime(2012, 12, 14, 12, 22, 51)
-        input_string = "{\"data\": [{\"request_pdu\": \"0300000002\", \"function_code\": 3, \"slave_id\": 1," \
+        input_string = "{\"data_type\":  \"modbus\", \"data\": [{\"request_pdu\": \"0300000002\", \"function_code\": 3, \"slave_id\": 1," \
                        "\"response_pdu\": \"030400000001\"}, {\"request_pdu\": \"0100000002\", \"function_code\": 1, " \
                        "\"slave_id\": 5, \"response_pdu\": \"010100\"}], \"remote\": [\"12.34.43.21\", 45358], " \
                        "\"session_id\": \"069db6a6-5faa-4f3a-8de0-ce90af0e7b2c\"}"

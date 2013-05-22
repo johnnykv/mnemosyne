@@ -35,8 +35,8 @@ class Conpot(BaseNormalizer):
             'source_port': o_data['remote'][1],
             'destination_port': 502,
             'honeypot': 'conpot',
-            'protocol': 'modbus',
-            'session_modbus': { 'pdus': o_data['data']}
+            'protocol': o_data['data_type'],
+            'session_{0}'.format(o_data['data_type']): { 'pdus': o_data['data']}
 
             }
 
