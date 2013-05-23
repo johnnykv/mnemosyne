@@ -15,6 +15,7 @@
 # Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from datetime import datetime
 import logging
 
 import gevent
@@ -34,10 +35,13 @@ class FeedPuller(object):
         self.port = port
         self.host = host
         self.feeds = feeds
+        self.last_received = datetime.now()
 
         self.enabled = True
 
     def start_listening(self):
+
+        gevent.spawn_later(15, self._activity_checker)
         while self.enabled:
             try:
                 self.hpc = hpfeeds.new(self.host, self.port, self.ident, self.secret)
@@ -47,6 +51,7 @@ class FeedPuller(object):
                     self.hpc.stop()
 
                 def on_message(ident, chan, payload):
+                    self.last_received = datetime.now()
                     self.database.insert_hpfeed(ident, chan, payload)
 
                 self.hpc.subscribe(self.feeds)
@@ -62,3 +67,12 @@ class FeedPuller(object):
         self.hpc.stop()
         self.enabled = False
         logger.info("FeedPuller stopped.")
+
+    def _activity_checker(self):
+        while self.enabled:
+            if self.hpc.connected:
+                difference = datetime.now() - self.last_received
+                if difference.seconds > 15:
+                    logger.warning('No activity for 15 seconds, forcing reconnect')
+                    self.hpc.stop()
+            gevent.sleep(15)
