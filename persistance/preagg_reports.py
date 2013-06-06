@@ -32,7 +32,8 @@ class ReportGenerator:
         conn = MongoClient(w=0)
         self.db = conn[database_name]
 
-    def hpfeeds(self, entry, utc=datetime.utcnow()):
+    def hpfeeds(self, entry):
+        utc = datetime.utcnow()
         hour = utc.hour
 
         id = utc.strftime('%Y%m%d/') + 'hpfeeds'
