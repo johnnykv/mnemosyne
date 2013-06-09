@@ -75,6 +75,23 @@ class GlastopfTests(unittest.TestCase):
         self.assertEqual('/someURL', actual[0]['dork']['content'])
         self.assertTrue('timestamp' in actual[0]['dork'])
 
+    def test_event_new_format(self):
+        """
+        Test if a the newer glastopf json message get parsed as expected.
+        Note: Currently we only extract the dork from newer versions of glastopf.
+        """
+        input_string = """{\"pattern\": \"robots\", \"time\": \"2013-06-09 06:06:20\", \"filename\": null, \"source\": [\"1.2.3.4\", 50781], \"request_raw\": \"GET /robots.txt HTTP/1.1\\r\\nAccept-Encoding: identity\\r\\nHost: 4.3.2.1\", \"request_url\": \"/wooopsa\"}"""
+
+        sut = glastopf_events.GlastopfEvents()
+        actual = sut.normalize(input_string, 'glastopf_events', None)
+
+        #test dork response
+        self.assertEqual(1, actual[0]['dork']['count'])
+        self.assertEqual('inurl', actual[0]['dork']['type'])
+        self.assertEqual('/wooopsa', actual[0]['dork']['content'])
+        self.assertTrue('timestamp' in actual[0]['dork'])
+
+
     def test_make_url_actual(self):
         """
         Test if a valid http request can be parsed to a valid URL.
@@ -198,6 +215,7 @@ class GlastopfTests(unittest.TestCase):
         for input_, expected_output in in_out_pars:
             result = sut.clean_url(input_)
             self.assertEqual(expected_output, result)
+
 
 if __name__ == '__main__':
     unittest.main()

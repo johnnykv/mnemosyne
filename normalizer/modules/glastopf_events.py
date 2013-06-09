@@ -37,8 +37,10 @@ class GlastopfEvents(BaseNormalizer):
 
         relations = {}
 
-        relations['session'] = self.make_session(o_data)
-        relations['session']['session_http'] = self.make_session_http(o_data)
+        #only old versions of glastopf has the request key
+        if 'request' in o_data:
+            relations['session'] = self.make_session(o_data)
+            relations['session']['session_http'] = self.make_session_http(o_data)
         dork = self.make_dork(o_data, submission_timestamp)
         if dork:
             relations['dork'] = dork
@@ -46,7 +48,11 @@ class GlastopfEvents(BaseNormalizer):
         return [relations]
 
     def make_dork(self, data, timestamp):
-        dork = urlparse(self.make_url(data)).path
+        #only old versions of glastopf has the request key
+        if 'request' in data:
+            dork = urlparse(self.make_url(data)).path
+        else:
+            dork = urlparse(data['request_url']).path
         if dork and dork not in self.dork_filter:
             return {'content': dork,
                     'type': 'inurl',
