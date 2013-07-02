@@ -30,9 +30,9 @@ from datetime import datetime
 class HPFeedsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.tmpdir =  tempfile.mkdtemp()
+        cls.tmpdir = tempfile.mkdtemp()
         cls._dbname = str(uuid.uuid4())
-        insert_data = []
+        hpfeeddata = []
 
         #alternate 1/2 on inserts
         for x in range(100):
@@ -41,12 +41,50 @@ class HPFeedsTest(unittest.TestCase):
                      'payload': 'payload_{0}'.format(x % 2),
                      'timestamp': datetime.utcnow(),
                      'normalized': False}
-            insert_data.append(entry)
+            hpfeeddata.append(entry)
 
         c = MongoClient('localhost', 27017)
 
-        for item in insert_data:
+        for item in hpfeeddata:
             c[cls._dbname].hpfeed.insert(item)
+
+        daily_stats = [{'_id': '20130701/hpfeeds',
+                        'hourly': {
+                            '0': {
+                                'beeswarm_hive': 66,
+                                'dionaea_capture': 6581,
+                                'dionaea_dcerpcrequests': 11392,
+                                'mwbinary_dionaea_sensorunique': 66
+                            },
+                            '1': {
+                                'beeswarm_hive': 21,
+                                'dionaea_capture': 6748,
+                                'dionaea_dcerpcrequests': 11605,
+                                'mwbinary_dionaea_sensorunique': 66
+                            }
+                        }
+                       },
+                       {'_id': '20130702/hpfeeds',
+                        'hourly': {
+                            '0': {
+                                'beeswarm_hive': 33,
+                                'dionaea_capture': 1111,
+                                'dionaea_dcerpcrequests': 2222,
+                                'mwbinary_dionaea_sensorunique': 11
+                            },
+                            '1': {
+                                'beeswarm_hive': 1,
+                                'dionaea_capture': 4,
+                                'dionaea_dcerpcrequests': 11,
+                                'mwbinary_dionaea_sensorunique': 28
+                            }
+                        }
+                       }
+
+        ]
+
+        for item in daily_stats:
+            c[cls._dbname].daily_stats.insert(item)
 
         cls.sut = helpers.prepare_app(cls._dbname, cls.tmpdir, 'a_all')
 
@@ -103,7 +141,7 @@ class HPFeedsTest(unittest.TestCase):
             ('channel_1', 10, 10),
             ('channel_0', 100, 50),
             ('channel_1', 10, 10)
-            )
+        )
 
         for channel, limit, expected in test_triplets:
             res = sut.get('/hpfeeds?channel={0}&limit={1}'.format(channel, limit))
@@ -133,3 +171,48 @@ class HPFeedsTest(unittest.TestCase):
                 self.assertEqual('payload_1', item['payload'])
             else:
                 raise Exception('Unexpected channel name: {0}'.format(item['channel']))
+
+    def test_get_stats_specific_date(self):
+        """
+        Tests if the correct data is returned when querying a specific data for hpfeeds stats
+        """
+
+        sut = HPFeedsTest.sut
+
+        res = sut.get('/hpfeeds/stats/20130702')
+        result = json.loads(res.body)
+        expected = {'date': '20130702',
+                        'hourly': {
+                            '0': {
+                                'beeswarm_hive': 33,
+                                'dionaea_capture': 1111,
+                                'dionaea_dcerpcrequests': 2222,
+                                'mwbinary_dionaea_sensorunique': 11
+                            },
+                            '1': {
+                                'beeswarm_hive': 1,
+                                'dionaea_capture': 4,
+                                'dionaea_dcerpcrequests': 11,
+                                'mwbinary_dionaea_sensorunique': 28
+                            }
+                        }
+        }
+
+        self.assertDictEqual(result, expected)
+
+    def test_get_all_stats(self):
+        """
+        Tests if the correct data is returned when querying stats
+        """
+
+        sut = HPFeedsTest.sut
+
+        res = sut.get('/hpfeeds/stats')
+        result = json.loads(res.body)
+        expected = {'dionaea_capture': 14444,
+                    'beeswarm_hive': 121,
+                    'mwbinary_dionaea_sensorunique': 171,
+                    'dionaea_dcerpcrequests': 25230}
+
+        self.assertDictEqual(result, expected)
+

@@ -59,4 +59,38 @@ def hpfeeds(mongodb):
     result = list(mongodb['hpfeed'].find(query_dict).sort('timestamp', -1).limit(limit))
     return jsonify({'hpfeeds': result}, response)
 
+@app.get('/hpfeeds/stats/<date>')
+def hpfeeds(mongodb, date=''):
+    try:
+        auth.require(role='access_all')
+    except AAAException as e:
+        return HTTPError(401, e.message)
+    query_id = '{0}/hpfeeds'.format(date)
+    result = mongodb['daily_stats'].find_one({'_id': query_id})
+    if result is not None:
+        result['date'] = result['_id'].rstrip('/hpfeeds')
+        del result['_id']
+    return jsonify(result, response)
+
+@app.get('/hpfeeds/stats')
+def hpfeeds(mongodb):
+    try:
+        auth.require(role='access_all')
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
+    #This is a real ugly workaround to circumvent bad design of the daily_stats
+    #TODO: Use known keys in daily_stats.hourly
+    result = {}
+    items = mongodb['daily_stats'].find()
+    for item in items:
+        for hourly in item['hourly'].values():
+            for channel, count in hourly.items():
+                print item
+                print '{0}:{1}'.format(channel, count)
+                if channel in result:
+                    result[channel] += count
+                else:
+                    result[channel] = count
+    return jsonify(result, response)
 

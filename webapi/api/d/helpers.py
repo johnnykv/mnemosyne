@@ -42,6 +42,8 @@ def simple_group(collection, attribute, mongodb):
 
 
 def jsonify(i, r):
+    if i is None:
+        i = {}
     if isinstance(i, dict):
         #Attempt to serialize, raises exception on failure
         json_response = json.dumps(i, default=json_default, sort_keys=True)
