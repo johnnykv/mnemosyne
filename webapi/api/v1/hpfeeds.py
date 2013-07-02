@@ -86,8 +86,6 @@ def hpfeeds(mongodb):
     for item in items:
         for hourly in item['hourly'].values():
             for channel, count in hourly.items():
-                print item
-                print '{0}:{1}'.format(channel, count)
                 if channel in result:
                     result[channel] += count
                 else:
