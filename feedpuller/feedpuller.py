@@ -52,7 +52,8 @@ class FeedPuller(object):
 
                 def on_message(ident, chan, payload):
                     self.last_received = datetime.now()
-                    self.database.insert_hpfeed(ident, chan, payload)
+                    if not any(x in chan for x in (';', '"', '{', '}')):
+                        self.database.insert_hpfeed(ident, chan, payload)
 
                 self.hpc.subscribe(self.feeds)
                 self.hpc.run(on_message, on_error)
