@@ -48,39 +48,47 @@ class HPFeedsTest(unittest.TestCase):
         for item in hpfeeddata:
             c[cls._dbname].hpfeed.insert(item)
 
-        daily_stats = [{'_id': '20130701/hpfeeds',
-                        'hourly': {
-                            '0': {
-                                'beeswarm_hive': 66,
-                                'dionaea_capture': 6581,
-                                'dionaea_dcerpcrequests': 11392,
-                                'mwbinary_dionaea_sensorunique': 66
-                            },
-                            '1': {
-                                'beeswarm_hive': 21,
-                                'dionaea_capture': 6748,
-                                'dionaea_dcerpcrequests': 11605,
-                                'mwbinary_dionaea_sensorunique': 66
-                            }
-                        }
-                       },
-                       {'_id': '20130702/hpfeeds',
-                        'hourly': {
-                            '0': {
-                                'beeswarm_hive': 33,
-                                'dionaea_capture': 1111,
-                                'dionaea_dcerpcrequests': 2222,
-                                'mwbinary_dionaea_sensorunique': 11
-                            },
-                            '1': {
-                                'beeswarm_hive': 1,
-                                'dionaea_capture': 4,
-                                'dionaea_dcerpcrequests': 11,
-                                'mwbinary_dionaea_sensorunique': 28
-                            }
-                        }
-                       }
+        daily_stats = [
+            {'date': '20130906',
+             'channel': 'dionaea.capture',
+             'hourly': {
+                 '12': 1,
+                 '13': 2
+             }
+            },
+            {
 
+                'date': '20130907',
+                'channel': 'dionaea.capture',
+                'hourly': {
+                    '12': 1978,
+                    '13': 115
+                }
+            },
+            {
+                'date': '20130907',
+                'channel': 'mwbinary.dionaea.sensorunique',
+                'hourly': {
+                    '12': 28,
+                    '13': 2
+                }
+            },
+            {
+                'date': '20130907',
+                'channel': 'glastopf.events',
+                'hourly': {
+                    '12': 109,
+                    '13': 2
+                }
+            },
+            {'date': '20130907',
+             'channel': 'beeswarm.hive',
+             'hourly': {'12': 13, '13': 1}},
+            {
+            '_id': 'total',
+            'dionaea_capture' : 22,
+            'mwbinary_dionaea_sensorunique' : 1
+}
         ]
 
         for item in daily_stats:
@@ -96,9 +104,9 @@ class HPFeedsTest(unittest.TestCase):
             shutil.rmtree(cls.tmpdir)
 
     def test_count_no_query(self):
-        """
+        '''
         Test if default amount of entries are returned if no limiting parameter is used.
-        """
+        '''
         sut = HPFeedsTest.sut
 
         res = sut.get('/hpfeeds')
@@ -107,9 +115,9 @@ class HPFeedsTest(unittest.TestCase):
         self.assertEqual(50, len(result))
 
     def test_count_limit_query(self):
-        """
+        '''
         Test if correct amout of entries are returned when using the limit parameter.
-        """
+        '''
         sut = HPFeedsTest.sut
 
         for limit, expected in ((5, 5), (80, 80), (250, 100)):
@@ -118,9 +126,9 @@ class HPFeedsTest(unittest.TestCase):
             self.assertEqual(expected, len(result))
 
     def test_count_query_by_channel(self):
-        """
+        '''
         Test if correct number of entries are returned when filtering by channel name.
-        """
+        '''
         sut = HPFeedsTest.sut
 
         for limit, expected in (('trubadur', 0), ('channel_0', 50), ('channel_1', 50)):
@@ -129,9 +137,9 @@ class HPFeedsTest(unittest.TestCase):
             self.assertEqual(expected, len(result))
 
     def test_count_query_mixed_channel_limit(self):
-        """
+        '''
         Test if correct number of entries are returned when mixing filtering options.
-        """
+        '''
         sut = HPFeedsTest.sut
 
         #channel, limit, expected
@@ -149,9 +157,9 @@ class HPFeedsTest(unittest.TestCase):
             self.assertEqual(expected, len(result))
 
     def test_content_query_channel(self):
-        """
+        '''
         Test if content is as expected.
-        """
+        '''
         sut = HPFeedsTest.sut
 
         #fetch all
@@ -161,7 +169,7 @@ class HPFeedsTest(unittest.TestCase):
         for item in result:
             self.assertFalse(item['normalized'])
             #Check if we can parse without exception
-            datetime.strptime(item['timestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+            datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%f')
 
             if item['channel'] == 'channel_0':
                 self.assertEqual('ident_0', item['ident'])
@@ -172,47 +180,64 @@ class HPFeedsTest(unittest.TestCase):
             else:
                 raise Exception('Unexpected channel name: {0}'.format(item['channel']))
 
+    def test_get_stats_query_date_query_channel(self):
+        '''
+        Tests if the correct data is returned when querying a specific combination of date and channel name
+        '''
+
+        sut = HPFeedsTest.sut
+
+        res = sut.get('/hpfeeds/stats?date=20130907&channel=dionaea.capture')
+        result = json.loads(res.body)
+        expected = {'stats': [{'date': '20130907', 'channel': 'dionaea.capture',
+                               'hourly': {'12': 1978, '13': 115}}]}
+
+        self.assertDictEqual(result, expected)
+
     def test_get_stats_specific_date(self):
-        """
-        Tests if the correct data is returned when querying a specific data for hpfeeds stats
-        """
+        '''
+        Tests if the correct data is returned when querying a specific date
+        '''
 
         sut = HPFeedsTest.sut
-
-        res = sut.get('/hpfeeds/stats/20130702')
+        res = sut.get('/hpfeeds/stats?date=20130907')
         result = json.loads(res.body)
-        expected = {'date': '20130702',
-                        'hourly': {
-                            '0': {
-                                'beeswarm_hive': 33,
-                                'dionaea_capture': 1111,
-                                'dionaea_dcerpcrequests': 2222,
-                                'mwbinary_dionaea_sensorunique': 11
-                            },
-                            '1': {
-                                'beeswarm_hive': 1,
-                                'dionaea_capture': 4,
-                                'dionaea_dcerpcrequests': 11,
-                                'mwbinary_dionaea_sensorunique': 28
-                            }
-                        }
-        }
+
+        expected = {'stats': [{'hourly': {'13': 115, '12': 1978}, 'date': '20130907', 'channel': 'dionaea.capture'},
+                              {'hourly': {'13': 2, '12': 28}, 'date': '20130907',
+                               'channel': 'mwbinary.dionaea.sensorunique'},
+                              {'hourly': {'13': 2, '12': 109}, 'date': '20130907', 'channel': 'glastopf.events'},
+                              {'hourly': {'13': 1, '12': 13}, 'date': '20130907', 'channel': 'beeswarm.hive'}]}
 
         self.assertDictEqual(result, expected)
 
-    def test_get_all_stats(self):
-        """
-        Tests if the correct data is returned when querying stats
-        """
-
+    def test_get_stats_specific_channel(self):
+        '''
+        Tests if the correct data is returned when querying a specific channel
+        '''
+        self.maxDiff = 9999
         sut = HPFeedsTest.sut
 
-        res = sut.get('/hpfeeds/stats')
+        res = sut.get('/hpfeeds/stats?channel=dionaea.capture')
         result = json.loads(res.body)
-        expected = {'dionaea_capture': 14444,
-                    'beeswarm_hive': 121,
-                    'mwbinary_dionaea_sensorunique': 171,
-                    'dionaea_dcerpcrequests': 25230}
+        expected = {'stats': [{'hourly': {'12': 1, '13': 2}, 'date': '20130906', 'channel': 'dionaea.capture'},
+                              {'hourly': {'13': 115, '12': 1978}, 'date': '20130907', 'channel': 'dionaea.capture'}]}
 
         self.assertDictEqual(result, expected)
 
+    def test_get_stats_total(self):
+        '''
+        Tests if counts and channel names are summarized correctly.
+        '''
+
+        expected = {'stats':
+                        [{'channel': 'dionaea_capture', 'count': 22},
+                         {'channel': 'mwbinary_dionaea_sensorunique', 'count': 1}
+                        ]}
+
+        sut = HPFeedsTest.sut
+
+        res = sut.get('/hpfeeds/stats/total')
+        result = json.loads(res.body)
+
+        self.assertDictEqual(result, expected)

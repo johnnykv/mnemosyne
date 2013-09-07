@@ -24,6 +24,7 @@ from helpers import jsonify
 from app import app
 from app import auth
 
+
 @app.get('/hpfeeds/')
 @app.get('/hpfeeds')
 def hpfeeds(mongodb):
@@ -59,18 +60,6 @@ def hpfeeds(mongodb):
     result = list(mongodb['hpfeed'].find(query_dict).sort('timestamp', -1).limit(limit))
     return jsonify({'hpfeeds': result}, response)
 
-@app.get('/hpfeeds/stats/<date>')
-def hpfeeds(mongodb, date=''):
-    try:
-        auth.require(role='access_all')
-    except AAAException as e:
-        return HTTPError(401, e.message)
-    query_id = '{0}/hpfeeds'.format(date)
-    result = mongodb['daily_stats'].find_one({'_id': query_id})
-    if result is not None:
-        result['date'] = result['_id'].rstrip('/hpfeeds')
-        del result['_id']
-    return jsonify(result, response)
 
 @app.get('/hpfeeds/stats')
 def hpfeeds(mongodb):
@@ -79,16 +68,35 @@ def hpfeeds(mongodb):
     except AAAException as e:
         return HTTPError(401, e.message)
 
-    #This is a real ugly workaround to circumvent bad design of the daily_stats
-    #TODO: Use known keys in daily_stats.hourly
-    result = {}
-    items = mongodb['daily_stats'].find()
-    for item in items:
-        for hourly in item['hourly'].values():
-            for channel, count in hourly.items():
-                if channel in result:
-                    result[channel] += count
-                else:
-                    result[channel] = count
-    return jsonify(result, response)
+    if 'date' in request.query and 'channel' in request.query:
+        query = {'date': request.query.date, 'channel': request.query.channel}
+    elif 'date' in request.query:
+        query = {'date': request.query.date}
+    elif 'channel' in request.query:
+        query = {'channel': request.query.channel}
+    else:
+        abort(404, 'Bad Request')
 
+    results = list(mongodb['daily_stats'].find(query))
+
+    for result in results:
+        del result['_id']
+
+    return jsonify({'stats': results}, response)
+
+
+@app.get('/hpfeeds/stats/total')
+def hpfeeds(mongodb):
+    try:
+        auth.require(role='access_all')
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
+    tmp_result = mongodb['daily_stats'].find_one({'_id': 'total'})
+    del tmp_result['_id']
+
+    result = []
+    for key, value in tmp_result.items():
+        result.append({'channel': key, 'count': value})
+
+    return jsonify({'stats': result}, response)

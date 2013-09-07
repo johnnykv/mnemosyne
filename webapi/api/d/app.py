@@ -12,7 +12,6 @@ if state.plug is not None:
 
 auth = state.auth
 
-import aux
 import files
 import hpfeeds
 import sessions

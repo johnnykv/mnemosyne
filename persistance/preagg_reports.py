@@ -29,19 +29,23 @@ class ReportGenerator:
 
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
-        conn = MongoClient(w=0)
+        conn = MongoClient(w=1)
         self.db = conn[database_name]
 
     def hpfeeds(self, entry):
         utc = datetime.utcnow()
         hour = utc.hour
+        date = utc.strftime('%Y%m%d')
 
-        id = utc.strftime('%Y%m%d/') + 'hpfeeds'
-        query = {'_id': id}
-        #no dots in mongodb fields
-        channel = entry['channel'].replace('.', '_')
-        update = {'$inc': {'hourly.{0}.{1}'.format(hour,channel) : 1}}
+        query = {'channel': entry['channel'], 'date': date}
+
+        update = {'$inc': {'hourly.{0}'.format(hour): 1}}
         self.db.daily_stats.update(query, update, upsert=True)
+
+        #update total document
+        channel = entry['channel'].replace('.', '_')
+        self.db.daily_stats.update({'_id': 'total'},
+                                   {'$inc': {channel: 1}}, upsert=True)
 
     def do_legacy_hpfeeds(self):
         max_objectid = self.db.hpfeed.find({}, fields={'_id': 1}).sort('_id', -1).limit(1)[0]['_id']

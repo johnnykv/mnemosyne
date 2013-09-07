@@ -24,6 +24,7 @@ from helpers import jsonify
 from app import app
 from app import auth
 
+
 @app.get('/hpfeeds/')
 @app.get('/hpfeeds')
 def hpfeeds(mongodb):
@@ -56,7 +57,46 @@ def hpfeeds(mongodb):
     else:
         limit = 50
 
-    result = list(mongodb['hpfeed'].find(query_dict, fields={'_id': False}).sort('timestamp', -1).limit(limit))
+    result = list(mongodb['hpfeed'].find(query_dict).sort('timestamp', -1).limit(limit))
     return jsonify({'hpfeeds': result}, response)
 
 
+@app.get('/hpfeeds/stats')
+def hpfeeds(mongodb):
+    try:
+        auth.require(role='access_all')
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
+    if 'date' in request.query and 'channel' in request.query:
+        query = {'date': request.query.date, 'channel': request.query.channel}
+    elif 'date' in request.query:
+        query = {'date': request.query.date}
+    elif 'channel' in request.query:
+        query = {'channel': request.query.channel}
+    else:
+        abort(404, 'muhaha')
+
+    results = list(mongodb['daily_stats'].find(query))
+
+    for result in results:
+        del result['_id']
+
+    return jsonify({'stats': results}, response)
+
+
+@app.get('/hpfeeds/stats/total')
+def hpfeeds(mongodb):
+    try:
+        auth.require(role='access_all')
+    except AAAException as e:
+        return HTTPError(401, e.message)
+
+    tmp_result = mongodb['daily_stats'].find_one({'_id': 'total'})
+    del tmp_result['_id']
+
+    result = []
+    for key, value in tmp_result.items():
+        result.append({'channel': key, 'count': value})
+
+    return jsonify({'stats': result}, response)
