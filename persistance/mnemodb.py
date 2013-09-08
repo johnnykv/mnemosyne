@@ -54,6 +54,7 @@ class MnemoDB(object):
         self.db.session.ensure_index('source_port', unique=False, background=True)
         self.db.session.ensure_index('honeypot', unique=False, background=True)
         self.db.session.ensure_index('timestamp', unique=False, background=True)
+        self.db.daily_stats.ensure_index([('channel', 1), ('date', 1)])
 
     def insert_normalized(self, ndata, hpfeed_id):
         assert isinstance(hpfeed_id, ObjectId)
