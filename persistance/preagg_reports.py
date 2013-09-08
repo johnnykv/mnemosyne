@@ -29,7 +29,7 @@ class ReportGenerator:
 
     def __init__(self, database_name):
         logger.info('Connecting to mongodb, using "{0}" as database.'.format(database_name))
-        conn = MongoClient(w=1)
+        conn = MongoClient(w=0)
         self.db = conn[database_name]
 
     def hpfeeds(self, entry):
