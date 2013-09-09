@@ -87,6 +87,70 @@ The HPFeeds resource located at /api/v1/hpfeeds serves unparsed data from variou
    :statuscode 200: no error.
    :statuscode 400: Bad request.
 
+HPFeeds statistics
+******************
+The HPFeeds statistics resources is a subresource and is located at /api/v1/hpfeeds/stats.
+.. http:get:: /api/v1/hpfeeds/stats
+
+   Returns a collection of hourly counts for one or more HPFeeds channels.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/hpfeeds/stats?channel=dionaea.capture HTTP/1.1
+      Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {'stats':
+       [
+        {'hourly': {'12': 1, '13': 2}, 'date': '20130906', 'channel': 'dionaea.capture'},
+        {'hourly': {'13': 115, '12': 1978}, 'date': '20130907', 'channel': 'dionaea.capture'}
+       ]
+      }
+
+
+   :query channel: channel name.
+   :query date: limit query to an specific date, format: YYYYMMDD, example: 20131230.
+   :statuscode 200: no error.
+   :statuscode 400: Bad request.
+
+.. http:get:: /api/v1/hpfeeds/stats/total
+
+   Returns the total count for every received channel name.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/hpfeeds/stats/total HTTP/1.1
+      Accept: application/json, text/javascript
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {'stats':
+       [
+        {'channel': 'dionaea_capture', 'count': 22},
+        {'channel': 'mwbinary_dionaea_sensorunique', 'count': 1}
+       ]
+      }
+
+
+   :statuscode 200: no error.
+   :statuscode 400: Bad request.
+
+
 
 Sessions
 ********
