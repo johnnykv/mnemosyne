@@ -33,10 +33,8 @@ class ReportGenerator:
         self.db = conn[database_name]
 
     def hpfeeds(self, entry):
-        utc = datetime.utcnow()
-        hour = utc.hour
-        date = utc.strftime('%Y%m%d')
-
+        hour = entry['timestamp'].hour
+        date = entry['timestamp'].strftime('%Y%m%d')
         query = {'channel': entry['channel'], 'date': date}
 
         update = {'$inc': {'hourly.{0}'.format(hour): 1}}
@@ -53,7 +51,7 @@ class ReportGenerator:
         result = self.db.hpfeed.find({'_id': {'$lte': max_objectid}}, fields=['channel', 'timestamp'])
         items = 0
         for item in result:
-            self.hpfeeds(item, item['timestamp'])
+            self.hpfeeds(item)
             items += 1
         logger.info('Finished pre-aggregation of historic hpfeeds data. ({0} items.)'.format(items))
 

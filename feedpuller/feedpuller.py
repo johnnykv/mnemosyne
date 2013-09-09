@@ -36,7 +36,7 @@ class FeedPuller(object):
         self.host = host
         self.feeds = feeds
         self.last_received = datetime.now()
-
+        self.hpc = None
         self.enabled = True
 
     def start_listening(self):
@@ -71,7 +71,7 @@ class FeedPuller(object):
 
     def _activity_checker(self):
         while self.enabled:
-            if self.hpc.connected:
+            if self.hpc is not None and self.hpc.connected:
                 difference = datetime.now() - self.last_received
                 if difference.seconds > 15:
                     logger.warning('No activity for 15 seconds, forcing reconnect')
