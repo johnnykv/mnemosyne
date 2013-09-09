@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -54,6 +52,7 @@
 <li><a class="reference internal" href="#access-levels">Access levels</a></li>
 <li><a class="reference internal" href="#resources-as-of-version-1">Resources as of version 1</a><ul>
 <li><a class="reference internal" href="#hpfeeds">HPFeeds</a></li>
+<li><a class="reference internal" href="#hpfeeds-statistics">HPFeeds statistics</a></li>
 <li><a class="reference internal" href="#sessions">Sessions</a></li>
 <li><a class="reference internal" href="#urls">URLS</a></li>
 <li><a class="reference internal" href="#files">Files</a></li>
@@ -196,6 +195,78 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; no error.</li>
+<li><strong>400</strong> &#8211; Bad request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="hpfeeds-statistics">
+<h3>HPFeeds statistics<a class="headerlink" href="#hpfeeds-statistics" title="Permalink to this headline">¶</a></h3>
+<p>The HPFeeds statistics resources is a subresource and is located at /api/v1/hpfeeds/stats.
+.. <a class="reference external" href="http:get">http:get</a>:: /api/v1/hpfeeds/stats</p>
+<blockquote>
+<div><p>Returns a collection of hourly counts for one or more HPFeeds channels.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/hpfeeds/stats?channel=dionaea.capture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{'stats':
+ [
+  {'hourly': {'12': 1, '13': 2}, 'date': '20130906', 'channel': 'dionaea.capture'},
+  {'hourly': {'13': 115, '12': 1978}, 'date': '20130907', 'channel': 'dionaea.capture'}
+ ]
+}</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">query channel:</th><td class="field-body">channel name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">query date:</th><td class="field-body">limit query to an specific date, format: YYYYMMDD, example: 20131230.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">statuscode 200:</th><td class="field-body">no error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">statuscode 400:</th><td class="field-body">Bad request.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="get">
+<dt id="get--api-v1-hpfeeds-stats-total">
+<tt class="descname">GET </tt><tt class="descname">/api/v1/hpfeeds/stats/total</tt><a class="headerlink" href="#get--api-v1-hpfeeds-stats-total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total count for every received channel name.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/api/v1/hpfeeds/stats/total</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><pre>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{'stats':
+ [
+  {'channel': 'dionaea_capture', 'count': 22},
+  {'channel': 'mwbinary_dionaea_sensorunique', 'count': 1}
+ ]
+}</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
 <li><strong>200</strong> &#8211; no error.</li>
 <li><strong>400</strong> &#8211; Bad request.</li>
 </ul>
@@ -502,7 +573,7 @@ Content-Type: application/json
     </div>
     <div class="footer">
         &copy; Copyright 2013, Johnny Vestergaard.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>
