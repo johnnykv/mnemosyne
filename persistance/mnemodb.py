@@ -148,13 +148,14 @@ class MnemoDB(object):
         logger.info('All collections dropped. (Elapse: {0})'.format(time.time() - start))
         logger.info('Dropping indexes before bulk operation.')
         self.db.hpfeed.drop_indexes()
+        logger.info('Indexes dropped(Elapse: {0}).'.format(time.time() - start))
+        logger.info('Resetting normalization flags from hpfeeds collection.')
         self.db.hpfeed.update({}, {"$set": {'normalized': False},
-                                   '$unset': {'last_error': 1, 'last_error_timestamp': 1}},
-                                   multi=True)
-        logger.info('Error states removed from hpfeeds data (Elapse: {0}'.format(time.time() - start))
+                                   '$unset': {'last_error': 1, 'last_error_timestamp': 1}}, multi=True)
+        logger.info('Done normalization flags from hpfeeds collection.(Elapse: {0}).'.format(time.time() - start))
         logger.info('Recreating indexes.')
         self.ensure_index()
-        logger.info('Done ensuring indexes (Elapse: {0})'.format(time.time() - start))
+        logger.info('Done recreating indexes (Elapse: {0})'.format(time.time() - start))
 
         logger.info('Full reset done in {0} seconds'.format(time.time() - start))
 
