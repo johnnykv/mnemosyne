@@ -84,7 +84,7 @@ After running mnemosyne for a short while, you can fire up the mongo console at 
     {
         "_id" : ObjectId("522e253b79b45e7673aa4a6d"),
         "destination_ip" : [
-            "78.47.11.101"
+            "18.17.141.211"
         ],
         "protocol" : "microsoft-ds",
         "attachments" : [
