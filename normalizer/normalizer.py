@@ -66,6 +66,7 @@ class Normalizer(object):
 
             normalizations = 0
             error_list = []
+            no_normalizers_warnings = []
             to_be_processed = self.database.get_hpfeed_data(oldest_id, fetch_count)
             to_be_inserted = []
 
@@ -81,11 +82,12 @@ class Normalizer(object):
                         #batch up normalized items
                         to_be_inserted.append((norm, hpfeed_item['_id']))
                         normalizations += 1
-                    else:
+                    elif channel not in no_normalizers_warnings:
                         error_list.append({'_id': hpfeed_item['_id'],
                                            'last_error': "No normalizer found",
                                            'last_error_timestamp': datetime.now()})
                         logger.warning('No normalizer could be found for channel: {0}.'.format(channel))
+                        no_normalizers_warnings.append(channel)
                 except Exception as err:
                     error_list.append({'_id': hpfeed_item['_id'],
                                        'last_error': err,
