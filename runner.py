@@ -118,7 +118,13 @@ if __name__ == '__main__':
     normalizer = None
 
     if args.reset:
-        db.reset_normalized()
+        print 'Renormalization (reset) of a large database can take several days.'
+        answer = raw_input('Write YES if you want to continue: ')
+        if answer == 'YES':
+            db.reset_normalized()
+        else:
+            print 'Aborting'
+            sys.exit(0)
 
     if not args.no_feedpuller:
         logger.info("Spawning hpfriends feed puller.")
