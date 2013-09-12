@@ -42,7 +42,7 @@ class GlastopfTests(unittest.TestCase):
 
         session_http = {'request': request}
 
-        session = {
+        expected_session = {
             'timestamp': datetime(2012, 12, 14, 12, 22, 51),
             'source_ip': '1.2.3.4',
             'source_port': 49111,
@@ -52,24 +52,19 @@ class GlastopfTests(unittest.TestCase):
             'session_http': session_http
         }
 
-        expected_output = [{'session': session}]
+        expected_output = [{'session': expected_session}]
 
         sut = glastopf_events.GlastopfEvents()
         actual = sut.normalize(input_string, 'glastopf_events', None)
 
-        #Test number of root items
+        #assering sessions
         self.assertEqual(len(expected_output), len(actual))
-
-        #Test session
         self.assertEqual(expected_output[0]['session'], actual[0]['session'])
-
-        #Test subtype, session_http
         self.assertEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
-        #Test request
         self.assertEqual(expected_output[0]['session']['session_http']['request'],
                          actual[0]['session']['session_http']['request'])
 
-        #test dork response
+        #asserting dorks
         self.assertEqual(1, actual[0]['dork']['count'])
         self.assertEqual('inurl', actual[0]['dork']['type'])
         self.assertEqual('/someURL', actual[0]['dork']['content'])
@@ -78,14 +73,40 @@ class GlastopfTests(unittest.TestCase):
     def test_event_new_format(self):
         """
         Test if a the newer glastopf json message get parsed as expected.
-        Note: Currently we only extract the dork from newer versions of glastopf.
         """
-        input_string = """{\"pattern\": \"robots\", \"time\": \"2013-06-09 06:06:20\", \"filename\": null, \"source\": [\"1.2.3.4\", 50781], \"request_raw\": \"GET /robots.txt HTTP/1.1\\r\\nAccept-Encoding: identity\\r\\nHost: 4.3.2.1\", \"request_url\": \"/wooopsa\"}"""
+        input_string = """{\"pattern\": \"robots\", \"time\": \"2013-06-09 06:06:20\", \"filename\": null, \"source\": [\"1.2.3.4\", 50781], \"request_raw\": \"GET /robots.txt HTTP/1.1\\r\\nAccept-Encoding: identity\\r\\nHost: woopa.mil\\r\\n\\r\\nMuhaha\", \"request_url\": \"/wooopsa\"}"""
+
+        request = {
+            'host': 'woopa.mil',
+            'header': [('host', 'woopa.mil'), ('accept-encoding', 'identity')],
+            'body': 'Muhaha',
+            'verb': 'GET',
+            'path': '/robots.txt', }
+
+        session_http = {'request': request}
+
+        expected_session = {
+            'timestamp': datetime(2013, 6, 9, 06, 06, 20),
+            'source_ip': '1.2.3.4',
+            'source_port': 50781,
+            'destination_port': 80,
+            'honeypot': 'glastopf',
+            'protocol': 'http',
+            'session_http': session_http
+        }
+
+        expected_output = [{'session': expected_session}]
 
         sut = glastopf_events.GlastopfEvents()
         actual = sut.normalize(input_string, 'glastopf_events', None)
 
-        #test dork response
+        #assering sessions
+        self.assertEqual(expected_output[0]['session'], actual[0]['session'])
+        self.assertEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
+        self.assertEqual(expected_output[0]['session']['session_http']['request'],
+                         actual[0]['session']['session_http']['request'])
+
+        #asserting dorks
         self.assertEqual(1, actual[0]['dork']['count'])
         self.assertEqual('inurl', actual[0]['dork']['type'])
         self.assertEqual('/wooopsa', actual[0]['dork']['content'])
@@ -215,7 +236,6 @@ class GlastopfTests(unittest.TestCase):
         for input_, expected_output in in_out_pars:
             result = sut.clean_url(input_)
             self.assertEqual(expected_output, result)
-
 
 if __name__ == '__main__':
     unittest.main()

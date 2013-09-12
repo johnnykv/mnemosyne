@@ -18,6 +18,8 @@
 import json
 from datetime import datetime
 from urlparse import urlparse
+from BaseHTTPServer import BaseHTTPRequestHandler
+from StringIO import StringIO
 
 from normalizer.modules.basenormalizer import BaseNormalizer
 
@@ -38,9 +40,8 @@ class GlastopfEvents(BaseNormalizer):
         relations = {}
 
         #only old versions of glastopf has the request key
-        if 'request' in o_data:
-            relations['session'] = self.make_session(o_data)
-            relations['session']['session_http'] = self.make_session_http(o_data)
+        relations['session'] = self.make_session(o_data)
+        relations['session']['session_http'] = self.make_session_http(o_data)
         dork = self.make_dork(o_data, submission_timestamp)
         if dork:
             relations['dork'] = dork
@@ -74,23 +75,29 @@ class GlastopfEvents(BaseNormalizer):
 
     def make_session_http(self, data):
         session_http = {}
-
         request = {}
-        request['header'] = json.dumps(data['request']['header'])
-        if 'body' in data['request']:
-            request['body'] = data['request']['body']
-        if 'Host' in data['request']['header']:
-            request['host'] = data['request']['header']['Host']
-        request['verb'] = data['request']['method']
+        #glastopf's old logging format has the 'request' key
+        if 'request' in data:
+            request['header'] = json.dumps(data['request']['header'])
+            if 'body' in data['request']:
+                request['body'] = data['request']['body']
+            if 'Host' in data['request']['header']:
+                request['host'] = data['request']['header']['Host']
+            request['verb'] = data['request']['method']
 
-        request['url'] = self.make_url(data)
-        #TODO: Parse response from glastopf...
-        response = {}
+            request['url'] = self.make_url(data)
+        #new glastopf logging format
+        else:
+            r = HTTPRequest(data['request_raw'])
+            request['host'] = r.headers['host']
+            #dict json loads?
+            request['header'] = r.headers.items()
+            request['verb'] = r.command
+            request['path'] = r.path
+            request['body'] = r.rfile.read()
 
         if len(request) != 0:
             session_http['request'] = request
-        if len(response) != 0:
-            session_http['response'] = response
         return session_http
 
     def clean_url(self, url):
@@ -110,3 +117,17 @@ class GlastopfEvents(BaseNormalizer):
             #best of luck!
             url = data['request']['url']
         return url
+
+
+#Thanks Brandon Rhodes!
+#http://stackoverflow.com/questions/4685217/parse-raw-http-headers
+class HTTPRequest(BaseHTTPRequestHandler):
+    def __init__(self, request_text):
+        self.rfile = StringIO(request_text)
+        self.raw_requestline = self.rfile.readline()
+        self.error_code = self.error_message = None
+        self.parse_request()
+
+    def send_error(self, code, message):
+        self.error_code = code
+        self.error_message = message
