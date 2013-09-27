@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import json
+import re
 from datetime import datetime
 from urlparse import urlparse
 from BaseHTTPServer import BaseHTTPRequestHandler
@@ -29,7 +30,7 @@ class GlastopfEvents(BaseNormalizer):
 
     def __init__(self):
         #dorks to be filtered out
-        self.dork_filter = ['/', '/headers', '/favicon.ico', '/w00tw00t.at.ISC.SANS.DFind:)']
+        self.dork_filter = '/headers|favicon.ico|w00tw00t|/robots.txt'
 
     def normalize(self, data, channel, submission_timestamp):
         o_data = json.loads(data)
@@ -54,7 +55,7 @@ class GlastopfEvents(BaseNormalizer):
             dork = urlparse(self.make_url(data)).path
         else:
             dork = urlparse(data['request_url']).path
-        if dork and dork not in self.dork_filter:
+        if len(dork) > 1 and not re.match(r'.*({0}).*'.format(self.dork_filter), dork):
             return {'content': dork,
                     'type': 'inurl',
                     'timestamp': timestamp,
