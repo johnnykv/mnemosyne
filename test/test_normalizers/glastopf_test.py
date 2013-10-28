@@ -100,7 +100,7 @@ class GlastopfTests(unittest.TestCase):
         sut = glastopf_events.GlastopfEvents()
         actual = sut.normalize(input_string, 'glastopf_events', None)
 
-        #assering sessions
+        #asserting sessions
         self.assertEqual(expected_output[0]['session'], actual[0]['session'])
         self.assertEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
         self.assertEqual(expected_output[0]['session']['session_http']['request'],
@@ -111,6 +111,38 @@ class GlastopfTests(unittest.TestCase):
         self.assertEqual('inurl', actual[0]['dork']['type'])
         self.assertEqual('/wooopsa', actual[0]['dork']['content'])
         self.assertTrue('timestamp' in actual[0]['dork'])
+
+    def test_request_with_minimal_header(self):
+        # this was found in the wild.
+        input_string = """{\"pattern\": \"unknown\", \"time\": \"2013-10-28 12:39:20\", \"filename\": null, \"source\": [\"1.2.3.4\", 54791], \"request_raw\": \"GET / HTTP/1.1\\r\\nAccept: */*\", \"request_url\": \"/\"}"""
+
+        sut = glastopf_events.GlastopfEvents()
+        request = {
+            'header': [('accept', '*/*')],
+            'body': '',
+            'verb': 'GET',
+            'path': '/', }
+
+        session_http = {'request': request}
+
+        expected_session = {
+            'timestamp': datetime(2013, 10, 28, 12, 39, 20),
+            'source_ip': '1.2.3.4',
+            'source_port': 54791,
+            'destination_port': 80,
+            'honeypot': 'glastopf',
+            'protocol': 'http',
+            'session_http': session_http
+        }
+
+        expected_output = [{'session': expected_session}]
+        actual = sut.normalize(input_string, 'glastopf_events', None)
+
+        #asserting sessions
+        self.assertEqual(expected_output[0]['session'], actual[0]['session'])
+        self.assertEqual(expected_output[0]['session']['session_http'], actual[0]['session']['session_http'])
+        self.assertEqual(expected_output[0]['session']['session_http']['request'],
+                         actual[0]['session']['session_http']['request'])
 
 
     def test_make_url_actual(self):

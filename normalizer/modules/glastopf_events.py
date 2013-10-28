@@ -90,7 +90,8 @@ class GlastopfEvents(BaseNormalizer):
         #new glastopf logging format
         else:
             r = HTTPRequest(data['request_raw'])
-            request['host'] = r.headers['host']
+            if 'host' in r.headers:
+                request['host'] = r.headers['host']
             #dict json loads?
             request['header'] = r.headers.items()
             request['verb'] = r.command
