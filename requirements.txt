@@ -10,5 +10,8 @@ python-magic
 nose
 kumo
 git+https://github.com/rep/hpfeeds/
+stix
+cybox
+lxml
 sphinx
 sphinxcontrib-httpdomain
