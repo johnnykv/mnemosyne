@@ -21,7 +21,9 @@ from StringIO import StringIO
 from stix.core import STIXPackage, STIXHeader
 from stix.indicator import Indicator
 from cybox.objects import http_session_object, network_connection_object, port_object
+from cybox.core.observable import ObservableComposition
 from stix.core import STIXPackage, STIXHeader
+
 
 class GlastopfEvents():
     channels = ('glastopf.events',)
@@ -60,13 +62,19 @@ class GlastopfEvents():
             stix_HttpSession = http_session_object.HTTPSession()
             stix_HttpSession.http_request_response = [stix_requestResponse, ]
 
+            stix_observablComposition = ObservableComposition(operator='OR')
+            stix_observablComposition.add(stix_HttpSession)
+            stix_observablComposition.add(stix_networkConnection)
+
+            indicator = Indicator()
+            indicator.add_object(stix_observablComposition)
+            indicator.indicator_type = 'Sql Injection Attempt'
+
             stix_package = STIXPackage()
             stix_header = STIXHeader()
             stix_header.package_intent = 'Observations'
 
-            stix_package.add_observable(stix_HttpSession)
-            stix_package.add_observable(stix_networkConnection)
-
+            stix_package.add_indicator(indicator)
             print(stix_package.to_xml())
 
 #Thanks Brandon Rhodes!
