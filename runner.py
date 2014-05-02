@@ -91,7 +91,7 @@ if __name__ == '__main__':
     parser.add_argument('--config', dest='config_file', default='mnemosyne.cfg')
     parser.add_argument('--reset', action='store_true', default=False)
     parser.add_argument('--stats', action='store_true', default=False)
-    parser.add_argument('--webpath', default='webapi/static')
+    parser.add_argument('--webpath', default='webapi/views')
     parser.add_argument('--no_normalizer', action='store_true', default=False,
                         help='Do not start the normalizer')
     parser.add_argument('--no_feedpuller', action='store_true', default=False,
